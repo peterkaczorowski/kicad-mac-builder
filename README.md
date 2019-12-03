@@ -1,7 +1,7 @@
 KiCad Mac Builder
 =================
 
-This is the V5+ KiCad Mac builder and packager.  This is known to work on macOS 10.11, 10.12, 10.13, and 10.14.  If it does not work with newer versions, this will be addressed and this list will be amended.
+This is the V5+ KiCad Mac builder and packager.  This is known to work on macOS 10.11, 10.12, 10.13, 10.14, and 10.15.  If it does not work with newer versions, this will be addressed and this list will be amended.
 
 [![Build Status](https://builder.wayneandlayne.com/buildStatus/icon?job=kicad-mac-builder-10.11-upload)](https://builder.wayneandlayne.com/job/kicad-mac-builder-10.11-upload) (master branch, all three DMGs, built from scratch on a new 10.11 VM for 10.11-10.13)
 
@@ -17,7 +17,7 @@ It may be helpful to run `brew list` before installing any dependencies.  This m
 
 The instructions are split up based on macOS version.
 
-macOS 10.12-10.14
+macOS 10.12-10.15
 -----------------
 
 Please use a terminal to run the following command:
