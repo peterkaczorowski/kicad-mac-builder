@@ -5,7 +5,7 @@ set -e
 for _ in 1 2 3; do
   if ! command -v brew >/dev/null; then
     echo "Installing Homebrew ..."
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null || echo "failed."
+    CI=1 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null || echo "failed."
   else
     echo "Homebrew installed."
     break
@@ -24,6 +24,4 @@ brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/9ce61eaa27
 echo "Installing boost"
 brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/b4de2e1ce084ec249ca61c3eff6f96617e38c081/Formula/boost.rb
 echo "Installing some dependencies"
-brew install glew cairo doxygen gettext wget bison libtool autoconf automake cmake swig
-brew install -f /vagrant/external/oce*tar.gz
-
+brew install glew cairo doxygen gettext wget bison libtool autoconf automake cmake swig opencascade
