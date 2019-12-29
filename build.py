@@ -50,6 +50,9 @@ def parse_args(args):
     parser.add_argument("--kicad-ref",
                         help="KiCad source code git tag, commit, or branch to build from. Defaults to origin/master.",
                         )
+    parser.add_argument("--kicad-source-dir",
+                        help="KiCad source directory to use as-is to build from.  Will not be patched, and cannot create a release.",
+                        )
     parser.add_argument("--symbols-ref",
                         help="KiCad symbols git tag, commit, or branch to build from. Defaults to origin/master.",
                         )
@@ -97,6 +100,15 @@ def parse_args(args):
     if parsed_args.target is None:
         parsed_args.target = []
 
+    if parsed_args.release and parsed_args.kicad_source_dir:
+        parser.error("KiCad source directory builds cannot be release builds.")
+
+    if parsed_args.kicad_ref and parsed_args.kicad_source_dir:
+        parser.error("KiCad source directory builds cannot also specify a KiCad git ref.")
+
+    if parsed_args.kicad_source_dir:
+        parsed_args.kicad_source_dir = os.path.realpath(parsed_args.kicad_source_dir)
+
     if parsed_args.release:
         if parsed_args.build_type is None:
             parsed_args.build_type = "Release"
@@ -117,8 +129,14 @@ def parse_args(args):
     else:
         # not stable
 
-        # handle defaults--can't do in argparse because they're conditionally required
-        for ref in "kicad_ref", "symbols_ref", "footprints_ref", "packages3d_ref", "translations_ref", "templates_ref":
+
+        default_refs = ["symbols_ref", "footprints_ref", "packages3d_ref", "translations_ref", "templates_ref"]
+
+        if not parsed_args.kicad_source_dir:
+            default_refs += "kicad_ref"
+
+        # handle dedaults--can't do in argparse because they're conditionally required
+        for ref in default_refs:
             if getattr(parsed_args, ref) is None:
                 setattr(parsed_args, ref, "origin/master")
         if parsed_args.docs_tarball_url is None:
@@ -154,13 +172,19 @@ def build(args):
                      "-DMACOS_MIN_VERSION={}".format(args.macos_min_version),
                      "-DDOCS_TARBALL_URL={}".format(args.docs_tarball_url),
                      "-DFOOTPRINTS_TAG={}".format(args.footprints_ref),
-                     "-DKICAD_TAG={}".format(args.kicad_ref),
                      "-DPACKAGES3D_TAG={}".format(args.packages3d_ref),
                      "-DSYMBOLS_TAG={}".format(args.symbols_ref),
                      "-DTEMPLATES_TAG={}".format(args.templates_ref),
                      "-DTRANSLATIONS_TAG={}".format(args.translations_ref),
                      "-DKICAD_CMAKE_BUILD_TYPE={}".format(args.build_type),
                      ]
+
+    if args.kicad_source_dir:
+        cmake_command.append("-DKICAD_SOURCE_DIR={}".format(args.kicad_source_dir))
+
+    if args.kicad_ref:
+        cmake_command.append("-DKICAD_TAG={}".format(args.kicad_ref))
+
     if args.extra_version:
         cmake_command.append("-DKICAD_VERSION_EXTRA={}".format(args.extra_version))
     if args.release_name:

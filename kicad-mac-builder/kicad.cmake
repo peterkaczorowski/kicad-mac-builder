@@ -1,6 +1,10 @@
 include(ExternalProject)
 
 if(DEFINED RELEASE_NAME)
+if(NOT DEFINED KICAD_TAG OR "${KICAD_TAG}" STREQUAL "")
+  message( FATAL_ERROR "KICAD_TAG must be set for release builds.  Please see the README or try build.py." )
+endif ()
+
 ExternalProject_Add(
         kicad
         PREFIX  kicad
@@ -16,7 +20,15 @@ ExternalProject_Add(
         COMMAND                 git tag -a ${RELEASE_NAME} -m "${RELEASE_NAME}"
         CMAKE_ARGS  ${KICAD_CMAKE_ARGS}
 )
-else()
+elseif(DEFINED KICAD_SOURCE_DIR AND NOT "${KICAD_SOURCE_DIR}" STREQUAL "")
+ExternalProject_Add(
+        kicad
+        PREFIX  kicad
+        DEPENDS python wxpython wxwidgets six ngspice docs
+        SOURCE_DIR ${KICAD_SOURCE_DIR}
+        CMAKE_ARGS  ${KICAD_CMAKE_ARGS}
+)
+elseif(DEFINED KICAD_TAG AND NOT "${KICAD_TAG}" STREQUAL "")
 ExternalProject_Add(
         kicad
         PREFIX  kicad
@@ -31,6 +43,9 @@ ExternalProject_Add(
         COMMAND                 ${BIN_DIR}/git-multipatch.sh ${CMAKE_SOURCE_DIR}/patches/kicad/*.patch
         CMAKE_ARGS  ${KICAD_CMAKE_ARGS}
 )
+
+else()
+  message( FATAL_ERROR "Either KICAD_TAG or KICAD_SOURCE_DIR must be set.  Please see the README or try build.py." )
 endif()
 
 ExternalProject_Add_Step(
