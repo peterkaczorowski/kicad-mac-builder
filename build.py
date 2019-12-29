@@ -12,6 +12,8 @@ import subprocess
 import sys
 import time
 
+DEFAULT_KICAD_GIT_URL = "https://gitlab.com/kicad/code/kicad.git"
+
 def print_and_flush(s):
     # sigh, in Python3 this is build in... :/
     print s
@@ -47,6 +49,8 @@ def parse_args(args):
     parser.add_argument("--build-type",
                         help="Build type passed to CMake like Debug, Release, or RelWithDebInfo.  Defaults to Debug, unless --release is set."
                         )
+    parser.add_argument("--kicad-git-url",
+                        help="KiCad source code git url.  Defaults to {}. Conflicts with --kicad-source-dir.".format(DEFAULT_KICAD_GIT_URL))
     parser.add_argument("--kicad-ref",
                         help="KiCad source code git tag, commit, or branch to build from. Defaults to origin/master.",
                         )
@@ -103,11 +107,13 @@ def parse_args(args):
     if parsed_args.release and parsed_args.kicad_source_dir:
         parser.error("KiCad source directory builds cannot be release builds.")
 
-    if parsed_args.kicad_ref and parsed_args.kicad_source_dir:
-        parser.error("KiCad source directory builds cannot also specify a KiCad git ref.")
+    if (parsed_args.kicad_ref or parsed_args.kicad_git_url) and parsed_args.kicad_source_dir:
+        parser.error("KiCad source directory builds cannot also specify KiCad git details.")
 
     if parsed_args.kicad_source_dir:
         parsed_args.kicad_source_dir = os.path.realpath(parsed_args.kicad_source_dir)
+    elif not parsed_args.kicad_git_url:
+        parsed_args.kicad_git_url = DEFAULT_KICAD_GIT_URL
 
     if parsed_args.release:
         if parsed_args.build_type is None:
@@ -129,11 +135,10 @@ def parse_args(args):
     else:
         # not stable
 
-
         default_refs = ["symbols_ref", "footprints_ref", "packages3d_ref", "translations_ref", "templates_ref"]
 
         if not parsed_args.kicad_source_dir:
-            default_refs += "kicad_ref"
+            default_refs.append("kicad_ref")
 
         # handle dedaults--can't do in argparse because they're conditionally required
         for ref in default_refs:
@@ -181,9 +186,11 @@ def build(args):
 
     if args.kicad_source_dir:
         cmake_command.append("-DKICAD_SOURCE_DIR={}".format(args.kicad_source_dir))
-
-    if args.kicad_ref:
-        cmake_command.append("-DKICAD_TAG={}".format(args.kicad_ref))
+    else:
+        if args.kicad_git_url:
+            cmake_command.append("-DKICAD_URL={}".format(args.kicad_git_url))
+        if args.kicad_ref:
+            cmake_command.append("-DKICAD_TAG={}".format(args.kicad_ref))
 
     if args.extra_version:
         cmake_command.append("-DKICAD_VERSION_EXTRA={}".format(args.extra_version))
