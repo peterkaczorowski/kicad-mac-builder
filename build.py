@@ -129,11 +129,10 @@ def parse_args(args):
     else:
         # not stable
 
-
         default_refs = ["symbols_ref", "footprints_ref", "packages3d_ref", "translations_ref", "templates_ref"]
 
         if not parsed_args.kicad_source_dir:
-            default_refs += "kicad_ref"
+            default_refs.append("kicad_ref")
 
         # handle dedaults--can't do in argparse because they're conditionally required
         for ref in default_refs:
