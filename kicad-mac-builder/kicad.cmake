@@ -93,7 +93,7 @@ ExternalProject_Add_Step(
         install-six
         COMMENT "Installing six into PYTHONPATH for easier debugging"
         DEPENDEES install
-        COMMAND cp ${six_DIR}/six.py ${KICAD_INSTALL_DIR}/kicad.app/Contents/Frameworks/python/site-packages/
+        COMMAND cp ${six_DIR}/six.py ${KICAD_INSTALL_DIR}/kicad.app/Contents/Resources/python/site-packages/
 )
 
 ExternalProject_Add_Step(
@@ -101,7 +101,7 @@ ExternalProject_Add_Step(
         fixup-pcbnew-so
         COMMENT "Fixing loader dependencies so _pcbnew.so works both internal and external to KiCad."
         DEPENDEES install
-        COMMAND ${BIN_DIR}/fixup-pcbnew-so.sh  ${KICAD_INSTALL_DIR}/kicad.app/Contents/Frameworks/
+        COMMAND ${BIN_DIR}/fixup-pcbnew-so.sh  ${KICAD_INSTALL_DIR}/kicad.app/
 )
 
 ExternalProject_Add_Step(

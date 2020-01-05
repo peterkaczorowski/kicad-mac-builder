@@ -20,16 +20,11 @@ SCRIPT_DIR=$(get_script_dir)
 # Many thanks to metacollin.
 
 if [ $# -ne 1 ] ; then
-   echo "bad number of arguments, must pass Frameworks directory"
+   echo "bad number of arguments, must pass .app directory"
    exit 1
 fi
 
-if [ ! -d "$1/python/site-packages" ]; then
-   echo "$1/python/site-packages doesn't appear to exist.  exiting."
-   exit 1
-fi
-
-cd "$1"
+cd "$1/Contents/Frameworks/"
 
 for file in *.dylib; do
     fixup_libs=($(otool -L $file | grep -o "@executable_path.*.dylib"));
@@ -44,7 +39,7 @@ for file in *.dylib; do
     $SCRIPT_DIR/add-rpath.sh @executable_path/../Frameworks $file;
 done;
 
-cd python/site-packages
+cd $1/Contents/Resources/python/site-packages
 
 fixup_libs=($(otool -L _pcbnew.so | grep -o "@executable_path.*.dylib"));
 libs=($(echo ${fixup_libs[@]} | grep -o "[^/]*dylib"));
