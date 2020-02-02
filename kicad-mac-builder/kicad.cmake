@@ -111,3 +111,39 @@ ExternalProject_Add_Step(
 	DEPENDEES fixup-pcbnew-so install-six remove-pyc-and-pyo verify-cli-python verify-app
 	COMMAND ${BIN_DIR}/verify-pcbnew-so-import.sh  ${KICAD_INSTALL_DIR}/kicad.app/
 )
+
+if(SIGN_KICAD_APP)
+	if(NOT DEFINED CERTIFICATE_ID)
+		message( FATAL_ERROR "CERTIFICATE_ID must be set if SIGN_KICAD_APP is set." )
+	endif()
+
+	#TODO add entitlements
+
+	ExternalProject_Add_Step(
+		kicad
+		sign
+		COMMENT "Signing kicad.app"
+		DEPENDEES verify-pcbnew-so-import fixup-pcbnew-so install-six remove-pyc-and-pyo verify-cli-python verify-app
+		COMMAND ${BIN_DIR}/apple.py sign --certificate-id ${CERTIFICATE_ID} ${KICAD_INSTALL_DIR}/kicad.app
+	)
+endif()
+
+if(NOTARIZE_KICAD_APP)
+	if(NOT DEFINED APPLE_DEVELOPER_USERNAME OR NOT DEFINED APPLE_DEVELOPER_PASSWORD_KEYCHAIN_NAME OR NOT DEFINED PRIMARY_BUNDLE_ID)
+		message( FATAL_ERROR "APPLE_DEVELOPER_USERNAME, APPLE_DEVELOPER_PASSWORD_KEYCHAIN_NAME, and PRIMARY_BUNDLE_ID must be set if NOTARIZE_KICAD_APP is set." )
+	endif()
+
+	if((NOTARIZE_KICAD_APP) AND ${SIGN_KICAD_APP})
+		set(NOTARIZATION_DEPENDENCIES "sign")
+	else()
+		set(NOTARIZATION_DEPENDENCIES "fixup-pcbnew-so install-six remove-pyc-and-pyo verify-cli-python verify-app")
+	endif()
+
+	ExternalProject_Add_Step(
+		kicad
+		notarize
+		COMMENT "Notarizing kicad.app, if configured"
+		DEPENDEES ${NOTARIZATION_DEPENDENCIES}
+		COMMAND ${BIN_DIR}/apple.py notarize --apple-developer-username ${APPLE_DEVELOPER_USERNAME} --apple-developer-password-keychain-name ${APPLE_DEVELOPER_PASSWORD_KEYCHAIN_NAME} --primary-bundle-id ${PRIMARY_BUNDLE_ID} ${KICAD_INSTALL_DIR}/kicad.app
+)
+endif()
