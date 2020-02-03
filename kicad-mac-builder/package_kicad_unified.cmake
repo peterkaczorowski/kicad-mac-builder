@@ -1,3 +1,8 @@
+if(NOT(KICAD_SOURCE_DIR))
+	set(PACKAGE_KICAD_SOURCE_DIR ${CMAKE_BINARY_DIR}/kicad/src/kicad)
+else()
+	set(PACKAGE_KICAD_SOURCE_DIR ${KICAD_SOURCE_DIR})
+endif()
 
 ExternalProject_Add(
         package-kicad-unified
@@ -10,7 +15,7 @@ ExternalProject_Add(
         BUILD_COMMAND ""
         INSTALL_COMMAND VERBOSE=1
                       PACKAGING_DIR=${CMAKE_SOURCE_DIR}/unified-packaging
-                      KICAD_SOURCE_DIR=${CMAKE_BINARY_DIR}/kicad/src/kicad
+		      KICAD_SOURCE_DIR=${KICAD_SOURCE_DIR}
                       KICAD_INSTALL_DIR=${KICAD_INSTALL_DIR}
                       TEMPLATE=kicadtemplate.dmg
                       PACKAGE_TYPE=unified
