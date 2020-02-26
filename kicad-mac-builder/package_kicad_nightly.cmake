@@ -1,7 +1,7 @@
 if(NOT(KICAD_SOURCE_DIR))
-	set(PACKAGE_KICAD_SOURCE_DIR ${CMAKE_BINARY_DIR}/kicad/src/kicad)
+    set(PACKAGE_KICAD_SOURCE_DIR ${CMAKE_BINARY_DIR}/kicad/src/kicad)
 else()
-	set(PACKAGE_KICAD_SOURCE_DIR ${KICAD_SOURCE_DIR})
+    set(PACKAGE_KICAD_SOURCE_DIR ${KICAD_SOURCE_DIR})
 endif()
 
 ExternalProject_Add(
@@ -15,7 +15,7 @@ ExternalProject_Add(
         BUILD_COMMAND ""
         INSTALL_COMMAND VERBOSE=1
                       PACKAGING_DIR=${CMAKE_SOURCE_DIR}/nightly-packaging
-		      KICAD_SOURCE_DIR=${KICAD_SOURCE_DIR}
+                      KICAD_SOURCE_DIR=${KICAD_SOURCE_DIR}
                       KICAD_INSTALL_DIR=${KICAD_INSTALL_DIR}
                       TEMPLATE=kicadtemplate.dmg
                       PACKAGE_TYPE=nightly
