@@ -15,7 +15,7 @@ ExternalProject_Add(
         BUILD_COMMAND ""
         INSTALL_COMMAND VERBOSE=1
                       PACKAGING_DIR=${CMAKE_SOURCE_DIR}/nightly-packaging
-                      KICAD_SOURCE_DIR=${KICAD_SOURCE_DIR}
+                      KICAD_SOURCE_DIR=${PACKAGE_KICAD_SOURCE_DIR}
                       KICAD_INSTALL_DIR=${KICAD_INSTALL_DIR}
                       TEMPLATE=kicadtemplate.dmg
                       PACKAGE_TYPE=nightly
