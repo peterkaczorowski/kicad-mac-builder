@@ -20,8 +20,5 @@ export HOMEBREW_NO_ANALYTICS=1
 # version pinning glm
 echo "Installing glm 0.9.9.2"
 brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/9ce61eaa2776d0ab011e0559a86afff588f6eccb/Formula/glm.rb
-# version pinning boost
-echo "Installing boost"
-brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/b4de2e1ce084ec249ca61c3eff6f96617e38c081/Formula/boost.rb
 echo "Installing some dependencies"
-brew install glew cairo doxygen gettext wget bison libtool autoconf automake cmake swig opencascade
+brew install glew cairo doxygen gettext wget bison libtool autoconf automake cmake swig opencascade boost
