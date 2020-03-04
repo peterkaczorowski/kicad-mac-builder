@@ -42,7 +42,7 @@ set( PYTHON_INSTALL_DIR ${CMAKE_BINARY_DIR}/python-dest/Library/Frameworks ) # E
 set( WXPYTHON_VERSION 3.0.2.0 )
 # set(WXPYTHON_URL http://downloads.sourceforge.net/project/wxpython/wxPython/${WXPYTHON_VERSION}/wxPython-src-${WXPYTHON_VERSION}.tar.bz2 )
 set( WXPYTHON_URL ${CMAKE_SOURCE_DIR}/../external/wxPython-src-${WXPYTHON_VERSION}.tar.bz2 )
-set( WXPYTHON_SHA1 5053f3fa04f4eb3a9d4bfd762d963deb7fa46866 )
+set( WXPYTHON_SHA1 5053f3fa04f4eb3a9d4bfd762d963deb7fa46866 ) # This is for wxpython, not wxwidgets.
 set( wxwidgets_INSTALL_DIR ${CMAKE_BINARY_DIR}/wxwidgets-dest )
 set( wxpython_INSTALL_DIR ${CMAKE_BINARY_DIR}/wxpython-dest )
 set( six_DIR ${CMAKE_BINARY_DIR}/six/src/six )
@@ -50,8 +50,6 @@ set( six_DIR ${CMAKE_BINARY_DIR}/six/src/six )
 set( ngspice_INSTALL_DIR ${CMAKE_BINARY_DIR}/ngspice-dest )
 
 set( KICAD_INSTALL_DIR ${CMAKE_BINARY_DIR}/kicad-dest )
-
-
 
 set( KICAD_CMAKE_ARGS -DDEFAULT_INSTALL_PATH=/Library/Application\ Support/kicad )
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ )
@@ -66,7 +64,6 @@ set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DPYTHON_SITE_PACKAGE_PATH=${wxwidgets
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DPYTHON_FRAMEWORK=${PYTHON_INSTALL_DIR}/Python.framework )
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=${KICAD_INSTALL_DIR} )
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DKICAD_USE_OCE=OFF -DKICAD_USE_OCC=ON )
-
 
 # FindOpenCASCADE.cmake finds /usr/local/lib, but not the Homebrew one.  fixup_bundle doesn't work with /usr/local/lib as a dirs argument, so
 # if OCC is installed by brew, we're going to pass in the library and include dir manually. If not, we aren't passing in anything
