@@ -5,7 +5,7 @@ set -e
 for _ in 1 2 3; do
   if ! command -v brew >/dev/null; then
     echo "Installing Homebrew ..."
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null || echo "failed."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)" < /dev/null 
   else
     echo "Homebrew installed."
     break
