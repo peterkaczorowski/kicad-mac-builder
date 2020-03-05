@@ -15,4 +15,5 @@ done
 PATH=$PATH:/usr/local/bin
 export HOMEBREW_NO_ANALYTICS=1
 echo "Installing some dependencies"
-brew install glew cairo doxygen gettext wget bison libtool autoconf automake cmake swig opencascade boost glm
+brew install glew cairo doxygen gettext wget bison libtool autoconf automake cmake swig boost glm
+brew install -f /vagrant/external/oce*tar.gz

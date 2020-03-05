@@ -51,7 +51,15 @@ set( ngspice_INSTALL_DIR ${CMAKE_BINARY_DIR}/ngspice-dest )
 
 set( KICAD_INSTALL_DIR ${CMAKE_BINARY_DIR}/kicad-dest )
 
-
+# find OCE
+execute_process(COMMAND brew --cellar oce OUTPUT_VARIABLE OCE_BASEDIR RESULT_VARIABLE FOUND_OCE_BASEDIR_EXIT_CODE OUTPUT_STRIP_TRAILING_WHITESPACE)
+if (NOT ${FOUND_OCE_BASEDIR_EXIT_CODE} EQUAL 0)
+  message( FATAL_ERROR "Unable to find OCE's base directory from brew.  Make sure you have installed all the dependencies per the README. Exiting." )
+endif()
+execute_process(COMMAND find ${OCE_BASEDIR} -name Resources OUTPUT_VARIABLE OCE_DIR OUTPUT_STRIP_TRAILING_WHITESPACE RESULT_VARIABLE FOUND_OCE_EXIT_CODE)
+if (NOT ${FOUND_OCE} EQUAL 0)
+  message( FATAL_ERROR "Unable to find Resources in ${OCE_BASEDIR}.  Make sure you have installed all the dependencies per the README. Exiting." )
+endif()
 
 set( KICAD_CMAKE_ARGS -DDEFAULT_INSTALL_PATH=/Library/Application\ Support/kicad )
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ )
@@ -65,22 +73,8 @@ set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DPYTHON_LIBRARY=${PYTHON_INSTALL_DIR}
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DPYTHON_SITE_PACKAGE_PATH=${wxwidgets_INSTALL_DIR}/lib/python2.7/site-packages )
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DPYTHON_FRAMEWORK=${PYTHON_INSTALL_DIR}/Python.framework )
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=${KICAD_INSTALL_DIR} )
-set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DKICAD_USE_OCE=OFF -DKICAD_USE_OCC=ON )
-
-
-# FindOpenCASCADE.cmake finds /usr/local/lib, but not the Homebrew one.  fixup_bundle doesn't work with /usr/local/lib as a dirs argument, so
-# if OCC is installed by brew, we're going to pass in the library and include dir manually. If not, we aren't passing in anything
-# which means that FindOpenCASCADE.cmake will do its regular job.
-# This should be fixed by figuring out why fixup_bundle isn't working with /usr/local/lib in the dirs argument.
-execute_process(COMMAND brew --cellar opencascade OUTPUT_VARIABLE BREW_OCC_BASEDIR RESULT_VARIABLE FOUND_BREW_OCC_BASEDIR_EXIT_CODE OUTPUT_STRIP_TRAILING_WHITESPACE)
-if ( ${FOUND_BREW_OCC_BASEDIR_EXIT_CODE} EQUAL 0 )
-    message( "OpenCascade appears to have been installed by brew." )
-    get_filename_component(BREW_LIBTKERNEL_REALPATH /usr/local/lib/libTKernel.dylib REALPATH)
-    get_filename_component(BREW_OCC_LIBRARY_DIR ${BREW_LIBTKERNEL_REALPATH} DIRECTORY)
-    get_filename_component(BREW_OCC_INCLUDE_DIR /usr/local/include/opencascade REALPATH)
-    set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DOCC_INCLUDE_DIR=${BREW_OCC_INCLUDE_DIR} -DOCC_LIBRARY_DIR=${BREW_OCC_LIBRARY_DIR} )
-endif()
-
+set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DKICAD_USE_OCE=ON )
+set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DOCE_DIR=${OCE_DIR} )
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DKICAD_SPICE=ON )
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DNGSPICE_INCLUDE_DIR=${ngspice_INSTALL_DIR}/include )
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DNGSPICE_LIBRARY=${ngspice_INSTALL_DIR}/lib/libngspice.dylib )
