@@ -42,7 +42,7 @@ set( PYTHON_INSTALL_DIR ${CMAKE_BINARY_DIR}/python-dest/Library/Frameworks ) # E
 set( WXPYTHON_VERSION 3.0.2.0 )
 # set(WXPYTHON_URL http://downloads.sourceforge.net/project/wxpython/wxPython/${WXPYTHON_VERSION}/wxPython-src-${WXPYTHON_VERSION}.tar.bz2 )
 set( WXPYTHON_URL ${CMAKE_SOURCE_DIR}/../external/wxPython-src-${WXPYTHON_VERSION}.tar.bz2 )
-set( WXPYTHON_SHA1 5053f3fa04f4eb3a9d4bfd762d963deb7fa46866 )
+set( WXPYTHON_SHA1 5053f3fa04f4eb3a9d4bfd762d963deb7fa46866 ) # This is for wxpython, not wxwidgets.
 set( wxwidgets_INSTALL_DIR ${CMAKE_BINARY_DIR}/wxwidgets-dest )
 set( wxpython_INSTALL_DIR ${CMAKE_BINARY_DIR}/wxpython-dest )
 set( six_DIR ${CMAKE_BINARY_DIR}/six/src/six )
