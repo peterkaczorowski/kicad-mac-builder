@@ -11,7 +11,7 @@ endif()
 ExternalProject_Add(
         wxwidgets
         PREFIX  wxwidgets
-        GIT_REPOSITORY https://github.com/KiCad/wxWidgets.git
+        GIT_REPOSITORY https://gitlab.com/kicad/code/wxWidgets.git
         GIT_TAG   kicad/macos-wx-3.0
         CONFIGURE_COMMAND   CPPFLAGS=-D__ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES=1 MAC_OS_X_VERSION_MIN_REQUIRED=${MACOS_MIN_VERSION} ./configure
                             --prefix=${wxwidgets_INSTALL_DIR}
