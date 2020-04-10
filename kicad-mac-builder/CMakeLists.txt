@@ -86,7 +86,7 @@ if(${KICAD_VERSION_EXTRA})
 endif()
 
 set( DMG_DIR ${CMAKE_BINARY_DIR}/dmg )
-set( TRANSLATIONS_URL https://github.com/KiCad/kicad-i18n.git )
+set( TRANSLATIONS_URL https://gitlab.com/kicad/code/kicad-i18n.git )
 
 message( "CMake Setting Summary for kicad-mac-builder" )
 message( "KICAD_TAG: ${KICAD_TAG}" )
