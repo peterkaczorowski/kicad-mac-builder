@@ -16,7 +16,7 @@ DEFAULT_KICAD_GIT_URL = "https://gitlab.com/kicad/code/kicad.git"
 
 def print_and_flush(s):
     # sigh, in Python3 this is build in... :/
-    print s
+    print(s)
     sys.stdout.flush()
 
 
