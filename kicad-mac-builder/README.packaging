@@ -10,7 +10,7 @@ Installing
 ==========
 If you have already installed KiCad before the V5 release, you may need to upgrade a little differently. Please see the Upgrading section.
 
-To install KiCad, click and drag the two directory icons to the targets pointed at by the arrows.  
+To install KiCad, click and drag the two directory icons to the targets pointed at by the arrows.
 
 After dropping kicad onto Application Support, you may be asked to authenticate with an administrator username and password.  This installs the support files for KiCad for all users on the system.
 
@@ -36,11 +36,11 @@ Unified, Nightly, and Extras
 ============================
 There are three different DMGs for KiCad on macOS.
 
-Unified contains the KiCad application and the official symbols, footprints, and 3D models.
+Unified contains the KiCad application and the official symbols, footprints, 3D models and docs.
 
-Nightly does not contain the 3D models.  The 3D models are large, and the nightlies are intended for users who want to test changes on a daily basis.
+Nightly does not contain the 3D models and docs, they are large, and the nightlies are intended for users who want to test changes on a daily basis.
 
-Extras contains only the 3D models.
+Extras contains only the 3D models and docs.
 
 Documentation
 =============

@@ -18,7 +18,7 @@ setup_dmg()
         rm -r "${MOUNTPOINT}"
     fi
     mkdir -p "${MOUNTPOINT}"
-    
+
     # untar the template
     if [ -e "${TEMPLATE}" ]; then
         rm "${TEMPLATE}"
@@ -28,7 +28,7 @@ setup_dmg()
         echo "Unable to find ${TEMPLATE}"
         exit 1
     fi
-    
+
     # resize the template, and mount it
     if ! hdiutil resize -size "${DMG_SIZE}" "${TEMPLATE}"; then
         echo "If hdituil failed to resize, saying the size is above a maximum, reboot.  If you know the root cause or a better way to fix this, please let us know."
@@ -132,7 +132,7 @@ fi
 
 NOW=$(date +%Y%m%d-%H%M%S)
 
-case "${PACKAGE_TYPE}" in 
+case "${PACKAGE_TYPE}" in
     nightly)
         KICAD_GIT_REV=$(cd "${KICAD_SOURCE_DIR}" && git rev-parse --short HEAD)
         MOUNT_NAME='KiCad'
@@ -175,15 +175,13 @@ cp "${README}" "${MOUNTPOINT}"/README.txt
 cp "${BACKUP_KICAD}" "${MOUNTPOINT}"/backup-kicad.command
 SetFile -a E "${MOUNTPOINT}"/backup-kicad.command
 
-case "${PACKAGE_TYPE}" in 
+case "${PACKAGE_TYPE}" in
     nightly)
         mkdir -p "${MOUNTPOINT}"/KiCad
         rsync -al "${KICAD_INSTALL_DIR}"/* "${MOUNTPOINT}"/KiCad/. # IMPORTANT: must preserve symlinks
         mkdir -p "${MOUNTPOINT}"/kicad
         echo "Moving demos"
         mv "${MOUNTPOINT}"/KiCad/demos "${MOUNTPOINT}"/
-        echo "Copying docs"
-        cp -r "${CMAKE_BINARY_DIR}"/docs/share/doc/kicad/help "${MOUNTPOINT}"/kicad/
         echo "Copying translations"
         mkdir -p "${MOUNTPOINT}"/kicad/share
         cp -r "${CMAKE_BINARY_DIR}"/translations/src/translations-build/output/share/kicad/internat "${MOUNTPOINT}"/kicad/share/
@@ -195,6 +193,8 @@ case "${PACKAGE_TYPE}" in
         cp -r "${CMAKE_BINARY_DIR}"/footprints/src/footprints-build/output/* "${MOUNTPOINT}"/kicad/.
     ;;
     extras)
+        echo "Copying docs"
+        cp -r "${CMAKE_BINARY_DIR}"/docs/share/doc/kicad/help "${MOUNTPOINT}"/kicad/
         echo "Copying packages3d"
         cp -r "${CMAKE_BINARY_DIR}"/packages3d/src/packages3d-build/output/modules/* "${MOUNTPOINT}"/.
     ;;

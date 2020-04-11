@@ -54,7 +54,7 @@ By default, dependencies are built once, and unless their build directories are 
 If you'd like to build KiCad from sources instead of from git, you can use the --kicad-source-dir option.  This will not apply any KiCad patches, but will use the source tree you choose. This can be useful for testing KiCad changes.
 
 * `build.py --target kicad` builds KiCad and its source code dependencies, but packages nothing.  This is the same for any other CMake targets.
-* `build.py --target package-kicad-nightly` creates a DMG of everything except the 3D models.
+* `build.py --target package-kicad-nightly` creates a DMG of everything except the 3D models and docs.
 * `build.py --target package-extras` creates a DMG of the 3D models.
 * `build.py --target package-kicad-unified` creates a DMG of everything.
 * `build.py` downloads and builds everything, but does not package any DMGs.
