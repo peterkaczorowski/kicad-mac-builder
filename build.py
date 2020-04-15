@@ -157,10 +157,7 @@ def get_make_command(args):
     return make_command
 
 
-def build(args):
-    gettext_path = "{}/bin".format(subprocess.check_output("brew --prefix gettext", shell=True).strip())
-    bison_path = "{}/bin".format(subprocess.check_output("brew --prefix bison", shell=True).strip())
-    new_path = ":".join((gettext_path, bison_path, os.environ["PATH"]))
+def build(args, new_path):
 
     try:
         os.makedirs("build")
@@ -238,13 +235,17 @@ def print_summary(args):
 def main():
     parsed_args = parse_args(sys.argv[1:])
     print_summary(parsed_args)
+    gettext_path = "{}/bin".format(subprocess.check_output("brew --prefix gettext", shell=True).decode('utf-8').strip())
+    bison_path = "{}/bin".format(subprocess.check_output("brew --prefix bison", shell=True).decode('utf-8').strip())
+    new_path = ":".join((gettext_path, bison_path, os.environ["PATH"]))
+    print(new_path)
 
     print_and_flush("\nYou can change these settings.  Run ./build.py --help for details.")
     print_and_flush("\nDepending upon build configuration, what has already been downloaded, what has already been built, " \
           "the computer and the network connection, this may take multiple hours and approximately 20G of disk space.")
     print_and_flush("\nYou can stop the build at any time by pressing Control-C.\n")
     time.sleep(10)
-    build(parsed_args)
+    build(parsed_args, new_path)
 
 
 if __name__ == "__main__":
