@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-# This script is python2 :( because it supports 10.11 out of the box.
-# As soon as we move beyond that, let's reevaluate for sure.
-
 # Try not to use any packages that aren't included with Python, please.
 
 import argparse
@@ -25,7 +22,7 @@ def get_number_of_cores():
 
 
 def get_local_macos_version():
-    return subprocess.check_output("sw_vers -productVersion | cut -d. -f1-2", shell=True).strip()
+    return subprocess.check_output("sw_vers -productVersion | cut -d. -f1-2", shell=True).decode('utf-8').strip()
 
 
 def parse_args(args):
