@@ -49,7 +49,6 @@ ExternalProject_Add(
                     --prefix=${PYTHON_INSTALL_DIR}
         BUILD_COMMAND ${MAKE}
         BUILD_IN_SOURCE 1
-        PATCH_COMMAND ${BIN_DIR}/multipatch.py -p1 -- ${CMAKE_SOURCE_DIR}/patches/python/*.patch
         INSTALL_COMMAND make -j1 install
 )
 
