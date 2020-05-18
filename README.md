@@ -9,7 +9,7 @@ If you are looking to run KiCad on your Mac, please use the instructions at http
 
 Setup
 =====
-kicad-mac-builder requires a 10.11+ Mac with homebrew and at least 20G of disk space free.  The instructions assume you are capable of using the command line but they are not intended to require arcane deep knowledge.
+kicad-mac-builder requires a 10.11+ Mac with homebrew and at least 30G of disk space free.  The instructions assume you are capable of using the command line but they are not intended to require arcane deep knowledge.
 
 You do not need to install anything not listed in this README. If you need to, please let me know because it is a bug in either functionality or documentation.
 
@@ -49,7 +49,7 @@ To get up and running the absolute fastest, use `build.py`.  It expects to be ru
 
 It builds everything and uses "reasonable" settings.  If you want something special, check `./build.py --help`, and if that doesn't help, read the rest of this documentation.  Failing that, run `cmake` and `make` by hand.  Better documentation is definitely welcomed!
 
-By default, dependencies are built once, and unless their build directories are cleaned out, or their source is updated, they will not be built again.  The KiCad files, like the footprints, symbols, 3D models, translations, docs, and KiCad itself, are, by default, built from origin/master of their respective repositories or re-downloaded, ensuring you have the most up-to-date KiCad. 
+By default, dependencies are built once, and unless their build directories are cleaned out, or their source is updated, they will not be built again.  The KiCad files, like the footprints, symbols, 3D models, translations, docs, and KiCad itself, are, by default, built from origin/master of their respective repositories or re-downloaded, ensuring you have the most up-to-date KiCad.
 
 If you'd like to build KiCad from sources instead of from git, you can use the --kicad-source-dir option.  This will not apply any KiCad patches, but will use the source tree you choose. This can be useful for testing KiCad changes.
 
@@ -167,7 +167,7 @@ OCE
 ---
 * Open up KiCad.app, and open up demos/pic_programmer/pic_programmer.pro.  Open up pcbnew.  Click File->Export->STEP.  Click OK on the Export Step dialog.  The output should print "Info: STEP file has been created successfully.".  Currently, I see a lot warnings but these appear to be related to models not being set up.
 * Open up pcbnew.app, and open up demos/pic_programmer/pic_programmer.kicad_pcb.  Click File->Export->STEP.  Click OK on the Export Step dialog.  The output should print "Info: STEP file has been created successfully.".  Currently, I see a lot warnings but these appear to be related to models not being set up.
-  
+
 Help
 ----
 * Open up KiCad.app, and open up the help documents via Help -> KiCad Manual and Help -> Getting Started in KiCad.  You should see a browser open with the documentation.
