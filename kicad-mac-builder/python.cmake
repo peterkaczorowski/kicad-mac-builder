@@ -23,6 +23,18 @@ include(ExternalProject)
 
 # If someone can get BundleUtilities to replace the manual install_name_tool step I'd love to see it!
 
+execute_process(COMMAND brew --prefix openssl
+  OUTPUT_VARIABLE SSL_PREFIX_PATH
+  RESULT_VARIABLE FOUND_SSL_PREFIX_PATH_EXIT_CODE
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+if (NOT ${FOUND_SSL_PREFIX_PATH_EXIT_CODE} EQUAL 0)
+  message( FATAL_ERROR "Unable to find the SSL install prefix
+  directory from brew.  Make sure you have installed all the
+  dependencies per the README. Exiting." )
+endif()
+
 ExternalProject_Add(
         python
         PREFIX  python
@@ -31,6 +43,8 @@ ExternalProject_Add(
         UPDATE_COMMAND      ""
         PATCH_COMMAND       ""
         CONFIGURE_COMMAND MACOSX_DEPLOYMENT_TARGET=${MACOS_MIN_VERSION} ./configure
+                    "CPPFLAGS=-I${SSL_PREFIX_PATH}/include"
+                    "LDFLAGS=-L${SSL_PREFIX_PATH}/lib"
                     --enable-framework=${PYTHON_INSTALL_DIR}
                     --prefix=${PYTHON_INSTALL_DIR}
         BUILD_COMMAND ${MAKE}
