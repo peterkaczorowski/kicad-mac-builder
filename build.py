@@ -242,7 +242,7 @@ def main():
 
     print_and_flush("\nYou can change these settings.  Run ./build.py --help for details.")
     print_and_flush("\nDepending upon build configuration, what has already been downloaded, what has already been built, " \
-          "the computer and the network connection, this may take multiple hours and approximately 20G of disk space.")
+          "the computer and the network connection, this may take multiple hours and approximately 40G of disk space.")
     print_and_flush("\nYou can stop the build at any time by pressing Control-C.\n")
     time.sleep(10)
     build(parsed_args, new_path)
