@@ -61,7 +61,7 @@ If you'd like to build KiCad from sources instead of from git, you can use the -
 
 During the build, some DMGs may be mounted and Finder may open windows while the script runs.  Unmounting or ejecting the DMGs while the script runs is likely to damage the output DMG.
 
-The output DMGs from `build.py` go into build/dmgs.
+The output DMGs from `build.py` go into `build/dmg`.
 
 KiCad Mac Builder does not install KiCad onto your Mac or modify your currently installed KiCad.
 
@@ -75,7 +75,7 @@ Please note, that as of early 2018, to create a 10.13 or 10.14 VM with the osx-v
 
 Testing KiCad Patches
 =====================
-Any patches inside kicad-mac-builder/patches/kicad/ are applied via git-am, per kicad-mac-builder/kicad.cmake.  This helps make it easy to test patches that may affect KiCad macOS packaging.
+Any patches inside `kicad-mac-builder/patches/kicad/` are applied via `git-am`, per `kicad-mac-builder/kicad.cmake`.  This helps make it easy to test patches that may affect KiCad macOS packaging.
 
 Issues
 ======
