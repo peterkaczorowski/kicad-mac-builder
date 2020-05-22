@@ -43,8 +43,7 @@ ExternalProject_Add(
         UPDATE_COMMAND      ""
         PATCH_COMMAND       ""
         CONFIGURE_COMMAND MACOSX_DEPLOYMENT_TARGET=${MACOS_MIN_VERSION} ./configure
-                    "CPPFLAGS=-I${SSL_PREFIX_PATH}/include"
-                    "LDFLAGS=-L${SSL_PREFIX_PATH}/lib"
+                    --with-openssl=${SSL_PREFIX_PATH}
                     --enable-framework=${PYTHON_INSTALL_DIR}
                     --prefix=${PYTHON_INSTALL_DIR}
         BUILD_COMMAND ${MAKE}
