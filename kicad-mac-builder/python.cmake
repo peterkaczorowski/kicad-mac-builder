@@ -43,6 +43,7 @@ ExternalProject_Add(
         UPDATE_COMMAND      ""
         PATCH_COMMAND       ""
         CONFIGURE_COMMAND MACOSX_DEPLOYMENT_TARGET=${MACOS_MIN_VERSION} ./configure
+                    "CPPFLAGS=-I/Library//Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Tk.framework/Versions/Current/Headers"
                     --with-openssl=${SSL_PREFIX_PATH}
                     --enable-framework=${PYTHON_INSTALL_DIR}
                     --prefix=${PYTHON_INSTALL_DIR}
