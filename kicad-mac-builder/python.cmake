@@ -79,11 +79,19 @@ ExternalProject_Add_Step(
 
 ExternalProject_Add_Step(
 	python
-	verify
+	verify_fixup
 	COMMENT "Test bin/python and bin/pythonw"
 	DEPENDEES fixup
 	COMMAND ${BIN_DIR}/verify-cli-python.sh "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/bin/pythonw"
 	COMMAND ${BIN_DIR}/verify-cli-python.sh "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/bin/python"
+)
+
+ExternalProject_Add_Step(
+	python
+	verify_ssl
+	COMMENT "Make sure SSL is included"
+	DEPENDEES verify_fixup
+	COMMAND ${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/bin/python -c "import ssl"
 )
 
 ExternalProject_Add(
