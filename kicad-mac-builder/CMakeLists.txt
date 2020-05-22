@@ -40,7 +40,7 @@ set( PYTHON_SHA1 76981089efe76f345c8eca612a38302ccfb100ee )
 set( PYTHON_INSTALL_DIR ${CMAKE_BINARY_DIR}/python-dest/Library/Frameworks ) # Ending in /Library/Frameworks is important here
 
 set( WXPYTHON_VERSION 4.0.7 )
-set( WXPYTHON_URL https://github.com/wxWidgets/Phoenix/archive/wxPython-${PYTHON_VERSION}.tar.gz )
+set( WXPYTHON_URL https://codeload.github.com/wxWidgets/Phoenix/tar.gz/wxPython-${WXPYTHON_VERSION} )
 set( WXPYTHON_SHA1 f29069d525fc78051e5c177c8956893c7510e607 ) # This is for wxpython, not wxwidgets.
 set( wxwidgets_INSTALL_DIR ${CMAKE_BINARY_DIR}/wxwidgets-dest )
 set( wxpython_INSTALL_DIR ${CMAKE_BINARY_DIR}/wxpython-dest )
