@@ -100,17 +100,25 @@ ExternalProject_Add_Step(
 
 ExternalProject_Add_Step(
        python
-       install_certifi
+       install_requests
        COMMENT "Install requests"
        DEPENDEES upgrade_pip
        COMMAND PIP_REQUIRE_VIRTUALENV=false ${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/pip install requests
 )
 
 ExternalProject_Add_Step(
+       python
+       install_sip
+       COMMENT "Install sip"
+       DEPENDEES install_requests
+       COMMAND PIP_REQUIRE_VIRTUALENV=false ${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/pip install sip
+)
+
+ExternalProject_Add_Step(
 	python
 	verify_ssl
 	COMMENT "Make sure SSL is included"
-	DEPENDEES verify_fixup
+	DEPENDEES install_sip
 	COMMAND "${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/python3" -c "import ssl"
 )
 
