@@ -83,6 +83,30 @@ ExternalProject_Add_Step(
 )
 
 ExternalProject_Add_Step(
+       python
+       install_pip
+       COMMENT "Install pip"
+       DEPENDEES verify_fixup
+       COMMAND ${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/python3 -m ensurepip --default-pip
+)
+
+ExternalProject_Add_Step(
+       python
+       upgrade_pip
+       COMMENT "Upgrade pip"
+       DEPENDEES install_pip
+       COMMAND PIP_REQUIRE_VIRTUALENV=false ${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/pip3 install --upgrade pip
+)
+
+ExternalProject_Add_Step(
+       python
+       install_certifi
+       COMMENT "Install requests"
+       DEPENDEES upgrade_pip
+       COMMAND PIP_REQUIRE_VIRTUALENV=false ${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/pip install requests
+)
+
+ExternalProject_Add_Step(
 	python
 	verify_ssl
 	COMMENT "Make sure SSL is included"
