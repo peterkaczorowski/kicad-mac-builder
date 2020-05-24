@@ -20,7 +20,7 @@ ExternalProject_Add(
                             --enable-aui
                             --enable-html
                             --enable-stl
-			    --enable-richtext
+                            --enable-richtext
                             --disable-mediactrl
                             --with-libjpeg=builtin
                             --with-libpng=builtin
