@@ -39,9 +39,9 @@ set( PYTHON_URL https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYT
 set( PYTHON_SHA1 76981089efe76f345c8eca612a38302ccfb100ee )
 set( PYTHON_INSTALL_DIR ${CMAKE_BINARY_DIR}/python-dest/Library/Frameworks ) # Ending in /Library/Frameworks is important here
 
-set( WXPYTHON_VERSION 4.1.0 )
+set( WXPYTHON_VERSION 4.0.7.post2 )
 set( WXPYTHON_URL https://files.pythonhosted.org/packages/source/w/wxPython/wxPython-${WXPYTHON_VERSION}.tar.gz )
-set( WXPYTHON_SHA1 1d7d45637ab475ac9a31e1952d77ff7ee6624e48 ) # This is for wxpython, not wxwidgets.
+set( WXPYTHON_SHA1 508c66845e656291577c5f968ac825a83809f2f0 ) # This is for wxpython, not wxwidgets.
 set( wxwidgets_INSTALL_DIR ${CMAKE_BINARY_DIR}/wxwidgets-dest )
 set( wxpython_INSTALL_DIR ${CMAKE_BINARY_DIR}/wxpython-dest )
 set( six_DIR ${CMAKE_BINARY_DIR}/six/src/six )
