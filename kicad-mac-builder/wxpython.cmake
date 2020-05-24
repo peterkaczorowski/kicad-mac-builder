@@ -37,12 +37,6 @@ ExternalProject_Add(
         BUILD_IN_SOURCE 1
 )
 
-set(wxpython_ENVIRONMENT_VARS
-        WXPORT=osx_cocoa
-        WX_CONFIG=${wxwidgets_INSTALL_DIR}/bin/wx-config
-        BUILD_BASE=${CMAKE_BINARY_DIR}/wxwidgets/src/wxwidgets
-        )
-
 ExternalProject_Add(
         wxpython
         DEPENDS python wxwidgets
@@ -52,8 +46,8 @@ ExternalProject_Add(
         PATCH_COMMAND       ""
         BUILD_IN_SOURCE     1
         CONFIGURE_COMMAND   ""
-        BUILD_COMMAND MAC_OS_X_VERSION_MIN_REQUIRED=${MACOS_MIN_VERSION} ${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/python3.8 build.py build_py ${wxpython_ENVIRONMENT_VARS} --use_syswx --prefix=${wxwidgets_INSTALL_DIR} --nodoc
-        INSTALL_COMMAND MAC_OS_X_VERSION_MIN_REQUIRED=${MACOS_MIN_VERSION} ${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/python3.8 build.py install_py --prefix=${wxwidgets_INSTALL_DIR} ${wxpython_ENVIRONMENT_VARS}
+        BUILD_COMMAND MAC_OS_X_VERSION_MIN_REQUIRED=${MACOS_MIN_VERSION} ${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/python3.8 build.py build_py --use_syswx --prefix=${wxwidgets_INSTALL_DIR} --nodoc
+        INSTALL_COMMAND MAC_OS_X_VERSION_MIN_REQUIRED=${MACOS_MIN_VERSION} ${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/python3.8 build.py install_py --prefix=${wxwidgets_INSTALL_DIR} --nodoc
         BUILD_IN_SOURCE 1
 )
 
