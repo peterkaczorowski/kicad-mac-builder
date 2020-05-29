@@ -53,6 +53,7 @@ ExternalProject_Add_Step(
         kicad
         install-docs-to-app
         COMMENT "Installing docs into KiCad.app"
+        DEPENDS docs
         DEPENDEES install
         COMMAND mkdir -p ${KICAD_INSTALL_DIR}/kicad.app/Contents/SharedSupport/help/
         COMMAND cp -r ${CMAKE_BINARY_DIR}/docs/share/doc/kicad/help/en ${KICAD_INSTALL_DIR}/kicad.app/Contents/SharedSupport/help/
