@@ -43,7 +43,7 @@ def parse_args(args):
                         help="Sets the version to the git version, a hyphen, and then this string.",
                         required=False)
     parser.add_argument("--build-type",
-                        help="Build type passed to CMake like Debug, Release, or RelWithDebInfo.  Defaults to Debug, unless --release is set."
+                        help="Build type passed to CMake like Debug, Release, or RelWithDebInfo.  Defaults to RelWithDebInfo, unless --release is set."
                         )
     parser.add_argument("--kicad-git-url",
                         help="KiCad source code git url.  Defaults to {}. Conflicts with --kicad-source-dir.".format(DEFAULT_KICAD_GIT_URL))
@@ -143,7 +143,7 @@ def parse_args(args):
         if parsed_args.docs_tarball_url is None:
             parsed_args.docs_tarball_url = docs_tarball_url_default
         if parsed_args.build_type is None:
-            parsed_args.build_type = "Debug"
+            parsed_args.build_type = "RelWithDebInfo"
 
     return parsed_args
 
