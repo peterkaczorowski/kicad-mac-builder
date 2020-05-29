@@ -1,39 +1,38 @@
 include(ExternalProject)
 
 if(DEFINED RELEASE_NAME)
+  if(NOT DEFINED KICAD_TAG OR "${KICAD_TAG}" STREQUAL "")
+    message( FATAL_ERROR "KICAD_TAG must be set for release builds.  Please see the README or try build.py." )
+  endif ()
 
-if(NOT DEFINED KICAD_TAG OR "${KICAD_TAG}" STREQUAL "")
-  message( FATAL_ERROR "KICAD_TAG must be set for release builds.  Please see the README or try build.py." )
-endif ()
-
-ExternalProject_Add(
-        kicad
-        PREFIX  kicad
-        DEPENDS python wxpython wxwidgets six ngspice docs
-        GIT_REPOSITORY ${KICAD_URL}
-        GIT_TAG ${KICAD_TAG}
-        UPDATE_COMMAND          git fetch
-        COMMAND                 echo "Making sure we aren't in the middle of a crashed git-am"
-        COMMAND                 git am --abort || true
-        COMMAND                 git reset --hard ${KICAD_TAG}
-        COMMAND                 ${BIN_DIR}/git-multipatch.sh ${CMAKE_SOURCE_DIR}/patches/kicad/*.patch
-        COMMAND                 git tag -a ${RELEASE_NAME} -m "${RELEASE_NAME}"
-        CMAKE_ARGS  ${KICAD_CMAKE_ARGS}
-)
+  ExternalProject_Add(
+          kicad
+          PREFIX  kicad
+          DEPENDS python wxpython wxwidgets six ngspice docs
+          GIT_REPOSITORY ${KICAD_URL}
+          GIT_TAG ${KICAD_TAG}
+          UPDATE_COMMAND          git fetch
+          COMMAND                 echo "Making sure we aren't in the middle of a crashed git-am"
+          COMMAND                 git am --abort || true
+          COMMAND                 git reset --hard ${KICAD_TAG}
+          COMMAND                 ${BIN_DIR}/git-multipatch.sh ${CMAKE_SOURCE_DIR}/patches/kicad/*.patch
+          COMMAND                 git tag -a ${RELEASE_NAME} -m "${RELEASE_NAME}"
+          CMAKE_ARGS  ${KICAD_CMAKE_ARGS}
+  )
 elseif(NOT DEFINED RELEASE_NAME AND DEFINED KICAD_SOURCE_DIR AND NOT "${KICAD_SOURCE_DIR}" STREQUAL "")
-ExternalProject_Add(
-        kicad
-        PREFIX  kicad
-        DEPENDS python wxpython wxwidgets six ngspice docs
-        SOURCE_DIR ${KICAD_SOURCE_DIR}
-        CMAKE_ARGS  ${KICAD_CMAKE_ARGS}
-)
+  ExternalProject_Add(
+          kicad
+          PREFIX  kicad
+          DEPENDS python wxpython wxwidgets six ngspice
+          SOURCE_DIR ${KICAD_SOURCE_DIR}
+          CMAKE_ARGS  ${KICAD_CMAKE_ARGS}
+  )
 elseif(NOT DEFINED RELEASE_NAME AND DEFINED KICAD_TAG AND NOT "${KICAD_TAG}" STREQUAL "")
-	if(NOT DEFINED KICAD_URL OR "${KICAD_URL}" STREQUAL "")
-		message( FATAL_ERROR "KICAD_URL must be set if KICAD_TAG is set, but it has a default.  This should never happen." )
-	endif ()
+  if(NOT DEFINED KICAD_URL OR "${KICAD_URL}" STREQUAL "")
+    message( FATAL_ERROR "KICAD_URL must be set if KICAD_TAG is set, but it has a default.  This should never happen." )
+  endif ()
 
-	ExternalProject_Add(
+  ExternalProject_Add(
         kicad
         PREFIX  kicad
         DEPENDS python wxpython wxwidgets six ngspice docs
@@ -45,7 +44,7 @@ elseif(NOT DEFINED RELEASE_NAME AND DEFINED KICAD_TAG AND NOT "${KICAD_TAG}" STR
         COMMAND                 git reset --hard ${KICAD_TAG}
         COMMAND                 ${BIN_DIR}/git-multipatch.sh ${CMAKE_SOURCE_DIR}/patches/kicad/*.patch
         CMAKE_ARGS  ${KICAD_CMAKE_ARGS}
-)
+  )
 else()
   message( FATAL_ERROR "Either KICAD_TAG or KICAD_SOURCE_DIR must be set.  Please see the README or try build.py." )
 endif()
