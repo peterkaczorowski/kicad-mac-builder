@@ -5,6 +5,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "macos_10.11"
 
   config.vm.provider "virtualbox" do |v|
+    v.gui = false
     v.cpus = 2
   end
 
