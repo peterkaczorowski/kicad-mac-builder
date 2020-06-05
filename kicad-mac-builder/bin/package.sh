@@ -51,7 +51,23 @@ fixup_and_cleanup()
     #set it so the DMG autoopens on download/mount
     hdiutil attach "${TEMPLATE}" -noautoopen -mountpoint /Volumes/"${MOUNT_NAME}"
     bless /Volumes/"${MOUNT_NAME}" --openfolder /Volumes/"${MOUNT_NAME}"
-    hdiutil detach /Volumes/"${MOUNT_NAME}"
+
+    UNMOUNTED=1
+    for i in 1 2 3 4 5 6 7 8 9 10 11 12; do
+        if hdiutil detach "/Volumes/${MOUNT_NAME}"; then
+	    UNMOUNTED=0
+	    break
+        else
+	    echo "Retrying..."
+	    lsof "/Volumes/${MOUNT_NAME}"
+	    sync
+	    sleep 10
+        fi
+    done
+    if [ $UNMOUNTED -ne 0 ]; then
+        echo "Error unmounting /Volumes/${MOUNT_NAME}"
+        exit 1
+    fi
 
     if [ -e "${DMG_NAME}" ] ; then
         rm -r "${DMG_NAME}"
