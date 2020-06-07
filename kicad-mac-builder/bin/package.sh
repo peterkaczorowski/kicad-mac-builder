@@ -59,8 +59,8 @@ fixup_and_cleanup()
 	    break
         else
 	    echo "Retrying..."
-	    lsof "/Volumes/${MOUNT_NAME}"
-	    sync
+	    lsof "/Volumes/${MOUNT_NAME}" || true
+	    sync || true
 	    sleep 10
         fi
     done
