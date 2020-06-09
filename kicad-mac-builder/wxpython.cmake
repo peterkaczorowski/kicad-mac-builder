@@ -21,6 +21,7 @@ ExternalProject_Add(
                             --enable-html
                             --enable-stl
                             --enable-richtext
+                            --enable-unicode
                             --disable-mediactrl
                             --with-libjpeg=builtin
                             --with-libpng=builtin
