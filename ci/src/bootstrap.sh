@@ -17,8 +17,8 @@ done
 
 PATH=$PATH:/usr/local/bin
 export HOMEBREW_NO_ANALYTICS=1
-echo "Installing openssl to debug it, it often fails on make test..."
-timeout 1800 brew install --verbose openssl
+echo "Updating SSH"
+brew install openssh
 echo "Installing some dependencies"
-brew install glew cairo doxygen gettext wget bison libtool autoconf automake cmake swig boost glm
+brew install glew cairo doxygen gettext wget bison libtool autoconf automake cmake swig boost glm openssl
 brew install -f /vagrant/external/oce*tar.gz
