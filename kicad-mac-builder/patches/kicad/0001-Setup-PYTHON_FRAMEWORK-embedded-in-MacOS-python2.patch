@@ -1,19 +1,19 @@
-From 20c6aa99dc049a9cc7844e22684b73f7bf6a14cf Mon Sep 17 00:00:00 2001
+From 479690751641464cca897df4546a0398b298018a Mon Sep 17 00:00:00 2001
 From: Adam Wolf <adamwolf@feelslikeburning.com>
 Date: Wed, 4 Mar 2020 13:29:48 -0600
-Subject: [PATCH 2/2] Setup PYTHON_FRAMEWORK embedded in MacOS.
+Subject: [PATCH] Setup PYTHON_FRAMEWORK embedded in MacOS, python2
 
 ---
- kicad/CMakeLists.txt | 52 +++++++++++++++++++++++++++++++++++++++++---
- pcbnew/pcbnew.cpp    | 19 ++++++++++++++--
- 2 files changed, 66 insertions(+), 5 deletions(-)
+ kicad/CMakeLists.txt | 49 +++++++++++++++++++++++++++++++++++++++++---
+ pcbnew/pcbnew.cpp    | 19 +++++++++++++++--
+ 2 files changed, 63 insertions(+), 5 deletions(-)
 
 diff --git a/kicad/CMakeLists.txt b/kicad/CMakeLists.txt
-index 50b68cc62..e3b150d60 100644
+index c24cec7b2..b8892a2d8 100644
 --- a/kicad/CMakeLists.txt
 +++ b/kicad/CMakeLists.txt
-@@ -101,6 +101,12 @@ if( APPLE )
-         set( SCRIPTING_HELPER "0" )
+@@ -108,6 +108,12 @@ if( APPLE )
+         set( SPICE_HELPER "0" )
      endif()
  
 +    if( PYTHON_FRAMEWORK )
@@ -25,7 +25,7 @@ index 50b68cc62..e3b150d60 100644
      if( KICAD_USE_OCC )
          set( KICAD_BUNDLE_LIBS ${OCC_LIBRARY_DIR} )
      endif()
-@@ -127,10 +133,50 @@ if( APPLE )
+@@ -141,10 +147,47 @@ if( APPLE )
          # do all the work
          include( BundleUtilities )
  
@@ -51,9 +51,6 @@ index 50b68cc62..e3b150d60 100644
 +            execute_process( COMMAND install_name_tool -change @executable_path/../../Contents/MacOS/Python.framework/Versions/2.7/Python @rpath/Python.framework/Python  _pcbnew.kiface
 +                WORKING_DIRECTORY ${OSX_BUNDLE_INSTALL_KIFACE_DIR} )
 +
-+            execute_process( COMMAND install_name_tool -id @executable_path/../PlugIns/sim/libngspice.0.dylib libngspice.0.dylib
-+                WORKING_DIRECTORY ${OSX_BUNDLE_INSTALL_PLUGIN_DIR}/sim )
-+
 +            # BundleUtilities clobbers the rpaths that we carefully setup in Python.framework, so recreate them here.
 +
 +            execute_process( COMMAND install_name_tool -add_rpath @executable_path/../Frameworks _pcbnew.kiface
@@ -76,14 +73,14 @@ index 50b68cc62..e3b150d60 100644
 +                \"${KICAD_BUNDLE_LIBS}\"
              )
 +        endif()
-         " COMPONENT Runtime
-         )
  
+         if( ${SPICE_HELPER} )
+             execute_process( COMMAND install_name_tool -id @executable_path/../PlugIns/sim/libngspice.0.dylib libngspice.0.dylib
 diff --git a/pcbnew/pcbnew.cpp b/pcbnew/pcbnew.cpp
-index b5484b8c2..1cb6850ee 100644
+index 18606f7bd..d3bf94995 100644
 --- a/pcbnew/pcbnew.cpp
 +++ b/pcbnew/pcbnew.cpp
-@@ -241,8 +241,23 @@ static bool scriptingSetup()
+@@ -246,8 +246,23 @@ static bool scriptingSetup()
      // Add default paths to PYTHONPATH
      wxString pypath;
  
@@ -110,5 +107,5 @@ index b5484b8c2..1cb6850ee 100644
      // $(KICAD_PATH)/scripting/plugins is always added in kicadplugins.i
      if( wxGetenv("KICAD_PATH") != NULL )
 -- 
-2.21.0 (Apple Git-122)
+2.24.2 (Apple Git-127)
 
