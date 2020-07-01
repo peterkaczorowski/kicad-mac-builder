@@ -43,8 +43,8 @@ ExternalProject_Add(
         UPDATE_COMMAND      ""
         PATCH_COMMAND       ""
         CONFIGURE_COMMAND MACOSX_DEPLOYMENT_TARGET=${MACOS_MIN_VERSION} ./configure
-                    "CPPFLAGS=-I${SSL_PREFIX_PATH}/include"
-                    "LDFLAGS=-L${SSL_PREFIX_PATH}/lib"
+                    "CPPFLAGS=-I/Library//Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Tk.framework/Versions/Current/Headers"
+                    --with-openssl=${SSL_PREFIX_PATH}
                     --enable-framework=${PYTHON_INSTALL_DIR}
                     --prefix=${PYTHON_INSTALL_DIR}
         BUILD_COMMAND ${MAKE}
@@ -62,16 +62,13 @@ ExternalProject_Add_Step(
         COMMENT "Fixing up the Python framework"
         DEPENDEES install
 
-        COMMAND install_name_tool -change "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/Python" "@rpath/Python.framework/Python" "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/Resources/Python.app/Contents/MacOS/Python"
-        COMMAND ${BIN_DIR}/add-rpath.sh @executable_path/../Frameworks "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/Resources/Python.app/Contents/MacOS/Python" # for the kifaces
-        COMMAND ${BIN_DIR}/add-rpath.sh @executable_path/../../../../../../../ "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/Resources/Python.app/Contents/MacOS/Python" # for the bin/python files
+        COMMAND install_name_tool -change "${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/Python" "@rpath/Python.framework/Python" "${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python"
+        COMMAND ${BIN_DIR}/add-rpath.sh @executable_path/../Frameworks "${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python" # for the kifaces
+        COMMAND ${BIN_DIR}/add-rpath.sh @executable_path/../../../../../../../ "${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/Resources/Python.app/Contents/MacOS/Python" # for the bin/python files
         COMMAND ${BIN_DIR}/add-rpath.sh @executable_path/../../../../../ ${PYTHON_INSTALL_DIR}/Python.framework/Resources/Python.app/Contents/MacOS/Python
 
-        COMMAND install_name_tool -change "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/Python" "@rpath/Python.framework/Python" "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/bin/python"
-        COMMAND ${BIN_DIR}/add-rpath.sh @executable_path/../../../../ "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/bin/python"
-
-        COMMAND install_name_tool -change "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/Python" "@rpath/Python.framework/Python" "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/bin/pythonw"
-        COMMAND ${BIN_DIR}/add-rpath.sh @executable_path/../../../../ "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/bin/pythonw"
+        COMMAND install_name_tool -change "${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/Python" "@rpath/Python.framework/Python" "${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/python3"
+        COMMAND ${BIN_DIR}/add-rpath.sh @executable_path/../../../../ "${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/python3"
 
         COMMAND chmod u+w "${PYTHON_INSTALL_DIR}/Python.framework/Python"
         COMMAND install_name_tool -id @rpath/Python.framework/Python "${PYTHON_INSTALL_DIR}/Python.framework/Python"
@@ -80,18 +77,49 @@ ExternalProject_Add_Step(
 ExternalProject_Add_Step(
 	python
 	verify_fixup
-	COMMENT "Test bin/python and bin/pythonw"
+	COMMENT "Test bin/python3"
 	DEPENDEES fixup
-	COMMAND ${BIN_DIR}/verify-cli-python.sh "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/bin/pythonw"
-	COMMAND ${BIN_DIR}/verify-cli-python.sh "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/bin/python"
+	COMMAND ${BIN_DIR}/verify-cli-python.sh "${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/python3"
+)
+
+ExternalProject_Add_Step(
+       python
+       install_pip
+       COMMENT "Install pip"
+       DEPENDEES verify_fixup
+       COMMAND ${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/python3 -m ensurepip --default-pip
+)
+
+ExternalProject_Add_Step(
+       python
+       upgrade_pip
+       COMMENT "Upgrade pip"
+       DEPENDEES install_pip
+       COMMAND PIP_REQUIRE_VIRTUALENV=false ${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/pip3 install --upgrade pip
+)
+
+ExternalProject_Add_Step(
+       python
+       install_requests
+       COMMENT "Install requests"
+       DEPENDEES upgrade_pip
+       COMMAND PIP_REQUIRE_VIRTUALENV=false ${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/pip install requests
+)
+
+ExternalProject_Add_Step(
+       python
+       install_sip
+       COMMENT "Install sip"
+       DEPENDEES install_requests
+       COMMAND PIP_REQUIRE_VIRTUALENV=false ${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/pip install sip
 )
 
 ExternalProject_Add_Step(
 	python
 	verify_ssl
 	COMMENT "Make sure SSL is included"
-	DEPENDEES verify_fixup
-	COMMAND ${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/bin/python -c "import ssl"
+	DEPENDEES install_sip
+	COMMAND "${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/python3" -c "import ssl"
 )
 
 ExternalProject_Add(
