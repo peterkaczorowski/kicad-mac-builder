@@ -11,8 +11,10 @@ endif()
 ExternalProject_Add(
         wxwidgets
         PREFIX  wxwidgets
-        GIT_REPOSITORY https://gitlab.com/kicad/code/wxWidgets.git
-        GIT_TAG   kicad/macos-wx-3.0
+        #GIT_REPOSITORY https://gitlab.com/kicad/code/wxWidgets.git
+        #GIT_TAG   kicad/macos-wx-3.0
+        GIT_REPOSITORY https://github.com/wxWidgets/wxWidgets.git
+        GIT_TAG   v3.0.5
         CONFIGURE_COMMAND   CPPFLAGS=-D__ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES=1 MAC_OS_X_VERSION_MIN_REQUIRED=${MACOS_MIN_VERSION} ./configure
                             --prefix=${wxwidgets_INSTALL_DIR}
                             --with-opengl
@@ -41,13 +43,14 @@ ExternalProject_Add(
 ExternalProject_Add(
         wxpython
         DEPENDS python wxwidgets
-        URL ${WXPYTHON_URL}
-        URL_HASH SHA1=${WXPYTHON_SHA1}
+        GIT_REPOSITORY https://github.com/adamwolf/Phoenix.git
+        GIT_TAG  stl_fixes_cherrypicked
         UPDATE_COMMAND      ""
         PATCH_COMMAND       ""
         BUILD_IN_SOURCE     1
         CONFIGURE_COMMAND   ""
-        BUILD_COMMAND MAC_OS_X_VERSION_MIN_REQUIRED=${MACOS_MIN_VERSION} ${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/python3.8 build.py build_py --use_syswx --prefix=${wxwidgets_INSTALL_DIR} --nodoc
+        BUILD_COMMAND WXWIN=${wxwidgets_SOURCE_DIR} MAC_OS_X_VERSION_MIN_REQUIRED=${MACOS_MIN_VERSION} ${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/python3.8 build.py dox etg --nodoc sip --use_syswx --prefix=${wxwidgets_INSTALL_DIR}
+        COMMAND MAC_OS_X_VERSION_MIN_REQUIRED=${MACOS_MIN_VERSION} ${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/python3.8 build.py build_py --use_syswx --prefix=${wxwidgets_INSTALL_DIR} --nodoc
         INSTALL_COMMAND MAC_OS_X_VERSION_MIN_REQUIRED=${MACOS_MIN_VERSION} ${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/python3.8 build.py install_py --prefix=${wxwidgets_INSTALL_DIR} --nodoc
         BUILD_IN_SOURCE 1
 )
