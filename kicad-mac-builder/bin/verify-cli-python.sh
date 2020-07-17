@@ -1,6 +1,7 @@
 #!/bin/bash
 
 if [ ! -e "$1" ]; then
+  echo "Cannot test $1. Make sure it exists."
   exit 1
 fi
 

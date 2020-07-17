@@ -146,7 +146,7 @@ Python
 ------
 * Open up pcbnew.app, and open up the Python scripting console.  Type `import pcbnew` and press enter.  It shouldn't show an error.  Verify that the build date of Python is the same as the build date of the package.
 * Open up KiCad.app, and open up the Python scripting console. Type `import pcbnew` and press enter.  It shouldn't show an error.  Verify that the build date of Pytohn is the same as the build date of the package.
-* Open up the terminal, and run `kicad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python`.  It shouldn't show an error.  Verify that the build date of Python is the same as the build date of the package.
+* Open up the terminal, and run `kicad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3`.  It shouldn't show an error.  Verify that the build date of Python is the same as the build date of the package.
 * Open up the terminal, and run `cd kicad.app/Contents/Frameworks/python/site-packages/; ../../Python.framework/Versions/Current/bin/python -m pcbnew`.  It shouldn't show an error.
 
 Footprint Wizards

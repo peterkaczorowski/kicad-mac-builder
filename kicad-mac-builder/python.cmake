@@ -19,9 +19,9 @@ include(ExternalProject)
 
 # It would be nice to replace the steps below with install_name_tool with fixup_bundle, but I am not sure it is able to handle a bundle's embedded Framework that has an embedded application, and a different bundle that symlinks into the first one and masquerades as a standalone bundle.  I tried for a few days and was unsuccessful.
 
-# KiCad's CMakefile runs fixup_bundle, which runs verify_app, which verifies all the components, and every time I did this with rpath, verify_app chokes on Python here, saying that it isn't contained in KiCad.app.  I am not 100% sure, because I had to pause chasing this down once I figured out a workaround until all of kicad-mac-builder is closer to functional before V5 comes out.  One workaround is adding the Python parts as IGNORE_ITEMS in KiCad's CMakefile.  Make sure to check out the KiCad patch in kicad-mac-builder/patches/kicad.
+# KiCad's CMakefile runs fixup_bundle, which runs verify_app, which verifies all the components, and every time I did this with rpath, verify_app chokes on Python here, saying that it isn't contained in KiCad.app.  One workaround is adding the Python parts as IGNORE_ITEMS in KiCad's CMakefile.
 
-# If someone can get BundleUtilities to replace the manual install_name_tool step I'd love to see it!
+# If someone can get BundleUtilities to replace the manual install_name_tool step I'd love to see it! I reported this issue in 2016/2017, worked around it here, and in late 2019 it appears that there may be some movement towards a better solution. https://gitlab.kitware.com/cmake/cmake/-/issues/20165  
 
 execute_process(COMMAND brew --prefix openssl
   OUTPUT_VARIABLE SSL_PREFIX_PATH
@@ -43,13 +43,12 @@ ExternalProject_Add(
         UPDATE_COMMAND      ""
         PATCH_COMMAND       ""
         CONFIGURE_COMMAND MACOSX_DEPLOYMENT_TARGET=${MACOS_MIN_VERSION} ./configure
-                    "CPPFLAGS=-I/Library//Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Tk.framework/Versions/Current/Headers"
+                    "CPPFLAGS=-I/Library/Developer/CommandLineTools/SDKs/MacOSX${MACOS_MIN_VERSION}.sdk/System/Library/Frameworks/Tk.framework/Versions/Current/Headers"
                     --with-openssl=${SSL_PREFIX_PATH}
                     --enable-framework=${PYTHON_INSTALL_DIR}
                     --prefix=${PYTHON_INSTALL_DIR}
         BUILD_COMMAND ${MAKE}
         BUILD_IN_SOURCE 1
-        PATCH_COMMAND ${BIN_DIR}/multipatch.py -p1 -- ${CMAKE_SOURCE_DIR}/patches/python/*.patch
         INSTALL_COMMAND make -j1 install
 )
 
@@ -120,6 +119,16 @@ ExternalProject_Add_Step(
 	COMMENT "Make sure SSL is included"
 	DEPENDEES install_sip
 	COMMAND "${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/python3" -c "import ssl"
+)
+
+ExternalProject_Add_Step(
+        python
+        cleanup_python_caches
+        COMMENT "Remove Python cache files"
+        DEPENDEES verify_ssl # Should be the last thing in the python project
+        WORKING_DIRECTORY ${PYTHON_INSTALL_DIR}
+        COMMAND find ${PYTHON_INSTALL_DIR} -type f -name \*.pyo -o -name \*.pyc -delete
+        COMMAND find ${PYTHON_INSTALL_DIR} -type d -name __pycache__ -delete
 )
 
 ExternalProject_Add(
