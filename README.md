@@ -15,31 +15,9 @@ You do not need to install anything not listed in this README. If you need to, p
 
 It may be helpful to run `brew list` before installing any dependencies.  This makes it easier to clean up the new dependencies when uninstalling kicad-mac-builder.
 
-The instructions are split up based on macOS version.
-
-macOS 10.12-10.15
------------------
-
 Please use a terminal to run the following command:
 
-`brew install cmake swig glew glm cairo boost doxygen gettext wget brewsci/science/oce bison libtool automake autoconf`
-
-You do not need to do any supplemental linking steps implied by the brew output.
-
-macOS 10.11
------------
-
-The Homebrew OCE bottle for 10.11 is broken.  It refers to the SDK for 10.12.  You have two options, both of which are commands you run in the terminal.
-
-You can either build it yourself with:
-`brew install --build-from-source brewsci/science/oce`
-or use the bottle I made and include in this repository.
-`brew install -f external/oce-0.18.2.el_capitan.bottle.1.tar.gz`
-
-Once you've done that, install the rest of the dependencies using the terminal.
-`brew install cmake swig glew glm cairo boost doxygen gettext wget bison libtool automake autoconf`
-
-You do not need to do any supplemental linking steps implied by the brew output.
+`brew install cmake swig glew glm cairo boost doxygen gettext wget opencascade bison libtool automake autoconf`
 
 Usage
 =====
@@ -80,8 +58,6 @@ Any patches inside `kicad-mac-builder/patches/kicad/` are applied via `git-am`, 
 Issues
 ======
 In early 2018, I'm noticing that sometimes wxPython doesn't download properly from Sourceforge, so I've included a mirror in this repository.
-
-In May 2018, the OCE bottle for 10.11 refers to the 10.12 SDK internally.  It requires the full XCode to install, not just the CLI tools.  I have included a bottle in case you are doing this on a headless machine without XCode.
 
 In May 2018, the KiCad 10.11 build machine has an older version of CMake installed.  The included GetPrequisites and BundleUtilties do not work with what we are doing with the packaging.  I included the version from 3.10 using a KiCad patch.  As soon as that machine is upgraded, we should add a minimum CMake version and remove that patch.
 
@@ -163,7 +139,7 @@ Localization
 * Open up KiCad.app, and open up demos/pic_programmer/pic_programmer.pro.  Open up pcbnew.  Click View->3D Viewer.  A new window opens.  It should show a PCB with mostly populated components, including LEDs, sockets, resistors, and capacitors.  At least one connector appears to be missing.
 * Open up pcbnew.app, and open up demos/pic_programmer/pic_programmer.pro.  Click View->3D Viewer.  A new window opens.  It should show a PCB with mostly populated components, including LEDs, sockets, resistors, and capacitors.  At least one connector appears to be missing.
 
-OCE
+OCC
 ---
 * Open up KiCad.app, and open up demos/pic_programmer/pic_programmer.pro.  Open up pcbnew.  Click File->Export->STEP.  Click OK on the Export Step dialog.  The output should print "Info: STEP file has been created successfully.".  Currently, I see a lot warnings but these appear to be related to models not being set up.
 * Open up pcbnew.app, and open up demos/pic_programmer/pic_programmer.kicad_pcb.  Click File->Export->STEP.  Click OK on the Export Step dialog.  The output should print "Info: STEP file has been created successfully.".  Currently, I see a lot warnings but these appear to be related to models not being set up.
