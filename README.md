@@ -15,9 +15,9 @@ You do not need to install anything not listed in this README. If you need to, p
 
 It may be helpful to run `brew list` before installing any dependencies.  This makes it easier to clean up the new dependencies when uninstalling kicad-mac-builder.
 
-Please use a terminal to run the following command:
+Please use a terminal to run the following command to install the dependencies:
 
-`brew install cmake swig glew glm cairo boost doxygen gettext wget opencascade bison libtool automake autoconf`
+`./ci/src/bootstrap.sh`
 
 Usage
 =====
