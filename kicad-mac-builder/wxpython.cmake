@@ -47,7 +47,7 @@ ExternalProject_Add(
         PATCH_COMMAND       ""
         BUILD_IN_SOURCE     1
         CONFIGURE_COMMAND   ""
-        BUILD_COMMAND WXWIN=${wxwidgets_SOURCE_DIR} MAC_OS_X_VERSION_MIN_REQUIRED=${MACOS_MIN_VERSION} ${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/python3.8 build.py dox etg --nodoc sip --use_syswx --prefix=${wxwidgets_INSTALL_DIR}
+        BUILD_COMMAND WXWIN=${wxwidgets_SOURCE_DIR} MAC_OS_X_VERSION_MIN_REQUIRED=${MACOS_MIN_VERSION} ${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/python3.8 build.py dox etg --nodoc sip --use_syswx --prefix=${wxwidgets_INSTALL_DIR} build_py
         INSTALL_COMMAND MAC_OS_X_VERSION_MIN_REQUIRED=${MACOS_MIN_VERSION} ${PYTHON_INSTALL_DIR}/Python.framework/Versions/3.8/bin/python3.8 build.py install_py --prefix=${wxwidgets_INSTALL_DIR} --nodoc
         BUILD_IN_SOURCE 1
 )
