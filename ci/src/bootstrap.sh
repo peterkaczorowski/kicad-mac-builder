@@ -20,5 +20,5 @@ export HOMEBREW_NO_ANALYTICS=1
 echo "Updating SSH"
 brew install openssh
 echo "Installing some dependencies"
-brew install glew cairo doxygen gettext wget bison libtool autoconf automake cmake swig boost glm openssl
+brew install glew cairo doxygen gettext wget bison libtool autoconf automake cmake swig boost glm openssl sip
 brew install -f /vagrant/external/oce*tar.gz
