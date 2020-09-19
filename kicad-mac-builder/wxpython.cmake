@@ -26,7 +26,7 @@ ExternalProject_Add(
                             --with-libpng=builtin
                             --with-regex=builtin
                             --with-libtiff=builtin
-                            --with-zlib=builtin
+                            --with-zlib=sys
                             --with-expat=builtin
                             --without-liblzma
                             --with-macosx-version-min=${MACOS_MIN_VERSION}
