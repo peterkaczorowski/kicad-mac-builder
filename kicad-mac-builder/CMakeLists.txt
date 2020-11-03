@@ -34,6 +34,12 @@ endif ()
 set( CMAKE_VERBOSE_MAKEFILE ON )
 set( BIN_DIR ${CMAKE_SOURCE_DIR}/bin )
 
+set( TRANSLATIONS_URL https://gitlab.com/kicad/code/kicad-i18n.git )
+set( SYMBOLS_URL https://gitlab.com/kicad/libraries/kicad-symbols.git )
+set( PACKAGES3D_URL https://gitlab.com/kicad/libraries/kicad-packages3D.git )
+set( TEMPLATES_URL https://gitlab.com/kicad/libraries/kicad-templates.git )
+set( FOOTPRINTS_URL https://gitlab.com/kicad/libraries/kicad-footprints.git )
+
 set( PYTHON_VERSION 2.7.16 )
 set( PYTHON_URL https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz )
 set( PYTHON_SHA1 e824c633a59fa2ca1dc2123de855007e64f9de98 )
@@ -51,8 +57,6 @@ set( ngspice_INSTALL_DIR ${CMAKE_BINARY_DIR}/ngspice-dest )
 
 set( KICAD_INSTALL_DIR ${CMAKE_BINARY_DIR}/kicad-dest )
 
-
-
 set( KICAD_CMAKE_ARGS -DDEFAULT_INSTALL_PATH=/Library/Application\ Support/kicad )
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ )
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DCMAKE_OSX_DEPLOYMENT_TARGET=${MACOS_MIN_VERSION} )
@@ -66,7 +70,6 @@ set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DPYTHON_SITE_PACKAGE_PATH=${wxwidgets
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DPYTHON_FRAMEWORK=${PYTHON_INSTALL_DIR}/Python.framework )
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=${KICAD_INSTALL_DIR} )
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DKICAD_USE_OCE=OFF -DKICAD_USE_OCC=ON )
-
 
 # FindOpenCASCADE.cmake finds /usr/local/lib, but not the Homebrew one.  fixup_bundle doesn't work with /usr/local/lib as a dirs argument, so
 # if OCC is installed by brew, we're going to pass in the library and include dir manually. If not, we aren't passing in anything
@@ -91,7 +94,7 @@ if(${KICAD_VERSION_EXTRA})
 endif()
 
 set( DMG_DIR ${CMAKE_BINARY_DIR}/dmg )
-set( TRANSLATIONS_URL https://gitlab.com/kicad/code/kicad-i18n.git )
+
 
 message( "CMake Setting Summary for kicad-mac-builder" )
 message( "KICAD_TAG: ${KICAD_TAG}" )
@@ -103,7 +106,11 @@ message( "TRANSLATIONS_TAG: ${TRANSLATIONS_TAG}" )
 message( "TEMPLATES_TAG: ${TEMPLATES_TAG}" )
 message( "DOCS_TARBALL_URL: ${DOCS_TARBALL_URL}" )
 message( "KICAD_CMAKE_ARGS: ${KICAD_CMAKE_ARGS}" )
-
+message( "SYMBOLS_URL: ${SYMBOLS_URL}" )
+message( "FOOTPRINTS_URL: ${FOOTPRINTS_URL}" )
+message( "PACKAGES3D_URL: ${PACKAGES3D_URL}" )
+message( "TEMPLATES_URL: ${TEMPLATES_URL}" )
+message( "TRANSLATIONS_URL: ${TRANSLATIONS_URL}" )
 
 include( python.cmake )
 include( wxpython.cmake )
