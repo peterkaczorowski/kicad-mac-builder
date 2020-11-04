@@ -212,7 +212,7 @@ case "${PACKAGE_TYPE}" in
         echo "Copying docs"
         cp -r "${CMAKE_BINARY_DIR}"/docs/share/doc/kicad/help "${MOUNTPOINT}"/kicad/
         echo "Copying packages3d"
-        cp -r "${CMAKE_BINARY_DIR}"/packages3d/src/packages3d-build/output/* "${MOUNTPOINT}"/kicad/.
+        cp -r "${CMAKE_BINARY_DIR}"/packages3d/src/packages3d-build/output/modules/* "${MOUNTPOINT}"/.
     ;;
     unified)
         mkdir -p "${MOUNTPOINT}"/KiCad
