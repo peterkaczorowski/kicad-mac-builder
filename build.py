@@ -219,7 +219,10 @@ def build(args, new_path):
             print_summary(args)
             raise
 
-    print_and_flush("Build complete.  If you built a DMG, it should be located in {}/dmg".format(os.getcwd()))
+    had_package_targets = any(target.startswith("package-") for target in args.target)
+    if had_package_targets:
+        print_and_flush("Output DMGs should be located in {}/dmg".format(os.getcwd()))
+    print_and_flush("Build complete.")
 
 def print_summary(args):
     print_and_flush("build.py argument summary:")
