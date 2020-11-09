@@ -212,7 +212,8 @@ case "${PACKAGE_TYPE}" in
         echo "Copying docs"
         cp -r "${CMAKE_BINARY_DIR}"/docs/share/doc/kicad/help "${MOUNTPOINT}"/kicad/
         echo "Copying packages3d"
-        cp -r "${CMAKE_BINARY_DIR}"/packages3d/src/packages3d-build/output/modules/* "${MOUNTPOINT}"/.
+	# For 6, we want a 3dmodels directory parallel to kicad/modules.
+        cp -r "${CMAKE_BINARY_DIR}"/packages3d/src/packages3d-build/output/modules/* "${MOUNTPOINT}"/kicad/.
     ;;
     unified)
         mkdir -p "${MOUNTPOINT}"/KiCad
@@ -230,6 +231,7 @@ case "${PACKAGE_TYPE}" in
         echo "Copying symbols"
         cp -r "${CMAKE_BINARY_DIR}"/symbols/src/symbols-build/output/* "${MOUNTPOINT}"/kicad/.
         echo "Copying packages3d"
+	# For 6, we want a 3dmodels directory parallel to kicad/modules.
         cp -r "${CMAKE_BINARY_DIR}"/packages3d/src/packages3d-build/output/* "${MOUNTPOINT}"/kicad/.
         echo "Copying footprints"
         cp -r "${CMAKE_BINARY_DIR}"/footprints/src/footprints-build/output/* "${MOUNTPOINT}"/kicad/.
