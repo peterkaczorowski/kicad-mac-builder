@@ -11,8 +11,8 @@ endif()
 ExternalProject_Add(
         wxwidgets
         PREFIX  wxwidgets
-        GIT_REPOSITORY https://gitlab.com/kicad/code/wxWidgets.git
-        GIT_TAG   kicad/macos-wx-3.0
+        GIT_REPOSITORY https://github.com/wxWidgets/wxWidgets
+        GIT_TAG  f6a94668565a9573b20496e9fb8243f6cb94c70b
         CONFIGURE_COMMAND   CPPFLAGS=-D__ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES=1 MAC_OS_X_VERSION_MIN_REQUIRED=${MACOS_MIN_VERSION} ./configure
                             --prefix=${wxwidgets_INSTALL_DIR}
                             --with-opengl
@@ -46,8 +46,8 @@ set(wxpython_ENVIRONMENT_VARS UNICODE=1
 ExternalProject_Add(
         wxpython
         DEPENDS python wxwidgets
-        URL ${WXPYTHON_URL}
-        URL_HASH SHA1=${WXPYTHON_SHA1}
+        GIT_REPOSITORY https://github.com/wxWidgets/Phoenix
+        GIT_TAG  c422227c1d9c62fd71d6cf8c2081dc7b2dcb7519
         UPDATE_COMMAND      ""
         PATCH_COMMAND       ""
         BUILD_IN_SOURCE     1
