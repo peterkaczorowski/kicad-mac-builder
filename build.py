@@ -94,6 +94,10 @@ def parse_args(args):
                              "DMG. See the documentation for details.",
                         nargs="+",
                         )
+    parser.add_argument("--target_arch",
+                        help="x86_64 or arm64",
+                        default="x86_64"
+        )
 
     parsed_args = parser.parse_args(args)
 
@@ -175,6 +179,7 @@ def build(args, new_path):
                      "-DTEMPLATES_TAG={}".format(args.templates_ref),
                      "-DTRANSLATIONS_TAG={}".format(args.translations_ref),
                      "-DKICAD_CMAKE_BUILD_TYPE={}".format(args.build_type),
+                     "-DCMAKE_OSX_ARCHITECTURES={}".format(args.target_arch),
                      ]
 
     if args.kicad_source_dir:
