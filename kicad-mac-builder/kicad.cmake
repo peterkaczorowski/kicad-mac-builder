@@ -105,9 +105,17 @@ ExternalProject_Add_Step(
 )
 
 ExternalProject_Add_Step(
+        kicad
+        resign-invalid-so
+        COMMENT "Re-sign invalid signature libraries"
+        DEPENDEES fixup-pcbnew-so
+        COMMAND ${BIN_DIR}/resign-invalid-so.sh  ${KICAD_INSTALL_DIR}/kicad.app/
+)
+
+ExternalProject_Add_Step(
 	kicad
 	verify-pcbnew-so-import
 	COMMENT "Verifying python can import _pcbnew.so"
-	DEPENDEES fixup-pcbnew-so install-six remove-pyc-and-pyo verify-cli-python verify-app
+	DEPENDEES fixup-pcbnew-so install-six remove-pyc-and-pyo verify-cli-python verify-app resign-invalid-so
 	COMMAND ${BIN_DIR}/verify-pcbnew-so-import.sh  ${KICAD_INSTALL_DIR}/kicad.app/
 )
