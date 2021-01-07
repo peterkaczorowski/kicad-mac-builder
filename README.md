@@ -120,14 +120,14 @@ Templates
 
 Python
 ------
-* Open up pcbnew.app, and open up the Python scripting console.  Type `import pcbnew` and press enter.  It shouldn't show an error.  Verify that the build date of Python is the same as the build date of the package.
+* Open up Pcbnew.app, and open up the Python scripting console.  Type `import pcbnew` and press enter.  It shouldn't show an error.  Verify that the build date of Python is the same as the build date of the package.
 * Open up KiCad.app, and open up the Python scripting console. Type `import pcbnew` and press enter.  It shouldn't show an error.  Verify that the build date of Pytohn is the same as the build date of the package.
-* Open up the terminal, and run `kicad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python`.  It shouldn't show an error.  Verify that the build date of Python is the same as the build date of the package.
-* Open up the terminal, and run `cd kicad.app/Contents/Frameworks/python/site-packages/; ../../Python.framework/Versions/Current/bin/python -m pcbnew`.  It shouldn't show an error.
+* Open up the terminal, and run `KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python`.  It shouldn't show an error.  Verify that the build date of Python is the same as the build date of the package.
+* Open up the terminal, and run `cd KiCad.app/Contents/Frameworks/python/site-packages/; ../../Python.framework/Versions/Current/bin/python -m pcbnew`.  It shouldn't show an error.
 
 Footprint Wizards
 -----------------
-* Open up pcbnew.app, and open up the footprint editor. Click the "New Footprint Using Footprint Wizard" button. Click the "Select Wizard" button.  Select BGA.  Click OK.  Click the "Export footprint to editor" button.  You should see a footprint on the editor screen, and you should see no errors.
+* Open up Pcbnew.app, and open up the footprint editor. Click the "New Footprint Using Footprint Wizard" button. Click the "Select Wizard" button.  Select BGA.  Click OK.  Click the "Export footprint to editor" button.  You should see a footprint on the editor screen, and you should see no errors.
 * Open up KiCad.app, and open up the footprint editor. Click the "New Footprint Using Footprint Wizard" button. Click the "Select Wizard" button.  Select BGA.  Click OK.  Click the "Export footprint to editor" button.  You should see a footprint on the editor screen, and you should see no errors.
 
 Localization
@@ -137,12 +137,12 @@ Localization
 3D Models
 ---------
 * Open up KiCad.app, and open up demos/pic_programmer/pic_programmer.pro.  Open up pcbnew.  Click View->3D Viewer.  A new window opens.  It should show a PCB with mostly populated components, including LEDs, sockets, resistors, and capacitors.  At least one connector appears to be missing.
-* Open up pcbnew.app, and open up demos/pic_programmer/pic_programmer.pro.  Click View->3D Viewer.  A new window opens.  It should show a PCB with mostly populated components, including LEDs, sockets, resistors, and capacitors.  At least one connector appears to be missing.
+* Open up Pcbnew.app, and open up demos/pic_programmer/pic_programmer.pro.  Click View->3D Viewer.  A new window opens.  It should show a PCB with mostly populated components, including LEDs, sockets, resistors, and capacitors.  At least one connector appears to be missing.
 
 OCC
 ---
-* Open up KiCad.app, and open up demos/pic_programmer/pic_programmer.pro.  Open up pcbnew.  Click File->Export->STEP.  Click OK on the Export Step dialog.  The output should print "Info: STEP file has been created successfully.".  Currently, I see a lot warnings but these appear to be related to models not being set up.
-* Open up pcbnew.app, and open up demos/pic_programmer/pic_programmer.kicad_pcb.  Click File->Export->STEP.  Click OK on the Export Step dialog.  The output should print "Info: STEP file has been created successfully.".  Currently, I see a lot warnings but these appear to be related to models not being set up.
+* Open up KiCad.app, and open up demos/pic_programmer/pic_programmer.pro.  Open up Pcbnew.  Click File->Export->STEP.  Click OK on the Export Step dialog.  The output should print "Info: STEP file has been created successfully.".  Currently, I see a lot warnings but these appear to be related to models not being set up.
+* Open up Pcbnew.app, and open up demos/pic_programmer/pic_programmer.kicad_pcb.  Click File->Export->STEP.  Click OK on the Export Step dialog.  The output should print "Info: STEP file has been created successfully.".  Currently, I see a lot warnings but these appear to be related to models not being set up.
 
 Help
 ----
@@ -153,4 +153,4 @@ Tips
 ----
 When debugging dylib stuff, the environment vaiables DYLD_PRINT_LIBRARIES and DYLD_PRINT_LIBRARIES_POST_LAUNCH are helpful.  For instance:
 
-`DYLD_PRINT_LIBRARIES=YES DYLD_PRINT_LIBRARIES_POST_LAUNCH=YES  /Users/wolf/KiCad/kicad.app/Contents/Applications/pcbnew.app/Contents/MacOS/pcbnew`
+`DYLD_PRINT_LIBRARIES=YES DYLD_PRINT_LIBRARIES_POST_LAUNCH=YES  /Users/wolf/KiCad/KiCad.app/Contents/Applications/pcbnew.app/Contents/MacOS/pcbnew`

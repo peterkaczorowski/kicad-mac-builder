@@ -55,10 +55,10 @@ ExternalProject_Add_Step(
         COMMENT "Installing docs into KiCad.app"
         DEPENDS docs
         DEPENDEES install
-        COMMAND mkdir -p ${KICAD_INSTALL_DIR}/kicad.app/Contents/SharedSupport/help/
-        COMMAND cp -r ${CMAKE_BINARY_DIR}/docs/share/doc/kicad/help/en ${KICAD_INSTALL_DIR}/kicad.app/Contents/SharedSupport/help/
-        COMMAND find ${KICAD_INSTALL_DIR}/kicad.app/Contents/SharedSupport/help -name "*.epub" -type f -delete
-        COMMAND find ${KICAD_INSTALL_DIR}/kicad.app/Contents/SharedSupport/help -name "*.pdf" -type f -delete
+        COMMAND mkdir -p ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/help/
+        COMMAND cp -r ${CMAKE_BINARY_DIR}/docs/share/doc/kicad/help/en ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/help/
+        COMMAND find ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/help -name "*.epub" -type f -delete
+        COMMAND find ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/help -name "*.pdf" -type f -delete
 )
 
 ExternalProject_Add_Step(
@@ -66,7 +66,7 @@ ExternalProject_Add_Step(
         verify-app
         COMMENT "Checking that all loader dependencies are system-provided or relative"
         DEPENDEES install
-        COMMAND ${BIN_DIR}/verify-app.sh ${KICAD_INSTALL_DIR}/kicad.app
+        COMMAND ${BIN_DIR}/verify-app.sh ${KICAD_INSTALL_DIR}/KiCad.app
 )
 
 ExternalProject_Add_Step(
@@ -74,10 +74,10 @@ ExternalProject_Add_Step(
         verify-cli-python
         COMMENT "Checking bin/python and bin/pythonw"
         DEPENDEES install
-        COMMAND ${BIN_DIR}/verify-cli-python.sh ${KICAD_INSTALL_DIR}/kicad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/pythonw
-        COMMAND ${BIN_DIR}/verify-cli-python.sh ${KICAD_INSTALL_DIR}/kicad.app/Contents/Frameworks/Python.framework/Versions/2.7/bin/pythonw
-        COMMAND ${BIN_DIR}/verify-cli-python.sh ${KICAD_INSTALL_DIR}/kicad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python
-        COMMAND ${BIN_DIR}/verify-cli-python.sh ${KICAD_INSTALL_DIR}/kicad.app/Contents/Frameworks/Python.framework/Versions/2.7/bin/python
+        COMMAND ${BIN_DIR}/verify-cli-python.sh ${KICAD_INSTALL_DIR}/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/pythonw
+        COMMAND ${BIN_DIR}/verify-cli-python.sh ${KICAD_INSTALL_DIR}/KiCad.app/Contents/Frameworks/Python.framework/Versions/2.7/bin/pythonw
+        COMMAND ${BIN_DIR}/verify-cli-python.sh ${KICAD_INSTALL_DIR}/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python
+        COMMAND ${BIN_DIR}/verify-cli-python.sh ${KICAD_INSTALL_DIR}/KiCad.app/Contents/Frameworks/Python.framework/Versions/2.7/bin/python
 )
 
 ExternalProject_Add_Step(
@@ -85,7 +85,7 @@ ExternalProject_Add_Step(
         remove-pyc-and-pyo
         COMMENT "Removing pyc and pyo files"
         DEPENDEES verify-cli-python install-six
-        COMMAND find ${KICAD_INSTALL_DIR}/kicad.app/ -type f -name \*.pyc -o -name \*.pyo -delete
+        COMMAND find ${KICAD_INSTALL_DIR}/KiCad.app/ -type f -name \*.pyc -o -name \*.pyo -delete
 )
 
 ExternalProject_Add_Step(
@@ -93,7 +93,7 @@ ExternalProject_Add_Step(
         install-six
         COMMENT "Installing six into PYTHONPATH for easier debugging"
         DEPENDEES install
-        COMMAND cp ${six_DIR}/six.py ${KICAD_INSTALL_DIR}/kicad.app/Contents/Frameworks/python/site-packages/
+        COMMAND cp ${six_DIR}/six.py ${KICAD_INSTALL_DIR}/KiCad.app/Contents/Frameworks/python/site-packages/
 )
 
 ExternalProject_Add_Step(
@@ -101,7 +101,7 @@ ExternalProject_Add_Step(
         fixup-pcbnew-so
         COMMENT "Fixing loader dependencies so _pcbnew.so works both internal and external to KiCad."
         DEPENDEES install
-        COMMAND ${BIN_DIR}/fixup-pcbnew-so.sh  ${KICAD_INSTALL_DIR}/kicad.app/Contents/Frameworks/
+        COMMAND ${BIN_DIR}/fixup-pcbnew-so.sh  ${KICAD_INSTALL_DIR}/KiCad.app/Contents/Frameworks/
 )
 
 ExternalProject_Add_Step(
@@ -109,5 +109,5 @@ ExternalProject_Add_Step(
 	verify-pcbnew-so-import
 	COMMENT "Verifying python can import _pcbnew.so"
 	DEPENDEES fixup-pcbnew-so install-six remove-pyc-and-pyo verify-cli-python verify-app
-	COMMAND ${BIN_DIR}/verify-pcbnew-so-import.sh  ${KICAD_INSTALL_DIR}/kicad.app/
+	COMMAND ${BIN_DIR}/verify-pcbnew-so-import.sh  ${KICAD_INSTALL_DIR}/KiCad.app/
 )
