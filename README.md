@@ -5,7 +5,7 @@ This is the V5+ KiCad Mac builder and packager.  This is known to work on macOS 
 
 [![Build Status](https://builder.wayneandlayne.com/buildStatus/icon?job=kicad-mac-builder-10.11-upload)](https://builder.wayneandlayne.com/job/kicad-mac-builder-10.11-upload) (master branch, all three DMGs, built from scratch on a new 10.11 VM for 10.11-10.13)
 
-If you are looking to run KiCad on your Mac, please use the instructions at http://kicad-pcb.org/download/osx/ instead of this.  If you are looking to compile KiCad or improve KiCad packaging on MacOS, kicad-mac-packager may be able to help you.
+If you are looking to run KiCad on your Mac, please use the instructions at http://kicad.org/download/osx/ instead of this.  If you are looking to compile KiCad or improve KiCad packaging on MacOS, kicad-mac-builder may be able to help you.
 
 Setup
 =====
@@ -111,7 +111,7 @@ Remove the build/ directory, and run `build.py`.  Then, rerun `build.py`, to mak
 
 Basics
 ------
-* Open up KiCad.app, and then open up each of the applications like pcbnew and the calculator.
+* Open up KiCad.app, and then open up each of the applications like Pcbnew and the calculator.
 * Open up each of the apps in standalone mode.
 
 Templates
@@ -136,7 +136,7 @@ Localization
 
 3D Models
 ---------
-* Open up KiCad.app, and open up demos/pic_programmer/pic_programmer.pro.  Open up pcbnew.  Click View->3D Viewer.  A new window opens.  It should show a PCB with mostly populated components, including LEDs, sockets, resistors, and capacitors.  At least one connector appears to be missing.
+* Open up KiCad.app, and open up demos/pic_programmer/pic_programmer.pro.  Open up Pcbnew.  Click View->3D Viewer.  A new window opens.  It should show a PCB with mostly populated components, including LEDs, sockets, resistors, and capacitors.  At least one connector appears to be missing.
 * Open up Pcbnew.app, and open up demos/pic_programmer/pic_programmer.pro.  Click View->3D Viewer.  A new window opens.  It should show a PCB with mostly populated components, including LEDs, sockets, resistors, and capacitors.  At least one connector appears to be missing.
 
 OCC
