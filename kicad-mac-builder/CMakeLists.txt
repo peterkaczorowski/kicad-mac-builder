@@ -74,7 +74,7 @@ set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DKICAD_USE_OCE=OFF -DKICAD_USE_OCC=ON
 # if OCC is installed by brew, we're going to pass in the library and include dir manually. If not, we aren't passing in anything
 # which means that FindOpenCASCADE.cmake will do its regular job.
 # This should be fixed by figuring out why fixup_bundle isn't working with /usr/local/lib in the dirs argument.
-execute_process(COMMAND brew --cellar opencascade OUTPUT_VARIABLE BREW_OCC_BASEDIR RESULT_VARIABLE FOUND_BREW_OCC_BASEDIR_EXIT_CODE OUTPUT_STRIP_TRAILING_WHITESPACE)
+execute_process(COMMAND brew --prefix opencascade OUTPUT_VARIABLE BREW_OCC_BASEDIR RESULT_VARIABLE FOUND_BREW_OCC_BASEDIR_EXIT_CODE OUTPUT_STRIP_TRAILING_WHITESPACE)
 if ( ${FOUND_BREW_OCC_BASEDIR_EXIT_CODE} EQUAL 0 )
     message( "OpenCascade appears to have been installed by brew." )
     if ( ${CMAKE_OSX_ARCHITECTURES} MATCHES "arm64" )
