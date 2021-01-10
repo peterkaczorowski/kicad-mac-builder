@@ -68,7 +68,7 @@ set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DPYTHON_LIBRARY=${PYTHON_INSTALL_DIR}
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DPYTHON_SITE_PACKAGE_PATH=${wxwidgets_INSTALL_DIR}/lib/python2.7/site-packages )
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DPYTHON_FRAMEWORK=${PYTHON_INSTALL_DIR}/Python.framework )
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=${KICAD_INSTALL_DIR} )
-set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DKICAD_USE_OCE=OFF -DKICAD_USE_OCC=ON )
+set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DKICAD_USE_OCE=OFF -DKICAD_USE_OCC=OFF )
 
 # FindOpenCASCADE.cmake finds /usr/local/lib, but not the Homebrew one.  fixup_bundle doesn't work with /usr/local/lib as a dirs argument, so
 # if OCC is installed by brew, we're going to pass in the library and include dir manually. If not, we aren't passing in anything
@@ -82,6 +82,7 @@ if ( ${FOUND_BREW_OCC_BASEDIR_EXIT_CODE} EQUAL 0 )
       get_filename_component(BREW_OCC_LIBRARY_DIR ${BREW_LIBTKERNEL_REALPATH} DIRECTORY)
       get_filename_component(BREW_OCC_INCLUDE_DIR /opt/homebrew/include/opencascade REALPATH)
       set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DOCC_INCLUDE_DIR=${BREW_OCC_INCLUDE_DIR} -DOCC_LIBRARY_DIR=${BREW_OCC_LIBRARY_DIR} )
+      message( ERROR "nick er sej, det her er ikke arm" )
     else()
       get_filename_component(BREW_LIBTKERNEL_REALPATH /usr/local/lib/libTKernel.dylib REALPATH)
       get_filename_component(BREW_OCC_LIBRARY_DIR ${BREW_LIBTKERNEL_REALPATH} DIRECTORY)
@@ -118,7 +119,7 @@ message( "PACKAGES3D_URL: ${PACKAGES3D_URL}" )
 message( "TEMPLATES_URL: ${TEMPLATES_URL}" )
 message( "TRANSLATIONS_URL: ${TRANSLATIONS_URL}" )
 
-include( python.cmake )
+#include( python.cmake )
 include( wxpython.cmake )
 include( ngspice.cmake)
 include( docs.cmake )

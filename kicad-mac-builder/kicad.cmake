@@ -8,7 +8,7 @@ if(DEFINED RELEASE_NAME)
   ExternalProject_Add(
           kicad
           PREFIX  kicad
-          DEPENDS python wxpython wxwidgets six ngspice docs
+          DEPENDS wxwidgets ngspice
           GIT_REPOSITORY ${KICAD_URL}
           GIT_TAG ${KICAD_TAG}
           UPDATE_COMMAND          git fetch
@@ -23,7 +23,7 @@ elseif(NOT DEFINED RELEASE_NAME AND DEFINED KICAD_SOURCE_DIR AND NOT "${KICAD_SO
   ExternalProject_Add(
           kicad
           PREFIX  kicad
-          DEPENDS python wxpython wxwidgets six ngspice
+          DEPENDS wxwidgets ngspice
           SOURCE_DIR ${KICAD_SOURCE_DIR}
           CMAKE_ARGS  ${KICAD_CMAKE_ARGS}
   )
@@ -35,7 +35,7 @@ elseif(NOT DEFINED RELEASE_NAME AND DEFINED KICAD_TAG AND NOT "${KICAD_TAG}" STR
   ExternalProject_Add(
         kicad
         PREFIX  kicad
-        DEPENDS python wxpython wxwidgets six ngspice docs
+        DEPENDS wxwidgets ngspice
         GIT_REPOSITORY ${KICAD_URL}
         GIT_TAG ${KICAD_TAG}
         UPDATE_COMMAND          git fetch
@@ -116,6 +116,6 @@ ExternalProject_Add_Step(
 	kicad
 	verify-pcbnew-so-import
 	COMMENT "Verifying python can import _pcbnew.so"
-	DEPENDEES fixup-pcbnew-so install-six remove-pyc-and-pyo verify-cli-python verify-app resign-invalid-so
+	DEPENDEES fixup-pcbnew-so verify-app resign-invalid-so
 	COMMAND ${BIN_DIR}/verify-pcbnew-so-import.sh  ${KICAD_INSTALL_DIR}/kicad.app/
 )
