@@ -15,9 +15,20 @@ for _ in 1 2 3; do
   fi
 done
 
+ARCH=`uname -p`
 PATH=$PATH:/usr/local/bin
 export HOMEBREW_NO_ANALYTICS=1
-echo "Updating SSH"
-brew install openssh
-echo "Installing some dependencies"
-brew install glew cairo doxygen gettext wget bison libtool autoconf automake cmake swig opencascade boost glm openssl zlib
+
+if [ ${ARCH} = "arm" ]; then
+  echo "Updating SSH"
+  brew install --build-from-source openssh
+  echo "Installing some dependencies"
+  brew install glew cairo doxygen gettext wget bison libtool autoconf automake cmake swig boost glm openssl zlib
+  brew install --build-from-source freeimage
+  brew install --build-from-source opencascade
+else
+  echo "Updating SSH"
+  brew install openssh
+  echo "Installing some dependencies"
+  brew install glew cairo doxygen gettext wget bison libtool autoconf automake cmake swig opencascade boost glm openssl zlib
+fi
