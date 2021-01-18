@@ -6,7 +6,7 @@ endif()
 
 ExternalProject_Add(
         package-kicad-nightly
-        DEPENDS kicad symbols translations docs footprints templates
+        DEPENDS kicad symbols docs footprints templates
         PREFIX package-kicad-nightly
         DOWNLOAD_COMMAND ""
         UPDATE_COMMAND   ""

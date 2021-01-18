@@ -65,9 +65,6 @@ def parse_args(args):
     parser.add_argument("--templates-ref",
                         help="KiCad templates git tag, commit, or branch to build from. Defaults to origin/master.",
                         )
-    parser.add_argument("--translations-ref",
-                        help="KiCad translations git tag, commit, or branch to build from. Defaults to origin/master.",
-                        )
     parser.add_argument("--docs-tarball-url",
                         help="URL to download the documentation tar.gz from. Defaults to {}".format(
                             docs_tarball_url_default),
@@ -121,17 +118,16 @@ def parse_args(args):
                 parsed_args.symbols_ref is None or \
                 parsed_args.footprints_ref is None or \
                 parsed_args.packages3d_ref is None or \
-                parsed_args.translations_ref is None or \
                 parsed_args.templates_ref is None or \
                 parsed_args.docs_tarball_url is None or \
                 parsed_args.release_name is None:
             parser.error(
                 "Release builds require --kicad-ref, --symbols-ref, --footprints-ref, --packages3d-ref, "
-                "--translations-ref, --templates-ref, --docs-tarball-url, and --release-name.")
+                "--templates-ref, --docs-tarball-url, and --release-name.")
     else:
         # not stable
 
-        default_refs = ["symbols_ref", "footprints_ref", "packages3d_ref", "translations_ref", "templates_ref"]
+        default_refs = ["symbols_ref", "footprints_ref", "packages3d_ref", "templates_ref"]
 
         if not parsed_args.kicad_source_dir:
             default_refs.append("kicad_ref")
@@ -173,7 +169,6 @@ def build(args, new_path):
                      "-DPACKAGES3D_TAG={}".format(args.packages3d_ref),
                      "-DSYMBOLS_TAG={}".format(args.symbols_ref),
                      "-DTEMPLATES_TAG={}".format(args.templates_ref),
-                     "-DTRANSLATIONS_TAG={}".format(args.translations_ref),
                      "-DKICAD_CMAKE_BUILD_TYPE={}".format(args.build_type),
                      ]
 

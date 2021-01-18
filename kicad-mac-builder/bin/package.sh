@@ -198,9 +198,6 @@ case "${PACKAGE_TYPE}" in
         mkdir -p "${MOUNTPOINT}"/kicad
         echo "Moving demos"
         mv "${MOUNTPOINT}"/KiCad/demos "${MOUNTPOINT}"/
-        echo "Copying translations"
-        mkdir -p "${MOUNTPOINT}"/kicad/share
-        cp -r "${CMAKE_BINARY_DIR}"/translations/src/translations-build/output/share/kicad/internat "${MOUNTPOINT}"/kicad/share/
         echo "Copying templates"
         cp -r "${CMAKE_BINARY_DIR}"/templates/src/templates-build/output/* "${MOUNTPOINT}"/kicad/.
         echo "Copying symbols"
@@ -223,9 +220,6 @@ case "${PACKAGE_TYPE}" in
         mv "${MOUNTPOINT}"/KiCad/demos "${MOUNTPOINT}"/
         echo "Copying docs"
         cp -r "${CMAKE_BINARY_DIR}"/docs/share/doc/kicad/help "${MOUNTPOINT}"/kicad/
-        echo "Copying translations"
-        mkdir -p "${MOUNTPOINT}"/kicad/share
-        cp -r "${CMAKE_BINARY_DIR}"/translations/src/translations-build/output/share/kicad/internat "${MOUNTPOINT}"/kicad/share/
         echo "Copying templates"
         cp -r "${CMAKE_BINARY_DIR}"/templates/src/templates-build/output/* "${MOUNTPOINT}"/kicad/.
         echo "Copying symbols"

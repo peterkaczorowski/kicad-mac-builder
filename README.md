@@ -27,7 +27,7 @@ To get up and running the absolute fastest, use `build.py`.  It expects to be ru
 
 It builds everything and uses "reasonable" settings.  If you want something special, check `./build.py --help`, and if that doesn't help, read the rest of this documentation.  Failing that, run `cmake` and `make` by hand.  Better documentation is definitely welcomed!
 
-By default, dependencies are built once, and unless their build directories are cleaned out, or their source is updated, they will not be built again.  The KiCad files, like the footprints, symbols, 3D models, translations, docs, and KiCad itself, are, by default, built from origin/master of their respective repositories or re-downloaded, ensuring you have the most up-to-date KiCad.
+By default, dependencies are built once, and unless their build directories are cleaned out, or their source is updated, they will not be built again.  The KiCad files, like the footprints, symbols, 3D models, docs, and KiCad itself, are, by default, built from origin/master of their respective repositories or re-downloaded, ensuring you have the most up-to-date KiCad.
 
 If you'd like to build KiCad from sources instead of from git, you can use the --kicad-source-dir option.  This will not apply any KiCad patches, but will use the source tree you choose. This can be useful for testing KiCad changes.
 
