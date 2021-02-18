@@ -15,7 +15,7 @@ index c24cec7b2..b8892a2d8 100644
 @@ -108,6 +108,12 @@ if( APPLE )
          set( SPICE_HELPER "0" )
      endif()
- 
+
 +    if( PYTHON_FRAMEWORK )
 +        set( PYTHON_FRAMEWORK_HELPER "1" )
 +    else()
@@ -28,7 +28,7 @@ index c24cec7b2..b8892a2d8 100644
 @@ -141,10 +147,47 @@ if( APPLE )
          # do all the work
          include( BundleUtilities )
- 
+
 -        fixup_bundle( ${OSX_BUNDLE_INSTALL_BIN_DIR}/kicad
 -            \"\${BUNDLE_FIX_LIBS}\"
 -            \" ${KICAD_BUNDLE_LIBS}\"
@@ -73,7 +73,7 @@ index c24cec7b2..b8892a2d8 100644
 +                \"${KICAD_BUNDLE_LIBS}\"
              )
 +        endif()
- 
+
          if( ${SPICE_HELPER} )
              execute_process( COMMAND install_name_tool -id @executable_path/../PlugIns/sim/libngspice.0.dylib libngspice.0.dylib
 diff --git a/pcbnew/pcbnew.cpp b/pcbnew/pcbnew.cpp
@@ -83,9 +83,9 @@ index 18606f7bd..d3bf94995 100644
 @@ -246,8 +246,23 @@ static bool scriptingSetup()
      // Add default paths to PYTHONPATH
      wxString pypath;
- 
+
 -    // Bundle scripting folder (<kicad.app>/Contents/SharedSupport/scripting)
--    pypath += GetOSXKicadDataDir() + wxT( "/scripting" );
+-    pypath += PATHS::GetOSXKicadDataDir() + wxT( "/scripting" );
 +    pypath += Pgm().GetExecutablePath() +
 +              wxT( "Contents/Frameworks/Python.framework/Versions/2.7/lib/python2.7" );
 +    pypath += wxT( ":" ) + Pgm().GetExecutablePath() +
@@ -102,10 +102,10 @@ index 18606f7bd..d3bf94995 100644
 +              wxT( "Contents/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages" );
 +
 +     // Bundle scripting folder (<kicad.app>/Contents/SharedSupport/scripting)
-+    pypath += wxT( ":" ) + GetOSXKicadDataDir() + wxT( "/scripting" );
- 
++    pypath += wxT( ":" ) + PATHS::GetOSXKicadDataDir() + wxT( "/scripting" );
+
      // $(KICAD_PATH)/scripting/plugins is always added in kicadplugins.i
      if( wxGetenv("KICAD_PATH") != NULL )
--- 
+--
 2.24.2 (Apple Git-127)
 
