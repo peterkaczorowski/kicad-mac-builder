@@ -43,6 +43,18 @@ The output DMGs from `build.py` go into `build/dmg`.
 
 KiCad Mac Builder does not install KiCad onto your Mac or modify your currently installed KiCad.
 
+Building on Big Sur (macOS 11)
+====================
+Building on Big Sur is possible with a couple of additional steps:
+
+1. Download the Xcode 11.3.1 to obtain the OSX 10.15 SDK (obtainable from Apple Developer Downloads [here](https://download.developer.apple.com/Developer_Tools/Xcode_11.3.1/Xcode_11.3.1.xip))
+2. Unpack the SDK in to the expected location `/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk`
+3. Set the environment variable `SDKROOT` to the path in step 2
+4. If using a local repo, apply the patch(s) in `kicad-mac-builder/patches/kicad/`
+5. Run `build.py` as above, passing the `--macos-min-version 10.15` option
+
+There will likely be warnings raised about dependencies having been built with a later SDK; for development purposes these warnings can be ignored.
+
 Building inside a VM
 ====================
 It has been historically very difficult to build and package KiCad on macOS.  Even if the source builds fine, getting the environment setup has been quite difficult.  In order to help both developers who want to use kicad-mac-builder to quickly develop and test on macOS, and to make sure that new developers can follow the instructions and quickly and easily get a working setup, I have some Jenkinsfiles setup in ci/.  These Jenkinsfiles use Vagrant and a blank macOS virtual machine (https://github.com/timsutton/osx-vm-templates).  These machines are freshly installed machines from the macOS install media with security patches and the XCode command line tools installed.  Starting from that blank machine and a checkout of this repository, the scripts in ci/ are used to install brew and any dependencies, and then build and package KiCad.  When its finished, the machine is deleted.  This happens at least once a day.
