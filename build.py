@@ -29,6 +29,10 @@ def parse_args(args):
 
     parser = argparse.ArgumentParser(description='Build and package KiCad for macOS. Part of kicad-mac-builder.',
                                      epilog="Further details are available in the README file.")
+    parser.add_argument("--build-dir",
+                        help="Path that will store the build files. Will be created if possible if it doesn't exist. Defaults to \"build/\" next to build.py.",
+                        default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "build"),
+                        required=False)
     parser.add_argument("--jobs",
                         help="Tell make to build using this number of parallel jobs. Defaults to the number of cores.",
                         type=int,
@@ -141,6 +145,10 @@ def parse_args(args):
         if parsed_args.build_type is None:
             parsed_args.build_type = "RelWithDebInfo"
 
+    # Before Python 3.4, __file__ might not be absolute, so let's lock this down before we do any chdir'ing
+
+    parsed_args.kicad_mac_builder_cmake_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "kicad-mac-builder")
+
     return parsed_args
 
 
@@ -151,16 +159,15 @@ def get_make_command(args):
 
     return make_command
 
-
 def build(args, new_path):
 
     try:
-        os.makedirs("build")
+        os.makedirs(args.build_dir)
     except OSError as exception:
         if exception.errno != errno.EEXIST:
             raise
 
-    os.chdir("build")
+    os.chdir(args.build_dir)
 
     cmake_command = ["cmake",
                      "-DMACOS_MIN_VERSION={}".format(args.macos_min_version),
@@ -184,7 +191,8 @@ def build(args, new_path):
         cmake_command.append("-DKICAD_VERSION_EXTRA={}".format(args.extra_version))
     if args.release_name:
         cmake_command.append("-DRELEASE_NAME={}".format(args.release_name))
-    cmake_command.append("../kicad-mac-builder")
+
+    cmake_command.append(args.kicad_mac_builder_cmake_dir)
 
     print_and_flush("Running {}".format(" ".join(cmake_command)))
     try:
