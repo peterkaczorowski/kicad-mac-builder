@@ -1,0 +1,3 @@
+# This file is used to specify which packages should get installed into the bundled Python environment
+six
+requests

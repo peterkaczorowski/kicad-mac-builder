@@ -23,28 +23,28 @@ if [ $# -ne 1 ] ; then
    echo "bad number of arguments, must pass Frameworks directory"
    exit 1
 fi
+SITE_PACKAGES_SUFFIX="Python.framework/Versions/3.8/lib/python3.8/site-packages"
 
-if [ ! -d "$1/python/site-packages" ]; then
-   echo "$1/python/site-packages doesn't appear to exist.  exiting."
+if [ ! -d "$1/$SITE_PACKAGES_SUFFIX" ]; then
+   echo "$1/$SITE_PACKAGES_SUFFIX doesn't appear to exist.  exiting."
    exit 1
 fi
 
 cd "$1"
 
-for file in *.dylib; do
-    fixup_libs=($(otool -L $file | grep -o "@executable_path.*.dylib"));
-    libs=($(echo ${fixup_libs[@]} | grep -o "[^/]*dylib"));
-    for ((i=0;i<${#fixup_libs[@]};++i)); do
-        echo "Changing ${fixup_libs[i]} to @rpath/${libs[i]} in $file"
-        install_name_tool -change "${fixup_libs[i]}" "@rpath/${libs[i]}" $file;
-    done;
-    echo "Adding rpaths of @loader_path/../../ and @executable_path/../Frameworks to $file"
-    #install_name_tool -add_rpath @loader_path/../.. -add_rpath @executable_path/../Frameworks $file;
-    $SCRIPT_DIR/add-rpath.sh @loader_path/../.. $file;
-    $SCRIPT_DIR/add-rpath.sh @executable_path/../Frameworks $file;
-done;
+ for file in *.dylib; do
+     fixup_libs=($(otool -L $file | grep -o "@executable_path.*.dylib"));
+     libs=($(echo ${fixup_libs[@]} | grep -o "[^/]*dylib"));
+     for ((i=0;i<${#fixup_libs[@]};++i)); do
+         echo "Changing ${fixup_libs[i]} to @rpath/${libs[i]} in $file"
+         install_name_tool -change "${fixup_libs[i]}" "@rpath/${libs[i]}" $file;
+     done;
+     echo "Adding rpaths of @loader_path/../../ and @executable_path/../Frameworks to $file"
+     $SCRIPT_DIR/add-rpath.sh @loader_path/../.. $file;
+     $SCRIPT_DIR/add-rpath.sh @executable_path/../Frameworks $file;
+ done;
 
-cd python/site-packages
+cd "$SITE_PACKAGES_SUFFIX"
 
 fixup_libs=($(otool -L _pcbnew.so | grep -o "@executable_path.*.dylib"));
 libs=($(echo ${fixup_libs[@]} | grep -o "[^/]*dylib"));
@@ -54,7 +54,6 @@ for ((i=0;i<${#fixup_libs[@]};++i)); do
 done
 
 echo "Adding rpaths of @loader_path/../../ and @executable_path/../Frameworks to _pcbnew.so"
-#install_name_tool -add_rpath @loader_path/../.. -add_rpath @executable_path/../Frameworks _pcbnew.so
 $SCRIPT_DIR/add-rpath.sh @loader_path/../.. _pcbnew.so
 $SCRIPT_DIR/add-rpath.sh @executable_path/../Frameworks _pcbnew.so
 

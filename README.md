@@ -50,8 +50,7 @@ Building on Big Sur is possible with a couple of additional steps:
 1. Download the Xcode 11.3.1 to obtain the OSX 10.15 SDK (obtainable from Apple Developer Downloads [here](https://download.developer.apple.com/Developer_Tools/Xcode_11.3.1/Xcode_11.3.1.xip))
 2. Unpack the SDK in to the expected location `/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk`
 3. Set the environment variable `SDKROOT` to the path in step 2
-4. If using a local repo, apply the patch(s) in `kicad-mac-builder/patches/kicad/`
-5. Run `build.py` as above, passing the `--macos-min-version 10.15` option
+4. Run `build.py` as above, passing the `--macos-min-version 10.15` option
 
 There will likely be warnings raised about dependencies having been built with a later SDK; for development purposes these warnings can be ignored.
 
@@ -62,10 +61,6 @@ It has been historically very difficult to build and package KiCad on macOS.  Ev
 This is intended to increase reproducibility and reduce the likelihood of undocumented steps and stale documentation.  It does take more resources and is slower, so it is not expected to be the way most developers interact with kicad-mac-builder.
 
 Please note, that as of early 2018, to create a 10.13 or 10.14 VM with the osx-vm-templates project, you must start with a 10.12 VM and upgrade it.
-
-Testing KiCad Patches
-=====================
-Any patches inside `kicad-mac-builder/patches/kicad/` are applied via `git-am`, per `kicad-mac-builder/kicad.cmake`.  This helps make it easy to test patches that may affect KiCad macOS packaging.
 
 Issues
 ======
@@ -90,11 +85,6 @@ error: /Library/Developer/CommandLineTools/usr/bin/install_name_tool: for: libGL
 ```
 
 with a variety of paths...
-
-
-Making KiCad Mods
-=================
-When doing some types of work, it can be helpful to have these scripts build KiCad from a location on your computer, rather than the integrated checkout via git.  This can be easily done by removing the 2 GIT_* lines from kicad.cmake, and replace them SOURCE_DIR.
 
 Making changes to KiCad-mac-builder
 ===================================
@@ -132,10 +122,10 @@ Templates
 
 Python
 ------
-* Open up Pcbnew.app, and open up the Python scripting console.  Type `import pcbnew` and press enter.  It shouldn't show an error.  Verify that the build date of Python is the same as the build date of the package.
-* Open up KiCad.app, and open up the Python scripting console. Type `import pcbnew` and press enter.  It shouldn't show an error.  Verify that the build date of Pytohn is the same as the build date of the package.
-* Open up the terminal, and run `KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python`.  It shouldn't show an error.  Verify that the build date of Python is the same as the build date of the package.
-* Open up the terminal, and run `cd KiCad.app/Contents/Frameworks/python/site-packages/; ../../Python.framework/Versions/Current/bin/python -m pcbnew`.  It shouldn't show an error.
+* Open up pcbnew.app, and open up the Python scripting console.  Type `import pcbnew` and press enter.  It shouldn't show an error.  Verify that the build date of Python is the same as the build date of the package.
+* Open up KiCad.app, open up pcbnew, and open up the Python scripting console. Type `import pcbnew` and press enter.  It shouldn't show an error.  Verify that the build date of Python is the same as the build date of the package.
+* Open up the terminal, and run `kicad.app/Contents/Frameworks/Python.framework/Versions/3.8/bin/python3`.  It shouldn't show an error.  Verify that the build date of Python is the same as the build date of the package.
+* Open up the terminal, and run `cd kicad.app/Contents/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages; ../../Python.framework/Versions/Current/bin/python3 -m pcbnew`.  It shouldn't show an error.
 
 Footprint Wizards
 -----------------

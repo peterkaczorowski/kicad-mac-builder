@@ -1,106 +1,62 @@
 include(ExternalProject)
 
-# On not writing to /Applications or /bin during Python's make install:
+# There are certain snags with building your own Python, that, while we have been able to work around them fine in the
+# past, have tripped up users and new potential developers*, and I'm eager to see if using this script that starts
+# from the Python.org macOS bundle and makes it relocatable helps improve things.  Of course, until there are some
+# CMake improvements around bundling, we'll still have to handle a fair amount of it ourselves, but it appears that
+# these changes are starting to be discussed upstream.
+
+# If we end up wanting to build our Python from source again, I have been able to get Python 3 working like we had before
+# as long as I was careful about the following:
 
 # When you compile Python as a Framework, it wants to write into /Applications.
-# The documentation implies you can get around it by building the frameworkinstallframework target
-# but those end up pulling in frameworkinstallapps and frameworkinstallunixtools, which write into places we don't want~
-# So I tried overriding where it was writing with DESTDIR.  I had issues when fixup_bundle ended up pulling in a good portion of my OS install!
-# Third, I patched the Python Makefiles to not do apps and unixtools.  While doing so, I noticed that there was a special case:
-# if the Framework path as foo/Library/Frameworks, it writes into foo/Applications.  BINGO!
-# This means it is important that PYTHON_INSTALL_DIR end in /Library/Frameworks.
+# The documentation implies you can get around it by building the frameworkinstallframework target, but it ends up
+# pulling in frameworkinstallapps and frameworkinstallunixtools, which write into places we don't want.
+# I tried overriding that with DESTDIR, and fixup_bundle got so confused it pulled in nearly an entire macOS install.
+# However, a detailed reading of the source revealed that if the Framework path is set as foo/Library/Frameworks, the
+# build will write into foo/Applications, not /Applications.  BINGO!
+# This means it is important that PYTHON_INSTALL_DIR ends in /Library/Frameworks.
 
-# I am seeing an issue where pcbnew's Python ends up being the SYSTEM PYTHON!  I used dtruss and DYLD_PRINT_* and a few other tools
-# and a bunch of Mac developer reference tools, and it appears that there are some fallback dynamic loading locations that don't
-# seem to match the documentation for macOS.
+# * Remember when we had to build Python with one core, because of a race condition when building Python as a
+#   Framework on macOS?  (https://github.com/Homebrew/legacy-homebrew/issues/429)
 
-# For some reason, we need to do the install step with one core only.  I haven't found or created an upstream bug, but other people have run into something similar.
-# https://github.com/Homebrew/legacy-homebrew/issues/429
+include(ExternalProject)
 
-# It would be nice to replace the steps below with install_name_tool with fixup_bundle, but I am not sure it is able to handle a bundle's embedded Framework that has an embedded application, and a different bundle that symlinks into the first one and masquerades as a standalone bundle.  I tried for a few days and was unsuccessful.
-
-# KiCad's CMakefile runs fixup_bundle, which runs verify_app, which verifies all the components, and every time I did this with rpath, verify_app chokes on Python here, saying that it isn't contained in KiCad.app.  I am not 100% sure, because I had to pause chasing this down once I figured out a workaround until all of kicad-mac-builder is closer to functional before V5 comes out.  One workaround is adding the Python parts as IGNORE_ITEMS in KiCad's CMakefile.  Make sure to check out the KiCad patch in kicad-mac-builder/patches/kicad.
-
-# If someone can get BundleUtilities to replace the manual install_name_tool step I'd love to see it!
-
-execute_process(COMMAND brew --prefix openssl
-  OUTPUT_VARIABLE SSL_PREFIX_PATH
-  RESULT_VARIABLE FOUND_SSL_PREFIX_PATH_EXIT_CODE
-  OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-
-if (NOT ${FOUND_SSL_PREFIX_PATH_EXIT_CODE} EQUAL 0)
-  message( FATAL_ERROR "Unable to find the SSL install prefix
-  directory from brew.  Make sure you have installed all the
-  dependencies per the README. Exiting." )
-endif()
+# TODO: Can we add ${CMAKE_SOURCE_DIR}/python-requirements.txt as a dependency so it rebuilds here if it changes?
 
 ExternalProject_Add(
-        python
-        PREFIX  python
-        URL ${PYTHON_URL}
-        URL_HASH SHA1=${PYTHON_SHA1}
-        UPDATE_COMMAND      ""
-        PATCH_COMMAND       ""
-        CONFIGURE_COMMAND MACOSX_DEPLOYMENT_TARGET=${MACOS_MIN_VERSION} ./configure
-                    "CPPFLAGS=-I${SSL_PREFIX_PATH}/include"
-                    "LDFLAGS=-L${SSL_PREFIX_PATH}/lib"
-                    --enable-framework=${PYTHON_INSTALL_DIR}
-                    --prefix=${PYTHON_INSTALL_DIR}
-        BUILD_COMMAND ${MAKE}
-        BUILD_IN_SOURCE 1
-        INSTALL_COMMAND make -j1 install
-)
+	python
+	PREFIX  python
+	GIT_REPOSITORY https://github.com/gregneagle/relocatable-python.git
+	GIT_TAG main
+	CONFIGURE_COMMAND 	""
+	UPDATE_COMMAND      ""
+	PATCH_COMMAND       ""
+	BUILD_COMMAND cmake -E remove_directory Python.framework
+	COMMAND <SOURCE_DIR>/make_relocatable_python_framework.py
+		--python-version ${PYTHON_VERSION}
+		--pip-requirements ${CMAKE_SOURCE_DIR}/python-requirements.txt
 
-# This step executes whether or not install is new. Is there a way to make it only execute when make -j1 install *does* something?
-# Because I didn't see an obvious way to do that, I wrote a script that will not error when adding rpaths that are already on the object.
-
-ExternalProject_Add_Step(
-        python
-        fixup
-        COMMENT "Fixing up the Python framework"
-        DEPENDEES install
-
-        COMMAND install_name_tool -change "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/Python" "@rpath/Python.framework/Python" "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/Resources/Python.app/Contents/MacOS/Python"
-        COMMAND ${BIN_DIR}/add-rpath.sh @executable_path/../Frameworks "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/Resources/Python.app/Contents/MacOS/Python" # for the kifaces
-        COMMAND ${BIN_DIR}/add-rpath.sh @executable_path/../../../../../../../ "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/Resources/Python.app/Contents/MacOS/Python" # for the bin/python files
-        COMMAND ${BIN_DIR}/add-rpath.sh @executable_path/../../../../../ ${PYTHON_INSTALL_DIR}/Python.framework/Resources/Python.app/Contents/MacOS/Python
-
-        COMMAND install_name_tool -change "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/Python" "@rpath/Python.framework/Python" "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/bin/python"
-        COMMAND ${BIN_DIR}/add-rpath.sh @executable_path/../../../../ "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/bin/python"
-
-        COMMAND install_name_tool -change "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/Python" "@rpath/Python.framework/Python" "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/bin/pythonw"
-        COMMAND ${BIN_DIR}/add-rpath.sh @executable_path/../../../../ "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/bin/pythonw"
-
-        COMMAND chmod u+w "${PYTHON_INSTALL_DIR}/Python.framework/Python"
-        COMMAND install_name_tool -id @rpath/Python.framework/Python "${PYTHON_INSTALL_DIR}/Python.framework/Python"
+	INSTALL_COMMAND cmake -E remove_directory  ${PYTHON_INSTALL_DIR}
+	COMMAND mkdir -p ${PYTHON_INSTALL_DIR}
+	COMMAND cp -R Python.framework ${PYTHON_INSTALL_DIR}/ # we need to preserve symlinks!
 )
 
 ExternalProject_Add_Step(
 	python
 	verify_fixup
-	COMMENT "Test bin/python and bin/pythonw"
-	DEPENDEES fixup
-	COMMAND ${BIN_DIR}/verify-cli-python.sh "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/bin/pythonw"
-	COMMAND ${BIN_DIR}/verify-cli-python.sh "${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/bin/python"
+	COMMENT "Test bin/python3"
+	DEPENDEES install
+	COMMAND ${BIN_DIR}/verify-cli-python.sh "${PYTHON_INSTALL_DIR}/Python.framework/Versions/Current/bin/python3"
 )
 
 ExternalProject_Add_Step(
 	python
 	verify_ssl
 	COMMENT "Make sure SSL is included"
-	DEPENDEES verify_fixup
-	COMMAND ${PYTHON_INSTALL_DIR}/Python.framework/Versions/2.7/bin/python -c "import ssl"
+	DEPENDEES install
+	COMMAND "${PYTHON_INSTALL_DIR}/Python.framework/Versions/Current/bin/python3" -c "import ssl"
 )
 
-ExternalProject_Add(
-        six
-        PREFIX six
-        GIT_REPOSITORY https://github.com/benjaminp/six.git
-        GIT_TAG 1.11.0
-        UPDATE_COMMAND      ""
-        PATCH_COMMAND       ""
-        CONFIGURE_COMMAND   ""
-        BUILD_COMMAND       ""
-        INSTALL_COMMAND     ""
-)
+ExternalProject_Get_Property(python BINARY_DIR)
+set( python_BINARY_DIR ${BINARY_DIR})
