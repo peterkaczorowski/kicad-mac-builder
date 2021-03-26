@@ -74,6 +74,13 @@ set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DPYTHON_FRAMEWORK=${PYTHON_INSTALL_DI
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=${KICAD_INSTALL_DIR} )
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DKICAD_USE_OCE=OFF -DKICAD_USE_OCC=ON )
 
+
+# Add the FFTW directory to the extra bundle dirs, for ngspice
+execute_process(COMMAND brew --prefix fftw OUTPUT_VARIABLE BREW_FFTW_BASEDIR RESULT_VARIABLE FOUND_BREW_FFTW_BASEDIR_EXIT_CODE OUTPUT_STRIP_TRAILING_WHITESPACE)
+if ( ${FOUND_BREW_FFTW_BASEDIR_EXIT_CODE} EQUAL 0 )
+    get_filename_component(BREW_FFTW_LIBRARY_DIR ${BREW_FFTW_BASEDIR}/lib/ REALPATH DIRECTORY)
+    set( MACOS_EXTRA_BUNDLE_FIX_DIRS ${MACOS_EXTRA_BUNDLE_FIX_DIRS} ${BREW_FFTW_LIBRARY_DIR} )
+endif()
 # FindOpenCASCADE.cmake finds /usr/local/lib, but not the Homebrew one.  fixup_bundle doesn't work with /usr/local/lib as a dirs argument, so
 # if OCC is installed by brew, we're going to pass in the library and include dir manually. If not, we aren't passing in anything
 # which means that FindOpenCASCADE.cmake will do its regular job.
@@ -90,6 +97,9 @@ endif()
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DKICAD_SPICE=ON )
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DNGSPICE_INCLUDE_DIR=${ngspice_INSTALL_DIR}/include )
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DNGSPICE_LIBRARY=${ngspice_INSTALL_DIR}/lib/libngspice.dylib )
+
+set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DMACOS_EXTRA_BUNDLE_FIX_DIRS=${MACOS_EXTRA_BUNDLE_FIX_DIRS} )
+
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DCMAKE_BUILD_TYPE=${KICAD_CMAKE_BUILD_TYPE} )
 
 if(${KICAD_VERSION_EXTRA})

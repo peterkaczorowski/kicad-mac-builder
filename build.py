@@ -102,6 +102,9 @@ def parse_args(args):
                              "DMG. See the documentation for details.",
                         nargs="+",
                         )
+    parser.add_argument("--extra-bundle-fix-dir",
+                        dest="extra_bundle_fix_dir",
+                        help="Extra directory to pass to fixup_bundle for KiCad.app.")
 
     parsed_args = parser.parse_args(args)
 
@@ -205,6 +208,10 @@ def build(args, new_path):
 
     if args.extra_version:
         cmake_command.append("-DKICAD_VERSION_EXTRA={}".format(args.extra_version))
+
+    if args.extra_bundle_fix_dir:
+        cmake_command.append("-DMACOS_EXTRA_BUNDLE_FIX_DIRS={}".format(args.extra_bundle_fix_dir))
+
     if args.release_name:
         cmake_command.append("-DRELEASE_NAME={}".format(args.release_name))
 
