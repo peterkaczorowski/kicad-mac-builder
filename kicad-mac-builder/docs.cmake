@@ -1,11 +1,19 @@
-set( DOCS_OUTPUT_DIR ${CMAKE_BINARY_DIR}/docs/help )
+if ( SKIP_DOCS_UPDATE )
+    # Don't download docs from <URL>; use the contents of <DOWNLOAD_DIR> instead
+    set(docs_DOWNLOAD_COMMAND_OVERRIDE DOWNLOAD_COMMAND echo "Using contents of <DOWNLOAD_DIR> instead of downloading ${DOCS_TARBALL_URL}")
+else()
+    set(docs_DOWNLOAD_COMMAND_OVERRIDE )
+endif()
 
 ExternalProject_Add(
         docs
         PREFIX  docs
-        DOWNLOAD_COMMAND mkdir -p ${CMAKE_BINARY_DIR}/docs/src
-        UPDATE_COMMAND curl -L ${DOCS_TARBALL_URL} -o ${CMAKE_BINARY_DIR}/docs/src/docs.tar.gz
+        URL ${DOCS_TARBALL_URL}
+        ${docs_DOWNLOAD_COMMAND_OVERRIDE}
         CONFIGURE_COMMAND ""
-        BUILD_COMMAND tar -xf ${CMAKE_BINARY_DIR}/docs/src/docs.tar.gz -C <INSTALL_DIR> --strip-components=1
+        BUILD_COMMAND ""
         INSTALL_COMMAND ""
 )
+
+ExternalProject_Get_Property(docs SOURCE_DIR)
+set(docs_SOURCE_DIR ${SOURCE_DIR} )

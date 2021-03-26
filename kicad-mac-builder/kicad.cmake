@@ -49,24 +49,17 @@ else()
   message( FATAL_ERROR "Either KICAD_TAG or KICAD_SOURCE_DIR must be set.  Please see the README or try build.py." )
 endif()
 
-ExternalProject_Add_Step(
-        kicad
-        install-docs-to-app
-        COMMENT "Installing docs into KiCad.app"
-        DEPENDS docs
-        DEPENDEES install
-        COMMAND mkdir -p ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/help/
-        COMMAND cp -r ${CMAKE_BINARY_DIR}/docs/share/doc/kicad/help/en ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/help/
-        COMMAND find ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/help -name "*.epub" -type f -delete
-        COMMAND find ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/help -name "*.pdf" -type f -delete
-)
 
 ExternalProject_Add_Step(
-        kicad
-        verify-app
-        COMMENT "Checking that all loader dependencies are system-provided or relative"
-        DEPENDEES install
-        COMMAND ${BIN_DIR}/verify-app.sh ${KICAD_INSTALL_DIR}/KiCad.app
+    kicad
+    install-docs-to-app
+    COMMENT "Installing docs into KiCad.app"
+    DEPENDS docs
+    DEPENDEES install
+    COMMAND mkdir -p ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/help/
+    COMMAND cp -r ${docs_SOURCE_DIR}/share/doc/kicad/help/ ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/help/
+    COMMAND find ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/help -name "*.epub" -type f -delete
+    COMMAND find ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/help -name "*.pdf" -type f -delete
 )
 
 ExternalProject_Add_Step(

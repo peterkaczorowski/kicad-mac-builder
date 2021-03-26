@@ -25,7 +25,7 @@ def get_local_macos_version():
 
 
 def parse_args(args):
-    docs_tarball_url_default = "http://docs.kicad.org/kicad-doc-HEAD.tar.gz"
+    docs_tarball_url_default = "https://docs.kicad.org/kicad-doc-HEAD.tar.gz"
 
     parser = argparse.ArgumentParser(description='Build and package KiCad for macOS. Part of kicad-mac-builder.',
                                      epilog="Further details are available in the README file.")
@@ -73,6 +73,10 @@ def parse_args(args):
                         help="URL to download the documentation tar.gz from. Defaults to {}".format(
                             docs_tarball_url_default),
                         )
+    parser.add_argument("--skip-docs-update",
+                        help="Skip updating the docs, if they've already been downloaded. Cannot be used to create a release.",
+                        action="store_true"
+                        )
     parser.add_argument("--release-name",
                         help="Overrides the main component of the DMG filename.",
                         )
@@ -103,6 +107,9 @@ def parse_args(args):
 
     if parsed_args.release and parsed_args.kicad_source_dir:
         parser.error("KiCad source directory builds cannot be release builds.")
+
+    if parsed_args.release and parsed_args.skip_docs_update:
+        parser.error("Release builds cannot skip docs updates.")
 
     if (parsed_args.kicad_ref or parsed_args.kicad_git_url) and parsed_args.kicad_source_dir:
         parser.error("KiCad source directory builds cannot also specify KiCad git details.")
@@ -186,6 +193,9 @@ def build(args, new_path):
             cmake_command.append("-DKICAD_URL={}".format(args.kicad_git_url))
         if args.kicad_ref:
             cmake_command.append("-DKICAD_TAG={}".format(args.kicad_ref))
+
+    if args.skip_docs_update:
+        cmake_command.append("-DSKIP_DOCS_UPDATE=ON")
 
     if args.extra_version:
         cmake_command.append("-DKICAD_VERSION_EXTRA={}".format(args.extra_version))
