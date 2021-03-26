@@ -149,7 +149,7 @@ def parse_args(args):
         if not parsed_args.kicad_source_dir:
             default_refs.append("kicad_ref")
 
-        # handle dedaults--can't do in argparse because they're conditionally required
+        # handle defaults--can't do in argparse because they're conditionally required
         for ref in default_refs:
             if getattr(parsed_args, ref) is None:
                 setattr(parsed_args, ref, "origin/master")
