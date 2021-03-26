@@ -197,7 +197,7 @@ case "${PACKAGE_TYPE}" in
         rsync -al "${KICAD_INSTALL_DIR}"/* "${MOUNTPOINT}"/KiCad/. # IMPORTANT: must preserve symlinks
         mkdir -p "${MOUNTPOINT}"/kicad
         echo "Moving demos"
-        mv "${MOUNTPOINT}"/KiCad/demos "${MOUNTPOINT}"/
+        mv "${MOUNTPOINT}"/KiCad/demos "${MOUNTPOINT}"/kicad/.
         echo "Copying templates"
         cp -r "${CMAKE_BINARY_DIR}"/templates/src/templates-build/output/* "${MOUNTPOINT}"/kicad/.
         echo "Copying symbols"
