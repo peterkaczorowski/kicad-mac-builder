@@ -33,6 +33,9 @@ def parse_args(args):
                         help="Path that will store the build files. Will be created if possible if it doesn't exist. Defaults to \"build/\" next to build.py.",
                         default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "build"),
                         required=False)
+    parser.add_argument("--dmg-dir",
+                        help="Path that will store the output dmgs for packaging targets.  Defaults to \"dmg/\" in the build directory.",
+                        required=False)
     parser.add_argument("--jobs",
                         help="Tell make to build using this number of parallel jobs. Defaults to the number of cores.",
                         type=int,
@@ -197,6 +200,9 @@ def build(args, new_path):
     if args.skip_docs_update:
         cmake_command.append("-DSKIP_DOCS_UPDATE=ON")
 
+    if args.dmg_dir:
+        cmake_command.append("-DDMG_DIR={}".format(args.dmg_dir))
+
     if args.extra_version:
         cmake_command.append("-DKICAD_VERSION_EXTRA={}".format(args.extra_version))
     if args.release_name:
@@ -239,7 +245,11 @@ def build(args, new_path):
 
     had_package_targets = any(target.startswith("package-") for target in args.target)
     if had_package_targets:
-        print_and_flush("Output DMGs should be located in {}/dmg".format(os.getcwd()))
+        dmg_location = args.dmg_dir
+        if dmg_location is None:
+            dmg_location = os.path.join(args.build_dir, "dmg")
+        print_and_flush("Output DMGs should be located in {}".format(dmg_location))
+
     print_and_flush("Build complete.")
 
 def print_summary(args):

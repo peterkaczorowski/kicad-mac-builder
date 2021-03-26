@@ -31,6 +31,10 @@ if( NOT DEFINED MACOS_MIN_VERSION )
 message( FATAL_ERROR "MACOS_MIN_VERSION must be set.  For example 'cmake -DMACOS_MIN_VERSION=10.13 ../kicad-mac-builder'" )
 endif ()
 
+if( NOT DEFINED DMG_DIR )
+  set( DMG_DIR ${CMAKE_BINARY_DIR}/dmg )
+endif ()
+
 set( CMAKE_VERBOSE_MAKEFILE ON )
 set( BIN_DIR ${CMAKE_SOURCE_DIR}/bin )
 

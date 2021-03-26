@@ -39,7 +39,7 @@ If you'd like to build KiCad from sources instead of from git, you can use the -
 
 During the build, some DMGs may be mounted and Finder may open windows while the script runs.  Unmounting or ejecting the DMGs while the script runs is likely to damage the output DMG.
 
-The output DMGs from `build.py` go into `build/dmg`.
+The output DMGs from `build.py` go into `build/dmg`, but both the build directory and dmg directory can be specified at the command line.
 
 KiCad Mac Builder does not install KiCad onto your Mac or modify your currently installed KiCad.
 
