@@ -20,7 +20,7 @@ Before we are finished, all of the following things should work:
 
 * Open up the terminal, and run `cd kicad.app/Contents/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages; ../../Python.framework/Versions/Current/bin/python3 -m pcbnew`.  It shouldn't show an error.  
 
-* Copy example_action_plugin.py into ~/Library/Preferences/kicad/5.99/scripting/plugins/.  Open up pcbnew, both via KiCad.app and Pcbnew.app, and add a label with the text TODO: add the appropriate placemarker. Go to Tools ⇒ External plugins. You should see Add Date on PCB.  Click it, and you should see TODO.
+* Copy example_action_plugin.py into ~/Library/Preferences/kicad/5.99/scripting/plugins/.  Open up pcbnew, both via KiCad.app and Pcbnew.app, and add a label with the text '$date`  Go to Tools ⇒ External plugins. You should see Add Date on PCB.  Click it, and you should see the label change to something like '$date$ 2021-03-29'.
 
 * TODO: add test for eeschema bom export plugin.
 
