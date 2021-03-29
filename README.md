@@ -54,6 +54,33 @@ Building on Big Sur is possible with a couple of additional steps:
 
 There will likely be warnings raised about dependencies having been built with a later SDK; for development purposes these warnings can be ignored.
 
+Setting up a KiCad Build Environment
+====================================
+
+You can use kicad-mac-builder to setup a KiCad build environment on macOS.  The `setup-kicad-dependencies` target will build all of the KiCad dependencies, and then print the CMake arguments it would use against's KiCad's CMake configuration.
+
+Run `./build.py --target setup-kicad-dependencies`.  At the end, you'll see some output that starts with `CMake arguments for KiCad:`.  Save that.
+
+Go into the KiCad source, and do something like the following:
+
+```
+mkdir build
+cd build
+cmake (All those arguments you copied go here, which should be a series of -DVARIABLENAME=value...) ../ # don't forget that ../ at the end!
+make
+make install
+```
+
+As it is now, you'll need to install `dyldstyle` and run `wrangle-bundle --fix path/to/KiCad.app` in order to get the Python 3 stuff working correctly.
+
+```
+wrangle-bundle --python-version 3.8 --fix path/to/KiCad.app
+```
+
+Now, you can open Finder to the location specified in `CMAKE_INSTALL_PREFIX` in the CMake arguments, and you should see KiCad.app and the rest of the suite.
+
+(Developers, we'd love to hear how this went for you!)
+
 Building inside a VM
 ====================
 It has been historically very difficult to build and package KiCad on macOS.  Even if the source builds fine, getting the environment setup has been quite difficult.  In order to help both developers who want to use kicad-mac-builder to quickly develop and test on macOS, and to make sure that new developers can follow the instructions and quickly and easily get a working setup, I have some Jenkinsfiles setup in ci/.  These Jenkinsfiles use Vagrant and a blank macOS virtual machine (https://github.com/timsutton/osx-vm-templates).  These machines are freshly installed machines from the macOS install media with security patches and the XCode command line tools installed.  Starting from that blank machine and a checkout of this repository, the scripts in ci/ are used to install brew and any dependencies, and then build and package KiCad.  When its finished, the machine is deleted.  This happens at least once a day.

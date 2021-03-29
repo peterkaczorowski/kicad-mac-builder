@@ -9,7 +9,7 @@ add_custom_target(kicad-build-deps
 
 add_custom_target(setup-kicad-dependencies
 	DEPENDS kicad-build-deps
-	COMMENT "CMake arguments for KiCad: ${KICAD_CMAKE_ARGS}"
+	COMMENT "Example CMake command for KiCad: cmake ${KICAD_CMAKE_ARGS} ../"
 )
 
 if(DEFINED RELEASE_NAME)
