@@ -1,19 +1,17 @@
 KiCad Mac Builder
 =================
 
-This is the KiCad Mac builder and packager.
+If you are looking to run KiCad on your Mac, please use the instructions at http://kicad.org/download/osx/.
 
-If you are looking to run KiCad on your Mac, please use the instructions at http://kicad.org/download/osx/ instead of this.  If you are looking to compile KiCad or improve KiCad packaging on MacOS, kicad-mac-builder may be able to help you.
+If you are looking to compile KiCad or improve KiCad packaging on MacOS, kicad-mac-builder may be able to help you.
 
 To build KiCad 5.1, use the 5.1 branch of this repository.
 
 Setup
 =====
-kicad-mac-builder requires a 10.14+ Mac with Homebrew and at least 40G of disk space free.  The instructions assume you are capable of using the command line but they are not intended to require arcane deep knowledge.
+kicad-mac-builder requires a 10.14+ Mac and at least 40G of disk space free.  The instructions assume you are capable of using the command line but they are not intended to require arcane deep knowledge.
 
-You do not need to install anything not listed in this README. If you need to, please let me know because it is a bug in either functionality or documentation.
-
-It may be helpful to run `brew list` before installing any dependencies.  This makes it easier to clean up the new dependencies when uninstalling kicad-mac-builder.
+The documentation assumes you are using Homebrew on your Mac.  The automated builds use `./ci/src/bootstrap.sh` to install Homebrew and the kicad-mac-builder dependencies.
 
 Please use a terminal to run the following command to install the dependencies:
 
@@ -27,9 +25,9 @@ To get up and running the absolute fastest, use `build.py`.  It expects to be ru
 
 It builds everything and uses "reasonable" settings.  If you want something special, check `./build.py --help`, and if that doesn't help, read the rest of this documentation.  Failing that, run `cmake` and `make` by hand.  Better documentation is definitely welcomed!
 
-By default, dependencies are built once, and unless their build directories are cleaned out, or their source is updated, they will not be built again.  The KiCad files, like the footprints, symbols, 3D models, docs, and KiCad itself, are, by default, built from origin/master of their respective repositories or re-downloaded, ensuring you have the most up-to-date KiCad.
+By default, dependencies are built once, and unless their build directories are cleaned out, or their source is updated, they will not be built again.  The KiCad files, like the footprints, symbols, 3D models, and KiCad itself, are, by default, built from origin/master of their respective repositories or re-downloaded, ensuring you have the most up-to-date KiCad.
 
-If you'd like to build KiCad from sources instead of from git, you can use the --kicad-source-dir option.  This will not apply any KiCad patches, but will use the source tree you choose. This can be useful for testing KiCad changes.
+If you'd like to build KiCad from sources instead of from git, you can use the --kicad-source-dir option.  This can be useful for testing KiCad changes.
 
 * `build.py --target kicad` builds KiCad and its source code dependencies, but packages nothing.  This is the same for any other CMake targets.
 * `build.py --target package-kicad-nightly` creates a DMG of everything except the 3D models and docs.
@@ -39,13 +37,14 @@ If you'd like to build KiCad from sources instead of from git, you can use the -
 
 During the build, some DMGs may be mounted and Finder may open windows while the script runs.  Unmounting or ejecting the DMGs while the script runs is likely to damage the output DMG.
 
-The output DMGs from `build.py` go into `build/dmg`, but both the build directory and dmg directory can be specified at the command line.
+The output DMGs from `build.py` go into `dmg/` in the build directory.  Both the build directory and dmg directory can be specified at the command line.
 
 KiCad Mac Builder does not install KiCad onto your Mac or modify your currently installed KiCad.
 
 Building on Big Sur (macOS 11)
-====================
-Building on Big Sur is possible with a couple of additional steps:
+==============================
+
+At the moment, building on Big Sur requires additional steps.
 
 1. Download the Xcode 11.3.1 to obtain the OSX 10.15 SDK (obtainable from Apple Developer Downloads [here](https://download.developer.apple.com/Developer_Tools/Xcode_11.3.1/Xcode_11.3.1.xip))
 2. Unpack the SDK in to the expected location `/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk`
@@ -81,39 +80,12 @@ Now, you can open Finder to the location specified in `CMAKE_INSTALL_PREFIX` in 
 
 (Developers, we'd love to hear how this went for you!)
 
-Building inside a VM
-====================
-It has been historically very difficult to build and package KiCad on macOS.  Even if the source builds fine, getting the environment setup has been quite difficult.  In order to help both developers who want to use kicad-mac-builder to quickly develop and test on macOS, and to make sure that new developers can follow the instructions and quickly and easily get a working setup, I have some Jenkinsfiles setup in ci/.  These Jenkinsfiles use Vagrant and a blank macOS virtual machine (https://github.com/timsutton/osx-vm-templates).  These machines are freshly installed machines from the macOS install media with security patches and the XCode command line tools installed.  Starting from that blank machine and a checkout of this repository, the scripts in ci/ are used to install brew and any dependencies, and then build and package KiCad.  When its finished, the machine is deleted.  This happens at least once a day.
-
-This is intended to increase reproducibility and reduce the likelihood of undocumented steps and stale documentation.  It does take more resources and is slower, so it is not expected to be the way most developers interact with kicad-mac-builder.
-
-Please note, that as of early 2018, to create a 10.13 or 10.14 VM with the osx-vm-templates project, you must start with a 10.12 VM and upgrade it.
-
 Issues
 ======
-In early 2018, I'm noticing that sometimes wxPython doesn't download properly from Sourceforge, so I've included a mirror in this repository.
 
-In May 2018, the KiCad 10.11 build machine has an older version of CMake installed.  The included GetPrequisites and BundleUtilties do not work with what we are doing with the packaging.  I included the version from 3.10 using a KiCad patch.  As soon as that machine is upgraded, we should add a minimum CMake version and remove that patch.
+Depending on if the issues are with KiCad or kicad-mac-builder, issues may be found at either https://gitlab.com/kicad/packaging/kicad-mac-builder/-/issues or https://gitlab.com/kicad/code/kicad/-/issues?label_name=macos.
 
-Known Errors
-============
-Unfortunately, as of July 2018, there are messages that pop up during build that say error that are not problems.  There is work underway to reduce these to a minimum.
-
-These include, but are not limited to:
-
-```
-==> default: Traceback (most recent call last):
-==> default:   File "<string>", line 1, in <module>
-==> default: ImportError: No module named wx
-```
-
-```
-error: /Library/Developer/CommandLineTools/usr/bin/install_name_tool: for: libGLEW.2.1.dylib (for architecture x86_64) option "-add_rpath @loader_path/../.." would duplicate path, file already has LC_RPATH for: @loader_path/../..
-```
-
-with a variety of paths...
-
-Making changes to KiCad-mac-builder
+Making changes to kicad-mac-builder
 ===================================
 
 New Dependencies
