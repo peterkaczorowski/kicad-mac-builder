@@ -150,9 +150,11 @@ Templates
 Python
 ------
 * Open up pcbnew.app, and open up the Python scripting console.  Type `import pcbnew` and press enter.  It shouldn't show an error.  Verify that the build date of Python is the same as the build date of the package.
-* Open up KiCad.app, open up pcbnew, and open up the Python scripting console. Type `import pcbnew` and press enter.  It shouldn't show an error.  Verify that the build date of Python is the same as the build date of the package.
-* Open up the terminal, and run `kicad.app/Contents/Frameworks/Python.framework/Versions/3.8/bin/python3`.  It shouldn't show an error.  Verify that the build date of Python is the same as the build date of the package.
-* Open up the terminal, and run `cd kicad.app/Contents/Frameworks/Python.framework/Versions/3.8/lib/python3.8/site-packages; ../../Python.framework/Versions/Current/bin/python3 -m pcbnew`.  It shouldn't show an error.
+* Open up KiCad.app, open up pcbnew, and open up the Python scripting console. Type `import pcbnew` and press enter.  It shouldn't show an error.  Verify that the build date of Python is the same as the build date of the package. (This currently doesn't work when KiCad.app is opened via Finder.)
+* Open up the terminal, and run `kicad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3`.  It shouldn't show an error.  Verify that the build date of Python is the same as the build date of the package.
+* Open up the terminal, and run `cd kicad.app/Contents/Frameworks/Python.framework/Versions/Current/lib/python*/site-packages; ../../Python.framework/Versions/Current/bin/python3 -m pcbnew`.  It shouldn't show an error.
+* Copy example_action_plugin.py into ~/Library/Preferences/kicad/5.99/scripting/plugins/.  Open Pcbnew.app. Add a label with the text '$date`  Go to Tools ⇒ External plugins. You should see Add Date on PCB.  Click it, and you should see the label change to something like '$date$ 2021-03-29'.
+* Copy example_action_plugin.py into ~/Library/Preferences/kicad/5.99/scripting/plugins/.  Open KiCad.app. Create a new project.  Open Pcbnew.  Add a label with the text '$date`  Go to Tools ⇒ External plugins. You should see Add Date on PCB.  Click it, and you should see the label change to something like '$date$ 2021-03-29'.
 
 Footprint Wizards
 -----------------
