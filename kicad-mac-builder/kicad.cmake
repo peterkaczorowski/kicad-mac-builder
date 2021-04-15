@@ -53,7 +53,6 @@ else()
   message( FATAL_ERROR "Either KICAD_TAG or KICAD_SOURCE_DIR must be set.  Please see the README or try build.py." )
 endif()
 
-
 ExternalProject_Add_Step(
     kicad
     install-docs-to-app
@@ -92,6 +91,14 @@ ExternalProject_Add_Step(
     DEPENDEES fix-loading
     COMMAND ${BIN_DIR}/verify-cli-python.sh ${KICAD_INSTALL_DIR}/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3
     COMMAND ${BIN_DIR}/verify-cli-python.sh ${KICAD_INSTALL_DIR}/KiCad.app/Contents/Frameworks/Python.framework/Versions/${PYTHON_X_Y_VERSION}/bin/python${PYTHON_X_Y_VERSION}
+)
+
+ExternalProject_Add_Step(
+        kicad
+        verify-wx-import
+        COMMENT "Verifying python can import wx"
+        DEPENDEES verify-cli-python
+        COMMAND ${BIN_DIR}/verify-wx-import.sh  ${KICAD_INSTALL_DIR}/KiCad.app/
 )
 
 ExternalProject_Add_Step(
