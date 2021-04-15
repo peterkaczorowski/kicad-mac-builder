@@ -4,8 +4,14 @@ set -e
 
 cleanup() {
     echo "Making sure any mounts are unmounted."
-    hdiutil detach "${MOUNTPOINT}" || true
-    hdiutil detach /Volumes/"${MOUNT_NAME}" || true
+    if [ ! -z "${MOUNTPOINT}" ]; then
+        hdiutil detach "${MOUNTPOINT}" || true
+    fi
+
+    if [ ! -z "${MOUNT_NAME}" ]; then
+        hdiutil detach /Volumes/"${MOUNT_NAME}" || true
+        diskutil unmount /Volumes/"${MOUNT_NAME}" || true
+    fi
 }
 trap cleanup EXIT
 
@@ -14,6 +20,7 @@ setup_dmg()
     # make the mountpoint
     if [ -e "${MOUNTPOINT}" ]; then
         # it might be a leftover mount from a crashed previous run, so try to unmount it before removing it.
+        hdiutil detach "${MOUNTPOINT}" || true
         diskutil unmount "${MOUNTPOINT}" || true
         rm -r "${MOUNTPOINT}"
     fi
@@ -34,6 +41,7 @@ setup_dmg()
         echo "If hdituil failed to resize, saying the size is above a maximum, reboot.  If you know the root cause or a better way to fix this, please let us know."
         exit 1
     fi
+    diskutil unmount /Volumes/"${MOUNT_NAME}" || true
     hdiutil attach "${TEMPLATE}" -noautoopen -mountpoint "${MOUNTPOINT}"
 }
 
@@ -49,7 +57,7 @@ fixup_and_cleanup()
     rm -r "${MOUNTPOINT}"
 
     #set it so the DMG autoopens on download/mount
-    hdiutil attach "${TEMPLATE}" -noautoopen -mountpoint /Volumes/"${MOUNT_NAME}"
+    hdiutil attach "${TEMPLATE}" -noautoopen -nobrowse -mountpoint /Volumes/"${MOUNT_NAME}"
     bless /Volumes/"${MOUNT_NAME}" --openfolder /Volumes/"${MOUNT_NAME}"
 
     UNMOUNTED=1
