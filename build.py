@@ -106,6 +106,31 @@ def parse_args(args):
                         dest="extra_bundle_fix_dir",
                         help="Extra directory to pass to fixup_bundle for KiCad.app.")
 
+    signing_group = parser.add_argument_group('signing and notarization')
+
+    signing_group.add_argument("--signing-identity",
+                        dest="signing_identity",
+                        help="Signing identity passed to codesign for signing .apps and .dmgs.")
+    signing_group.add_argument("--signing-certificate-id",
+                               dest="signing_certificate_id",
+                               help="40 character hex ID for the signing certificate from `security find-identity -v`")
+    signing_group.add_argument("--apple-developer-username",
+                        dest="apple_developer_username",
+                        help="Apple Developer username for notarizing .apps and .dmgs.")
+    signing_group.add_argument("--apple-developer-password-keychain-name",
+                        dest="apple_developer_password_keychain_name",
+                        help="Apple Developer password keychain name for notarizing .apps and .dmgs."
+                        "See `man altool` for more details.")
+    signing_group.add_argument("--app-notarization-id",
+                        dest="app_notarization_id",
+                        help="notarization ID used for tracking notarization submissions for .apps")
+    signing_group.add_argument("--dmg-notarization-id",
+                        dest="dmg_notarization_id",
+                        help="notarization ID used for tracking notarization submissions for .dmgs")
+    signing_group.add_argument("--asc-provider",
+                        dest="asc_provider",
+                        help="provider passed to `xcrun altool` for notarization")
+
     parsed_args = parser.parse_args(args)
 
     if parsed_args.target is None:
@@ -211,6 +236,27 @@ def build(args, new_path):
 
     if args.extra_bundle_fix_dir:
         cmake_command.append("-DMACOS_EXTRA_BUNDLE_FIX_DIRS={}".format(args.extra_bundle_fix_dir))
+
+    if args.signing_identity:
+        cmake_command.append("-DSIGNING_IDENTITY={}".format(args.signing_identity))
+
+    if args.signing_certificate_id:
+        cmake_command.append("-DSIGNING_CERTIFICATE_ID={}".format(args.signing_certificate_id))
+
+    if args.apple_developer_username:
+        cmake_command.append("-DAPPLE_DEVELOPER_USERNAME={}".format(args.apple_developer_username))
+
+    if args.apple_developer_password_keychain_name:
+        cmake_command.append("-DAPPLE_DEVELOPER_PASSWORD_KEYCHAIN_NAME={}".format(args.apple_developer_password_keychain_name))
+
+    if args.app_notarization_id:
+        cmake_command.append("-DAPP_NOTARIZATION_ID={}".format(args.app_notarization_id))
+
+    if args.dmg_notarization_id:
+        cmake_command.append("-DDMG_NOTARIZATION_ID={}".format(args.dmg_notarization_id))
+
+    if args.asc_provider:
+        cmake_command.append("-DASC_PROVIDER={}".format(args.asc_provider))
 
     if args.release_name:
         cmake_command.append("-DRELEASE_NAME={}".format(args.release_name))

@@ -2,6 +2,8 @@
 
 set -e
 
+SCRIPT_DIR=$(dirname "$(stat -f "$0")")
+
 cleanup() {
     echo "Making sure any mounts are unmounted."
     if [ ! -z "${MOUNTPOINT}" ]; then
@@ -84,6 +86,20 @@ fixup_and_cleanup()
     hdiutil convert "${TEMPLATE}"  -format UDZO -imagekey zlib-level=9 -o "${DMG_NAME}" # This used zlib, and bzip2 based (above) is slower but more compression
 
     rm "${TEMPLATE}"
+
+    if [ -n "${SIGNING_IDENTITY}" ]; then
+      codesign --sign "${SIGNING_IDENTITY}" --verbose "${DMG_NAME}"
+    fi
+
+    if [ -n "${SIGNING_IDENTITY}" ] && [ -n "${APPLE_DEVELOPER_USERNAME}" ] && [ -n "${APPLE_DEVELOPER_PASSWORD_KEYCHAIN_NAME}" ] && [ -n "${DMG_NOTARIZATION_ID}" ] && [ -n "${ASC_PROVIDER}" ]; then
+      "${SCRIPT_DIR}/apple.py" notarize \
+          --apple-developer-username "${APPLE_DEVELOPER_USERNAME}" \
+          --apple-developer-password-keychain-name "${APPLE_DEVELOPER_PASSWORD_KEYCHAIN_NAME}" \
+          --notarization-id "${DMG_NOTARIZATION_ID}" \
+          --asc-provider "${ASC_PROVIDER}" \
+          "${DMG_NAME}"
+    fi
+
     mkdir -p "${DMG_DIR}"
 
     # If you move a file to the directory it's in, `mv` returns an error.  Ignore that one.
@@ -115,6 +131,11 @@ if [ ! -z ${RELEASE_NAME} ]; then # if RELEASE_NAME is unset, or is set to empty
 else
     echo "RELEASE_NAME: unspecified"
 fi
+echo "SIGNING_IDENTITY: ${SIGNING_IDENTITY}"
+echo "APPLE_DEVELOPER_USERNAME: ${APPLE_DEVELOPER_USERNAME}"
+echo "APPLE_DEVELOPER_PASSWORD_KEYCHAIN_NAME: ${APPLE_DEVELOPER_PASSWORD_KEYCHAIN_NAME}"
+echo "DMG_NOTARIZATION_ID: ${DMG_NOTARIZATION_ID}"
+echo "ASC_PROVIDER: ${ASC_PROVIDER}"
 echo "pwd: $(pwd)"
 
 if [ ! -e "${PACKAGING_DIR}" ]; then

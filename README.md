@@ -53,6 +53,10 @@ At the moment, building on Big Sur requires additional steps.
 
 There will likely be warnings raised about dependencies having been built with a later SDK; for development purposes these warnings can be ignored.
 
+Signing and Notarization
+========================
+kicad-mac-builder supports optional signing and notarization of build outputs.  kicad-mac-builder expects you are using a Developer ID certificate.  Details on creating one are available at https://developer.apple.com/developer-id/. kicad-mac-builder also expects you have stored your Apple developer account password in your keychain.  See `man altool` for details.
+
 Setting up a KiCad Build Environment
 ====================================
 

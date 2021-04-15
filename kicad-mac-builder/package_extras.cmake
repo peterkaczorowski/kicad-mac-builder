@@ -18,6 +18,11 @@ ExternalProject_Add(
                       BACKUP_KICAD=${CMAKE_SOURCE_DIR}/bin/backup-kicad.command
                       DMG_DIR=${DMG_DIR}
                       RELEASE_NAME=${RELEASE_NAME}
+                      SIGNING_IDENTITY=${SIGNING_IDENTITY}
+                      APPLE_DEVELOPER_USERNAME=${APPLE_DEVELOPER_USERNAME}
+                      APPLE_DEVELOPER_PASSWORD_KEYCHAIN_NAME=${APPLE_DEVELOPER_PASSWORD_KEYCHAIN_NAME}
+                      DMG_NOTARIZATION_ID=${DMG_NOTARIZATION_ID}
+                      ASC_PROVIDER=${ASC_PROVIDER}
                       ${BIN_DIR}/package.sh
 )
 
