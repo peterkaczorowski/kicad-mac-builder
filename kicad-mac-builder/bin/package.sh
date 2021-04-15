@@ -85,7 +85,15 @@ fixup_and_cleanup()
 
     rm "${TEMPLATE}"
     mkdir -p "${DMG_DIR}"
-    mv "${DMG_NAME}" "${DMG_DIR}"/
+
+    # If you move a file to the directory it's in, `mv` returns an error.  Ignore that one.
+    output="$(mv "${DMG_NAME}" "${DMG_DIR}"/ 2>&1 || true)"
+    if [ ! $? ]; then
+        if ! echo "$line" | grep ' are identical$'; then
+            echo "Error: ${output}"
+	    exit 1
+	fi
+    fi
 }
 
 #if [ "${VERBOSE}" ]; then
