@@ -266,8 +266,6 @@ case "${PACKAGE_TYPE}" in
     *)
         echo "PACKAGE_TYPE must be either \"nightly\", \"extras\", or \"unified\"."
         exit 1
-
-
 esac
 
 fixup_and_cleanup
