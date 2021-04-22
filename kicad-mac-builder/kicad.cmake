@@ -109,20 +109,25 @@ ExternalProject_Add_Step(
 	COMMAND ${BIN_DIR}/verify-pcbnew-so-import.sh  ${KICAD_INSTALL_DIR}/KiCad.app/
 )
 
-ExternalProject_Add_Step(
-        kicad
-        sign-app
-        COMMENT "Signing KiCad.app and its contents"
-        DEPENDEES fix-loading # we can't modify KiCad.app after this
-	    COMMAND "${BIN_DIR}/apple.py" sign --certificate-id "${SIGNING_CERTIFICATE_ID}" --entitlements "${BIN_DIR}/../signing/entitlements.plist" "${KICAD_INSTALL_DIR}/KiCad.app"
-)
+if(DEFINED SIGNING_CERTIFICATE_ID)
+    ExternalProject_Add_Step(
+            kicad
+            sign-app
+            COMMENT "Signing KiCad.app and its contents"
+            DEPENDEES fix-loading # we can't modify KiCad.app after this
+            COMMAND "${BIN_DIR}/apple.py" sign --certificate-id "${SIGNING_CERTIFICATE_ID}" --entitlements "${BIN_DIR}/../signing/entitlements.plist" "${KICAD_INSTALL_DIR}/KiCad.app"
+    )
+    ExternalProject_Add_StepTargets(kicad sign-app)
+endif()
 
-ExternalProject_Add_Step(
-        kicad
-        notarize-app
-        COMMENT "Notarize KiCad.app"
-        DEPENDEES sign-app
-        COMMAND "${BIN_DIR}/apple.py" notarize --apple-developer-username "${APPLE_DEVELOPER_USERNAME}" --apple-developer-password-keychain-name "${APPLE_DEVELOPER_PASSWORD_KEYCHAIN_NAME}" --notarization-id "${APP_NOTARIZATION_ID}" --asc-provider "${ASC_PROVIDER}" "${KICAD_INSTALL_DIR}/KiCad.app"
-)
+if(DEFINED APPLE_DEVELOPER_USERNAME AND DEFINED APPLE_DEVELOPER_PASSWORD_KEYCHAIN_NAME AND DEFINED APP_NOTARIZATION_ID AND DEFINED ASC_PROVIDER)
+    ExternalProject_Add_Step(
+            kicad
+            notarize-app
+            COMMENT "Notarize KiCad.app"
+            DEPENDEES sign-app
+            COMMAND "${BIN_DIR}/apple.py" notarize --apple-developer-username "${APPLE_DEVELOPER_USERNAME}" --apple-developer-password-keychain-name "${APPLE_DEVELOPER_PASSWORD_KEYCHAIN_NAME}" --notarization-id "${APP_NOTARIZATION_ID}" --asc-provider "${ASC_PROVIDER}" "${KICAD_INSTALL_DIR}/KiCad.app"
+    )
+    ExternalProject_Add_StepTargets(kicad notarize-app)
+endif()
 
-ExternalProject_Add_StepTargets(kicad sign-app notarize-app)
