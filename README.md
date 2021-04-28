@@ -64,7 +64,9 @@ You can use kicad-mac-builder to setup a KiCad build environment on macOS.  The 
 
 Run `./build.py --target setup-kicad-dependencies`.  At the end, you'll see some output that starts with `CMake arguments for KiCad:`.  Save that.
 
-Go into the KiCad source, and do something like the following:
+Check out the KiCad source somewhere on your system.
+
+If you're building at the command line, go into the KiCad source, and do something like the following:
 
 ```
 mkdir build
@@ -74,6 +76,11 @@ make
 make install
 ```
 
+If you're using CLion, open CLion, and open the KiCad source directory.  Go into Preferences > Build, Execution, Deployment > CMake, and put the copied CMake arguments (the series of -DVARIABLENAME=value -DOTHERVARIABLENAME=othervalue..) into CMake Options.
+
+CLion will likely need to reindex the project.  When that is complete, you should have a series of outputs in the top right corner, by the green arrow play button ("Run"). Choose `kicad | Debug` and press "Run". This should start a build, and TODO: finish
+
+TODO: do we need dyldstyle if we're not distributing/relocating this bundle? check!
 As it is now, you'll need to install `dyldstyle` and run `wrangle-bundle --fix path/to/KiCad.app` in order to get the Python 3 stuff working correctly.
 
 ```
