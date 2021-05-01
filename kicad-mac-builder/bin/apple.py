@@ -144,19 +144,18 @@ def verify_signing(dotapp_path):
 
 
 def submit_for_notarization(upload_path, notarization_id, apple_developer_username,
-                            apple_developer_keychain_password_name, asc_provider):
-    # DO NOT PASS YOUR PASSWORD HERE!  Aim it at keychain using @keychain:entryname
+                            apple_developer_password_handle, asc_provider):
     logging.info("Submitting {} for notarization.".format(upload_path))
     logging.info("This uploads it to Apple, and may take a few minutes depending upon size and upload speed.")
 
     cmd = ["xcrun", "altool", "--notarize-app",
            "--primary-bundle-id", notarization_id,
            "--username", apple_developer_username,
-           "--password", "@keychain:{}".format(apple_developer_keychain_password_name),
+           "--password", apple_developer_password_handle,
            "--asc-provider", asc_provider,
            "--file", upload_path]
 
-    logging.debug("Running {}".format(" ".join(cmd)))
+    # logging.debug("Running {}".format(" ".join(cmd)))
     start_time = time.monotonic()
     completed = subprocess.run(cmd, capture_output=True, check=True)
     elapsed_time = time.monotonic() - start_time
@@ -173,15 +172,14 @@ def submit_for_notarization(upload_path, notarization_id, apple_developer_userna
     raise Exception("No request UUID found in notarization submission response.")
 
 
-def get_notarization_status(request_uuid, apple_developer_username, apple_developer_keychain_password_name):
-    # DO NOT PASS YOUR PASSWORD HERE!  Aim it at keychain using @keychain:entryname
+def get_notarization_status(request_uuid, apple_developer_username, apple_developer_password_handle):
     logging.info("Checking notarization status for {}.".format(request_uuid))
 
     cmd = ["xcrun", "altool", "--notarization-info", request_uuid,
            "--username", apple_developer_username,
-           "--password", "@keychain:{}".format(apple_developer_keychain_password_name)]
+           "--password", apple_developer_password_handle]
 
-    logging.debug("Running {}".format(" ".join(cmd)))
+    # logging.debug("Running {}".format(" ".join(cmd)))
     completed = subprocess.run(cmd, capture_output=True, check=True)
     stderr = completed.stderr.decode('utf-8')
     stdout = completed.stdout.decode('utf-8')
@@ -212,13 +210,12 @@ def get_log(logfile_url):
     return apple_log
 
 
-def wait_for_notarization(request_uuid, apple_developer_username, apple_developer_keychain_password_name):
-    # DO NOT PASS YOUR PASSWORD HERE!  Aim it at keychain using @keychain:entryname
+def wait_for_notarization(request_uuid, apple_developer_username, apple_developer_password_handle):
     delay = 30
     logging.info("Checking on notarization every {} seconds.".format(delay))
     start_time = time.monotonic()
     try:
-        status = get_notarization_status(request_uuid, apple_developer_username, apple_developer_keychain_password_name)
+        status = get_notarization_status(request_uuid, apple_developer_username, apple_developer_password_handle)
     except subprocess.CalledProcessError:
         logging.warning("Error while checking notarization status.  This can happen if we check too soon after "
                         "submitting.")
@@ -227,7 +224,7 @@ def wait_for_notarization(request_uuid, apple_developer_username, apple_develope
     while status.in_progress:
         logging.debug("Notarization still in progress, waiting {} seconds...".format(delay))
         time.sleep(delay)
-        status = get_notarization_status(request_uuid, apple_developer_username, apple_developer_keychain_password_name)
+        status = get_notarization_status(request_uuid, apple_developer_username, apple_developer_password_handle)
     elapsed_time = time.monotonic() - start_time
     logging.debug(
         "After {} seconds of checking, the notarization status is no longer 'in progress'. ".format(elapsed_time))
@@ -295,10 +292,8 @@ def parse_args(arg_list=sys.argv[1:]):
     notarize_parser = subparsers.add_parser('notarize')
     notarize_parser.add_argument("--apple-developer-username", required=True,
                                  help="Username for the Apple developer account")
-    notarize_parser.add_argument("--apple-developer-password-keychain-name", required=True,
-                                 help="Create an app-specific password for your Apple account, and put it in your "
-                                      "Keychain. This argument is the name of that Keychain entry.  (This is the "
-                                      "Apple recommended way to sign and notarize from the command line.)")
+    notarize_parser.add_argument("--apple-developer-password-handle",
+                                 help="See the documentation for `xcrun altool`. It is recommended you pass something starting with `@keychain:` rather than a password directly.")
     notarize_parser.add_argument("--notarization-id", required=True,
                                  help="This is used to identify the notarization request and "
                                       "doesn't actually need to match the contents of the notarization request.")
@@ -313,7 +308,6 @@ def parse_args(arg_list=sys.argv[1:]):
 
     return args
 
-
 def handle_signing(dotapp_path, certificate_hex_id, entitlements_path, timestamp_url):
     sign(dotapp_path, certificate_hex_id, entitlements_path, timestamp_url)
     verify_signing(dotapp_path)
@@ -323,7 +317,7 @@ def handle_signing(dotapp_path, certificate_hex_id, entitlements_path, timestamp
 def handle_notarization(notarization_path,
                         notarization_id,
                         apple_developer_username,
-                        apple_developer_keychain_password_name,
+                        apple_developer_password_handle,
                         asc_provider):
     if notarization_path.endswith(".app"):
         submission_path = make_zip(notarization_path)
@@ -333,11 +327,11 @@ def handle_notarization(notarization_path,
     request_uuid = submit_for_notarization(submission_path,
                                            notarization_id,
                                            apple_developer_username,
-                                           apple_developer_keychain_password_name,
+                                           apple_developer_password_handle,
                                            asc_provider)
     wait_for_notarization(request_uuid,
                           apple_developer_username,
-                          apple_developer_keychain_password_name)
+                          apple_developer_password_handle)
     
     staple(notarization_path)
     verify_notarization(notarization_path)
@@ -366,7 +360,7 @@ def main():
         handle_notarization(args.path,
                             args.notarization_id,
                             args.apple_developer_username,
-                            args.apple_developer_password_keychain_name,
+                            args.apple_developer_password_handle,
                             args.asc_provider)
 
 
