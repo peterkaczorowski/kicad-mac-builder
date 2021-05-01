@@ -38,7 +38,7 @@ ExternalProject_Add(
 							 --with-libpng=builtin
 							 --with-regex=builtin
 							 --with-libtiff=builtin
-							 --with-zlib
+							 --with-zlib=builtin
 							 --with-expat=builtin
 							 --without-liblzma
 							 --with-opengl
