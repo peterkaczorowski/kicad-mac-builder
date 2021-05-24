@@ -9,8 +9,9 @@ add_custom_target(kicad-build-deps
 
 add_custom_target(setup-kicad-dependencies
 	DEPENDS kicad-build-deps
-	COMMENT "Example CMake command for KiCad: cmake ${KICAD_CMAKE_ARGS} ../"
+	COMMENT "kicad-mac-builder would use the following CMake arguments for KiCad in this configuration:\n\n${KICAD_CMAKE_ARGS_FORMATTED}\n\nSee the README for more details."
 )
+
 
 if(DEFINED RELEASE_NAME)
   if(NOT DEFINED KICAD_TAG OR "${KICAD_TAG}" STREQUAL "")
@@ -81,7 +82,7 @@ ExternalProject_Add_Step(
     fix-loading
     COMMENT "Checking and fixing bundle to make sure it's relocatable"
     DEPENDEES install-docs-to-app install collect-licenses
-    COMMAND wrangle-bundle --fix --python-version ${PYTHON_X_Y_VERSION} ${KICAD_INSTALL_DIR}/kicad.app || true
+    COMMAND true # wrangle-bundle --fix --python-version ${PYTHON_X_Y_VERSION} ${KICAD_INSTALL_DIR}/kicad.app || true
 )
 
 ExternalProject_Add_Step(
@@ -115,7 +116,7 @@ if(DEFINED SIGNING_CERTIFICATE_ID)
             sign-app
             COMMENT "Signing KiCad.app and its contents"
             DEPENDEES fix-loading # we can't modify KiCad.app after this
-            COMMAND "${BIN_DIR}/apple.py" sign --certificate-id "${SIGNING_CERTIFICATE_ID}" --entitlements "${BIN_DIR}/../signing/entitlements.plist" "${KICAD_INSTALL_DIR}/KiCad.app"
+            COMMAND true # "${BIN_DIR}/apple.py" sign --certificate-id "${SIGNING_CERTIFICATE_ID}" --entitlements "${BIN_DIR}/../signing/entitlements.plist" "${KICAD_INSTALL_DIR}/KiCad.app"
     )
     ExternalProject_Add_StepTargets(kicad sign-app)
 endif()
