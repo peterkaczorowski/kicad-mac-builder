@@ -60,7 +60,7 @@ kicad-mac-builder supports optional signing and notarization of build outputs.  
 Setting up a KiCad Build Environment
 ====================================
 
-You can use kicad-mac-builder to setup a KiCad build environment on macOS.  The `setup-kicad-dependencies` target will build all of the KiCad dependencies, and then print the CMake arguments it would use against's KiCad's CMake configuration.
+You can use kicad-mac-builder to setup a KiCad build environment on macOS.  The `setup-kicad-dependencies` target will build all of the KiCad dependencies, and then print the CMake arguments it would use against KiCad's CMake configuration.
 
 Run `./build.py --target setup-kicad-dependencies`.  At the end, you'll see some output that starts with `CMake arguments for KiCad:`.  Save that.
 
