@@ -112,7 +112,7 @@ if(${KICAD_VERSION_EXTRA})
 endif()
 
 
-string (REGEX REPLACE "(^|[^\\\\]);" "\\1\n" KICAD_CMAKE_ARGS_FORMATTED "${KICAD_CMAKE_ARGS}")
+list (JOIN KICAD_CMAKE_ARGS "\n" KICAD_CMAKE_ARGS_FORMATTED)
 
 message( "CMake Setting Summary for kicad-mac-builder" )
 message( "KICAD_TAG: ${KICAD_TAG}" )
