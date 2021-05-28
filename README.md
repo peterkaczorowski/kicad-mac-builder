@@ -53,6 +53,8 @@ At the moment, building on Big Sur requires additional steps.
 
 There will likely be warnings raised about dependencies having been built with a later SDK; for development purposes these warnings can be ignored.
 
+Improving Big Sur support is on the near-term roadmap.
+
 Signing and Notarization
 ========================
 kicad-mac-builder supports optional signing and notarization of build outputs.  kicad-mac-builder expects you are using a Developer ID certificate.  Details on creating one are available at https://developer.apple.com/developer-id/. kicad-mac-builder also expects you have stored your Apple developer account password in your keychain.  See `man altool` for details.
@@ -80,14 +82,9 @@ If you're using CLion, open CLion, and open the KiCad source directory.  Go into
 
 CLion will likely need to reindex the project.  When that is complete, you should have a series of outputs in the top right corner, by the green arrow play button ("Run"). Choose `kicad | Debug` and press "Run". This should start a build, and TODO: finish
 
-TODO: do we need dyldstyle if we're not distributing/relocating this bundle? check!
-As it is now, you'll need to install `dyldstyle` and run `wrangle-bundle --fix path/to/KiCad.app` in order to get the Python 3 stuff working correctly.
-
-```
-wrangle-bundle --python-version 3.8 --fix path/to/KiCad.app
-```
-
 Now, you can open Finder to the location specified in `CMAKE_INSTALL_PREFIX` in the CMake arguments, and you should see KiCad.app and the rest of the suite.
+
+Built like this, KiCad should work but may not be relocatable or distributable.  There are additional steps required to be able to move the bundle or use it on a different machine.
 
 (Developers, we'd love to hear how this went for you!)
 
