@@ -155,9 +155,9 @@ def submit_for_notarization(upload_path, notarization_id, apple_developer_userna
            "--asc-provider", asc_provider,
            "--file", upload_path]
 
-    # logging.debug("Running {}".format(" ".join(cmd)))
+    logging.debug("Running {}".format(" ".join(cmd)))
     start_time = time.monotonic()
-    completed = subprocess.run(cmd, capture_output=True, check=True)
+    completed = subprocess.run(cmd, capture_output=False, check=True)
     elapsed_time = time.monotonic() - start_time
     logging.debug("It took {} seconds.".format(elapsed_time))
     stderr = completed.stderr.decode('utf-8')
