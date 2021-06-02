@@ -157,13 +157,14 @@ def submit_for_notarization(upload_path, notarization_id, apple_developer_userna
 
     logging.debug("Running {}".format(" ".join(cmd)))
     start_time = time.monotonic()
-    completed = subprocess.run(cmd, capture_output=False, check=True)
+    completed = subprocess.run(cmd, capture_output=True, check=False)
     elapsed_time = time.monotonic() - start_time
     logging.debug("It took {} seconds.".format(elapsed_time))
     stderr = completed.stderr.decode('utf-8')
     stdout = completed.stdout.decode('utf-8')
-
-    if not stdout.startswith("No errors uploading "):
+    if completed.returncode != 0 or not stdout.startswith("No errors uploading "):
+        print(stdout)
+        print(stderr)
         raise Exception("Error submitting for notarization.")
 
     for line in stdout.splitlines():
