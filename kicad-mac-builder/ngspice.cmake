@@ -9,7 +9,7 @@ ExternalProject_Add(
         PATCH_COMMAND       ""
         CONFIGURE_COMMAND ./autogen.sh
         COMMAND ./configure --prefix=${ngspice_INSTALL_DIR} --with-ngshared --enable-xspice --enable-cider --disable-debug LDFLAGS=-L/usr/local/opt/bison/lib
-        BUILD_COMMAND  PATH=/usr/local/opt/bison/bin:$ENV{PATH} ${CMAKE_MAKE_PROGRAM}
+        BUILD_COMMAND  ${BIN_DIR}/run-with-path.sh ${CMAKE_MAKE_PROGRAM} /usr/local/opt/bison/bin:$ENV{PATH}
         BUILD_IN_SOURCE 1
         INSTALL_COMMAND make install
 )
