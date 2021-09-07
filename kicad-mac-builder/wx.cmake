@@ -31,7 +31,7 @@ ExternalProject_Add(
 							 --enable-monolithic
 							 --enable-aui
 							 --enable-html
-							 --enable-stl
+							 --disable-stl
 							 --enable-richtext
 							 --disable-mediactrl
 							 --with-libjpeg=builtin
