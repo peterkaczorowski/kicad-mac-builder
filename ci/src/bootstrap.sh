@@ -20,4 +20,11 @@ export HOMEBREW_NO_ANALYTICS=1
 echo "Updating SSH"
 brew install openssh
 echo "Installing some dependencies"
-brew install glew cairo doxygen gettext wget bison libtool autoconf automake cmake swig opencascade boost glm openssl
+if sw_vers | grep ^ProductVersion | grep ' 10.14' > /dev/null ; then
+  echo "Installing opencascade from bottle"
+  brew install external/opencascade*mojave*
+  echo "Installing the rest of the dependencies"
+  brew install glew cairo doxygen gettext wget bison libtool autoconf automake cmake swig boost glm openssl
+else
+  brew install glew cairo doxygen gettext wget bison libtool autoconf automake cmake swig opencascade boost glm openssl
+fi
