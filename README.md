@@ -9,7 +9,9 @@ To build KiCad 5.1, use the 5.1 branch of this repository.
 
 Setup
 =====
-kicad-mac-builder requires a 10.14+ Mac and at least 40G of disk space free.  The instructions assume you are capable of using the command line but they are not intended to require arcane deep knowledge.
+kicad-mac-builder requires a Mac and at least 40G of disk space free.  The instructions assume you are capable of using the command line but they are not intended to require arcane deep knowledge.
+
+kicad-mac-builder is known to work on 10.14, and 10.15.  It is intended to work on all versions of macOS newer than 10.14.
 
 The documentation assumes you are using Homebrew on your Mac.  The automated builds use `./ci/src/bootstrap.sh` to install Homebrew and the kicad-mac-builder dependencies.
 
@@ -161,6 +163,11 @@ Help
 ----
 * Open up KiCad.app, and open up the help documents via Help -> KiCad Manual and Help -> Getting Started in KiCad.  You should see a browser open with the documentation.
 * Open up KiCad.app, and change the languages to something not English via Preferences -> Language.  Then open up the manual via Help -> KiCad Manual.  You should see a browser open with the documentation in the matching language.
+
+Simulator
+---------
+* Open up KiCad.app, and open up demos/simulator/sallen_key/sallen_key.pro.  Open up the Schematic Editor.  Click Inspect->Simulator.  Click Run/Stop Simulation.  Click Add Signals, and select V(/lowpass).  The output should look like:
+![Simulator output](/assets/simulator.png)
 
 Tips
 ----
