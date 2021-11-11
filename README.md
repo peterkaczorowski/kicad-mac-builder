@@ -11,7 +11,7 @@ Setup
 =====
 kicad-mac-builder requires a Mac and at least 40G of disk space free.  The instructions assume you are capable of using the command line but they are not intended to require arcane deep knowledge.
 
-kicad-mac-builder is known to work on 10.14, and 10.15.  It is intended to work on all versions of macOS newer than 10.14.
+kicad-mac-builder is known to work on 10.14, 10.15, and 11.  Monterey has not yet been confirmed to work, and M1 support is not yet complete.  It is intended to work on all versions of macOS newer than 10.14.
 
 The documentation assumes you are using Homebrew on your Mac.  The automated builds use `./ci/src/bootstrap.sh` to install Homebrew and the kicad-mac-builder dependencies.
 
@@ -44,20 +44,6 @@ During the build, some DMGs may be mounted and Finder may open windows while the
 The output DMGs from `build.py` go into `dmg/` in the build directory.  Both the build directory and dmg directory can be specified at the command line.
 
 KiCad Mac Builder does not install KiCad onto your Mac or modify your currently installed KiCad.
-
-Building on Big Sur (macOS 11)
-==============================
-
-At the moment, building on Big Sur requires additional steps.
-
-1. Download the Xcode 11.3.1 to obtain the OSX 10.15 SDK (obtainable from Apple Developer Downloads [here](https://download.developer.apple.com/Developer_Tools/Xcode_11.3.1/Xcode_11.3.1.xip))
-2. Unpack the SDK in to the expected location `/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk`
-3. Set the environment variable `SDKROOT` to the path in step 2
-4. Run `build.py` as above, passing the `--macos-min-version 10.15` option
-
-There will likely be warnings raised about dependencies having been built with a later SDK; for development purposes these warnings can be ignored.
-
-Improving Big Sur support is on the near-term roadmap.
 
 Signing and Notarization
 ========================
