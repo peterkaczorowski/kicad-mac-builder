@@ -11,7 +11,7 @@ Setup
 =====
 kicad-mac-builder requires a Mac and at least 40G of disk space free.  The instructions assume you are capable of using the command line but they are not intended to require arcane deep knowledge.
 
-kicad-mac-builder is known to work on 10.14, 10.15, and 11.  Monterey has not yet been confirmed to work, and M1 support is not yet complete.  It is intended to work on all versions of macOS newer than 10.14.
+kicad-mac-builder is known to work on macOS 10.14, 10.15, 11, and 12.  M1 support is not yet complete.
 
 The documentation assumes you are using Homebrew on your Mac.  The automated builds use `./ci/src/bootstrap.sh` to install Homebrew and the kicad-mac-builder dependencies.
 
