@@ -230,22 +230,10 @@ SetFile -a E "${MOUNTPOINT}"/backup-kicad.command
 
 case "${PACKAGE_TYPE}" in
     nightly)
-        mkdir -p "${MOUNTPOINT}"/KiCad
-        rsync -al "${KICAD_INSTALL_DIR}"/* "${MOUNTPOINT}"/KiCad/. # IMPORTANT: must preserve symlinks
-        mkdir -p "${MOUNTPOINT}"/kicad
-        echo "Moving demos"
-        mv "${MOUNTPOINT}"/KiCad/demos "${MOUNTPOINT}"/kicad/.
-        echo "Copying templates"
-        cp -r "${CMAKE_BINARY_DIR}"/templates/src/templates-build/output/* "${MOUNTPOINT}"/kicad/.
-        echo "Copying symbols"
-        cp -r "${CMAKE_BINARY_DIR}"/symbols/src/symbols-build/output/* "${MOUNTPOINT}"/kicad/.
-        echo "Copying footprints"
-        cp -r "${CMAKE_BINARY_DIR}"/footprints/src/footprints-build/output/* "${MOUNTPOINT}"/kicad/.
+      exit 1
     ;;
     extras)
-        echo "Copying packages3d"
-	# For 6, we want a 3dmodels directory parallel to kicad/modules.
-        cp -r "${CMAKE_BINARY_DIR}"/packages3d/src/packages3d-build/output/* "${MOUNTPOINT}"/kicad/.
+      exit 1
     ;;
     unified)
         mkdir -p "${MOUNTPOINT}"/KiCad
@@ -253,18 +241,9 @@ case "${PACKAGE_TYPE}" in
         mkdir -p "${MOUNTPOINT}"/kicad
         echo "Moving demos"
         mv "${MOUNTPOINT}"/KiCad/demos "${MOUNTPOINT}"/
-        echo "Copying templates"
-        cp -r "${CMAKE_BINARY_DIR}"/templates/src/templates-build/output/* "${MOUNTPOINT}"/kicad/.
-        echo "Copying symbols"
-        cp -r "${CMAKE_BINARY_DIR}"/symbols/src/symbols-build/output/* "${MOUNTPOINT}"/kicad/.
-        echo "Copying packages3d"
-	# For 6, we want a 3dmodels directory parallel to kicad/modules.
-        cp -r "${CMAKE_BINARY_DIR}"/packages3d/src/packages3d-build/output/* "${MOUNTPOINT}"/kicad/.
-        echo "Copying footprints"
-        cp -r "${CMAKE_BINARY_DIR}"/footprints/src/footprints-build/output/* "${MOUNTPOINT}"/kicad/.
     ;;
     *)
-        echo "PACKAGE_TYPE must be either \"nightly\", \"extras\", or \"unified\"."
+        echo "PACKAGE_TYPE must be \"unified\"."
         exit 1
 esac
 

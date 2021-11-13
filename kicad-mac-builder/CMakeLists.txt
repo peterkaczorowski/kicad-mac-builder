@@ -132,12 +132,13 @@ include( python.cmake )
 include( wx.cmake )
 include( ngspice.cmake)
 include( docs.cmake )
-include( kicad.cmake )
 
 include( footprints.cmake )
 include( symbols.cmake )
 include( templates.cmake )
 include( packages3d.cmake )
+
+include( kicad.cmake )
 
 include( package_kicad_nightly.cmake )
 include( package_kicad_unified.cmake )

@@ -6,3 +6,6 @@ ExternalProject_Add(
         #GIT_PROGRESS 1 #TODO uncomment when the official KiCad Mac gets updated...
         CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=<BINARY_DIR>/output"
 )
+
+ExternalProject_Get_Property(packages3d BINARY_DIR)
+set(packages3d_INSTALL_DIR ${BINARY_DIR}/output)

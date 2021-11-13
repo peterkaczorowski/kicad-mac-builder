@@ -56,7 +56,7 @@ endif()
 
 ExternalProject_Add_Step(
     kicad
-    install-docs-to-app
+    install-docs-into-app
     COMMENT "Installing docs into KiCad.app"
     DEPENDS docs
     DEPENDEES install
@@ -79,9 +79,49 @@ ExternalProject_Add_Step(
 
 ExternalProject_Add_Step(
     kicad
+    install-footprints-into-app
+    COMMENT "Installing footprints into KiCad.app"
+    DEPENDS footprints
+    DEPENDEES install
+    COMMAND mkdir -p ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/
+    COMMAND cp -r ${footprints_INSTALL_DIR}/. ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/
+)
+
+ExternalProject_Add_Step(
+    kicad
+    install-symbols-into-app
+    COMMENT "Installing symbols into KiCad.app"
+    DEPENDS symbols
+    DEPENDEES install
+    COMMAND mkdir -p ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/
+    COMMAND cp -r ${symbols_INSTALL_DIR}/. ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/
+)
+
+ExternalProject_Add_Step(
+    kicad
+    install-templates-into-app
+    COMMENT "Installing templates into KiCad.app"
+    DEPENDS symbols
+    DEPENDEES install
+    COMMAND mkdir -p ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/
+    COMMAND cp -r ${templates_INSTALL_DIR}/. ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/
+)
+
+ExternalProject_Add_Step(
+    kicad
+    install-packages3d-into-app
+    COMMENT "Installing packages3d into KiCad.app"
+    DEPENDS packages3d
+    DEPENDEES install
+    COMMAND mkdir -p ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/
+    COMMAND cp -r ${packages3d_INSTALL_DIR}/. ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/
+)
+
+ExternalProject_Add_Step(
+    kicad
     fix-loading
     COMMENT "Checking and fixing bundle to make sure it's relocatable"
-    DEPENDEES install-docs-to-app install collect-licenses
+    DEPENDEES install-docs-into-app install collect-licenses install-footprints-into-app install-symbols-into-app install-templates-into-app install-packages3d-into-app # demos?
     # Since we're currently ignoring the exit status, let's make sure wrangle-bundle is installed
     COMMAND echo "Looking for wrangle-bundle..."
     COMMAND which wrangle-bundle
