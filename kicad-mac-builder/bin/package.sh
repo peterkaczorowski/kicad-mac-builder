@@ -208,7 +208,7 @@ case "${PACKAGE_TYPE}" in
     unified)
         KICAD_GIT_REV=$(cd "${KICAD_SOURCE_DIR}" && git rev-parse --short HEAD)
         MOUNT_NAME='KiCad'
-        DMG_SIZE=10G
+        DMG_SIZE=7.5G
         if [ -z "$RELEASE_NAME" ]; then
             DMG_NAME=kicad-unified-"${NOW}"-"${KICAD_GIT_REV}".dmg
         else
@@ -225,8 +225,6 @@ MOUNTPOINT=kicad-mnt
 setup_dmg
 
 cp "${README}" "${MOUNTPOINT}"/README.txt
-cp "${BACKUP_KICAD}" "${MOUNTPOINT}"/backup-kicad.command
-SetFile -a E "${MOUNTPOINT}"/backup-kicad.command
 
 case "${PACKAGE_TYPE}" in
     nightly)
@@ -238,7 +236,6 @@ case "${PACKAGE_TYPE}" in
     unified)
         mkdir -p "${MOUNTPOINT}"/KiCad
         rsync -al "${KICAD_INSTALL_DIR}"/* "${MOUNTPOINT}"/KiCad/. # IMPORTANT: must preserve symlinks
-        mkdir -p "${MOUNTPOINT}"/kicad
         echo "Moving demos"
         mv "${MOUNTPOINT}"/KiCad/demos "${MOUNTPOINT}"/
     ;;
