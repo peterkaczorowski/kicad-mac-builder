@@ -101,7 +101,7 @@ ExternalProject_Add_Step(
     kicad
     install-templates-into-app
     COMMENT "Installing templates into KiCad.app"
-    DEPENDS symbols
+    DEPENDS templates
     DEPENDEES install
     COMMAND mkdir -p ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/
     COMMAND cp -r ${templates_INSTALL_DIR}/. ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/
