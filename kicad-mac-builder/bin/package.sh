@@ -125,7 +125,6 @@ echo "DMG_DIR: ${DMG_DIR}"
 echo "PACKAGE_TYPE: ${PACKAGE_TYPE}"
 echo "CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}"
 echo "BACKUP_KICAD: ${BACKUP_KICAD}"
-echo "README: ${README}"
 if [ ! -z ${RELEASE_NAME} ]; then # if RELEASE_NAME is unset, or is set to empty string
     echo "RELEASE_NAME: ${RELEASE_NAME}"
 else
@@ -145,11 +144,6 @@ fi
 
 if [ ! -e "${CMAKE_BINARY_DIR}" ]; then
     echo "CMAKE_BINARY_DIR must be set and exist."
-    exit 1
-fi
-
-if [ ! -e "${README}" ]; then
-    echo "README must be set and exist."
     exit 1
 fi
 
@@ -223,8 +217,6 @@ esac
 MOUNTPOINT=kicad-mnt
 
 setup_dmg
-
-cp "${README}" "${MOUNTPOINT}"/README.txt
 
 case "${PACKAGE_TYPE}" in
     nightly)
