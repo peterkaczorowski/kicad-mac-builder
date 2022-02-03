@@ -39,9 +39,11 @@ setup_dmg()
     fi
 
     # resize the template, and mount it
+
     if ! hdiutil resize -sectors "${DMG_SIZE}" "${TEMPLATE}"; then
-        # For some reason, when I try to resize it smaller and then back big again, it works... sometimes.
-        hdiutil resize -sectors 100000 "${TEMPLATE}"
+        hdiutil resize -limits kicadtemplate.dmg
+        hdiutil resize -sectors 10167525 "${TEMPLATE}"
+        hdiutil resize -limits kicadtemplate.dmg
         if ! hdiutil resize -sectors "${DMG_SIZE}" "${TEMPLATE}"; then
           echo "Cannot resize template dmg, exiting."
           exit 1
