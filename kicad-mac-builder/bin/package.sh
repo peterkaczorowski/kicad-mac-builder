@@ -39,9 +39,13 @@ setup_dmg()
     fi
 
     # resize the template, and mount it
-    if ! hdiutil resize -size "${DMG_SIZE}" "${TEMPLATE}"; then
-        echo "If hdituil failed to resize, saying the size is above a maximum, reboot.  If you know the root cause or a better way to fix this, please let us know."
-        exit 1
+    if ! hdiutil resize -sectors "${DMG_SIZE}" "${TEMPLATE}"; then
+        # For some reason, when I try to resize it smaller and then back big again, it works... sometimes.
+        hdiutil resize -sectors 100000 "${TEMPLATE}"
+        if ! hdiutil resize -sectors "${DMG_SIZE}" "${TEMPLATE}"; then
+          echo "Cannot resize template dmg, exiting."
+          exit 1
+        fi
     fi
     diskutil unmount /Volumes/"${MOUNT_NAME}" || true
     hdiutil attach "${TEMPLATE}" -noautoopen -mountpoint "${MOUNTPOINT}"
@@ -183,7 +187,7 @@ case "${PACKAGE_TYPE}" in
     nightly)
         KICAD_GIT_REV=$(cd "${KICAD_SOURCE_DIR}" && git rev-parse --short HEAD)
         MOUNT_NAME='KiCad'
-        DMG_SIZE=1G
+        DMG_SIZE=15167525
         if [ -z "$RELEASE_NAME" ]; then
             DMG_NAME=kicad-nightly-"${NOW}"-"${KICAD_GIT_REV}".dmg
         else
@@ -202,7 +206,7 @@ case "${PACKAGE_TYPE}" in
     unified)
         KICAD_GIT_REV=$(cd "${KICAD_SOURCE_DIR}" && git rev-parse --short HEAD)
         MOUNT_NAME='KiCad'
-        DMG_SIZE=7.5G
+        DMG_SIZE=15167525
         if [ -z "$RELEASE_NAME" ]; then
             DMG_NAME=kicad-unified-"${NOW}"-"${KICAD_GIT_REV}".dmg
         else
