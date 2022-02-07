@@ -105,6 +105,9 @@ def parse_args(args):
     parser.add_argument("--extra-bundle-fix-dir",
                         dest="extra_bundle_fix_dir",
                         help="Extra directory to pass to fixup_bundle for KiCad.app.")
+    parser.add_argument("--extra-kicad-cmake-args",
+                        help="Use something like '-DFOO=\"bar\"' to add FOO=bar to KiCad's CMake args.",
+                        required=False)
 
     signing_group = parser.add_argument_group('signing and notarization')
 
@@ -236,6 +239,9 @@ def build(args, new_path):
 
     if args.extra_bundle_fix_dir:
         cmake_command.append("-DMACOS_EXTRA_BUNDLE_FIX_DIRS={}".format(args.extra_bundle_fix_dir))
+
+    if args.extra_kicad_cmake_args:
+	cmake_command.append("-DKICAD_CMAKE_ARGS_EXTRA='{}'".format(args.extra_kicad_cmake_args))
 
     if args.signing_identity:
         cmake_command.append("-DSIGNING_IDENTITY={}".format(args.signing_identity))
