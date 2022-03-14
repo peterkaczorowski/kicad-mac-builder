@@ -241,7 +241,7 @@ def build(args, new_path):
         cmake_command.append("-DMACOS_EXTRA_BUNDLE_FIX_DIRS={}".format(args.extra_bundle_fix_dir))
 
     if args.extra_kicad_cmake_args:
-	cmake_command.append("-DKICAD_CMAKE_ARGS_EXTRA='{}'".format(args.extra_kicad_cmake_args))
+        cmake_command.append("-DKICAD_CMAKE_ARGS_EXTRA='{}'".format(args.extra_kicad_cmake_args))
 
     if args.signing_identity:
         cmake_command.append("-DSIGNING_IDENTITY={}".format(args.signing_identity))
