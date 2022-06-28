@@ -49,6 +49,12 @@ Signing and Notarization
 ========================
 kicad-mac-builder supports optional signing and notarization of build outputs.  kicad-mac-builder expects you are using a Developer ID certificate.  Details on creating one are available at https://developer.apple.com/developer-id/. kicad-mac-builder also expects you have stored your Apple developer account password in your keychain.  See `man altool` for details.
 
+Template DMG
+============
+Sometimes, the template DMG needs to be manually enlarged.  This will manifest with errors enlarging the DMG.
+
+A new template DMG can be generated with the script in `dmgbuild/`.
+
 Setting up a KiCad Build Environment
 ====================================
 
