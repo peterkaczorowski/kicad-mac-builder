@@ -8,3 +8,5 @@ build/
 dmg/
 *.pyc
 .DS_Store
+dmgbuild/venv/
+dmgbuild/kicad.dmg
