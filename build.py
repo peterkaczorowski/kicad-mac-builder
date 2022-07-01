@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Try not to use any packages that aren't included with Python, please.
 
