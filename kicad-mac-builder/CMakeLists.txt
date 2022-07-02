@@ -68,12 +68,17 @@ endif()
 # This should be fixed by figuring out why fixup_bundle isn't working with /usr/local/lib in the dirs argument.
 execute_process(COMMAND brew --prefix opencascade OUTPUT_VARIABLE BREW_OCC_BASEDIR RESULT_VARIABLE FOUND_BREW_OCC_BASEDIR_EXIT_CODE OUTPUT_STRIP_TRAILING_WHITESPACE)
 if ( ${FOUND_BREW_OCC_BASEDIR_EXIT_CODE} EQUAL 0 )
-    message( "OpenCascade appears to have been installed by brew." )
     get_filename_component(BREW_LIBTKERNEL_REALPATH ${BREW_OCC_BASEDIR}/lib/libTKernel.dylib REALPATH)
     get_filename_component(BREW_OCC_LIBRARY_DIR ${BREW_LIBTKERNEL_REALPATH} DIRECTORY)
     get_filename_component(BREW_OCC_INCLUDE_DIR ${BREW_OCC_BASEDIR}/include/opencascade REALPATH)
+    message( "OpenCascade appears to have been installed by brew." )
+    message("BREW_LIBTKERNEL_REALPATH: ${BREW_LIBTKERNEL_REALPATH}" )
+    message("BREW_OCC_LIBRARY_DIR: ${BREW_OCC_LIBRARY_DIR}" )
+    message("BREW_OCC_INCLUDE_DIR: ${BREW_OCC_INCLUDE_DIR}" )
     set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DOCC_INCLUDE_DIR=${BREW_OCC_INCLUDE_DIR} -DOCC_LIBRARY_DIR=${BREW_OCC_LIBRARY_DIR} )
 endif()
+
+
 
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=${KICAD_INSTALL_DIR} )
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DCMAKE_C_COMPILER=/usr/bin/clang )
