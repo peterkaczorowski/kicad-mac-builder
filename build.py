@@ -319,6 +319,12 @@ def print_summary(args):
 def main():
     parsed_args = parse_args(sys.argv[1:])
     print_summary(parsed_args)
+
+    which_brew = subprocess.check_output("which brew", shell=True).decode('utf-8').strip()
+    brew_prefix = subprocess.check_output("brew --prefix", shell=True).decode('utf-8').strip()
+
+    print(f"The first brew on the path is: {which_brew}")
+    print(f"Its prefix is: {brew_prefix}")
     gettext_path = "{}/bin".format(subprocess.check_output("brew --prefix gettext", shell=True).decode('utf-8').strip())
     bison_path = "{}/bin".format(subprocess.check_output("brew --prefix bison", shell=True).decode('utf-8').strip())
     new_path = ":".join((gettext_path, bison_path, os.environ["PATH"]))
