@@ -125,22 +125,23 @@ def make_zip(dotapp_path, output_path=None):
     return output_path
 
 
-def verify_signing(dotapp_path):
+def verify_signing(dotapp_path, verify_timestamps=True):
     logging.info("Verifying signing of {}".format(dotapp_path))
     logging.debug("Verifying with --strict")
     cmd = ["codesign", "-vvv", "--deep", "--strict", dotapp_path]
     logging.debug("Running {}".format(" ".join(cmd)))
     subprocess.run(cmd, check=True)
 
-    check_timestamps = [dotapp_path]
-    with os.scandir(os.path.join(dotapp_path, "Contents", "MacOS")) as entries:
-        for entry in entries:
-            check_timestamps.append(entry.path)
-    for path in check_timestamps:
-        if not has_secure_timestamp(path):
-            raise Exception("{} does not have a secure timestamp".format(path))
-        else:
-            logging.debug("{} has a secure timestamp".format(path))
+    if verify_timestamps:
+        check_timestamps = [dotapp_path]
+        with os.scandir(os.path.join(dotapp_path, "Contents", "MacOS")) as entries:
+            for entry in entries:
+                check_timestamps.append(entry.path)
+        for path in check_timestamps:
+            if not has_secure_timestamp(path):
+                raise Exception("{} does not have a secure timestamp".format(path))
+            else:
+                logging.debug("{} has a secure timestamp".format(path))
 
 
 def submit_for_notarization(upload_path, notarization_id, apple_developer_username,
@@ -311,7 +312,7 @@ def parse_args(arg_list=sys.argv[1:]):
 
 def handle_signing(dotapp_path, certificate_hex_id, entitlements_path, timestamp_url):
     sign(dotapp_path, certificate_hex_id, entitlements_path, timestamp_url)
-    verify_signing(dotapp_path)
+    verify_signing(dotapp_path, certificate_hex_id != "-") # Ad-hoc signatures don't seem to be able to keep secure timestamps...
     print("Done. Signed and verified {}".format(dotapp_path))
 
 
