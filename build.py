@@ -10,15 +10,8 @@ import sys
 
 DEFAULT_KICAD_GIT_URL = "https://gitlab.com/kicad/code/kicad.git"
 
-def print_and_flush(s):
-    # sigh, in Python3 this is build in... :/
-    print(s)
-    sys.stdout.flush()
-
-
 def get_number_of_cores():
     return int(subprocess.check_output("sysctl -n hw.ncpu", shell=True).strip())
-
 
 def get_local_macos_version():
     return subprocess.check_output("sw_vers -productVersion | cut -d. -f1-2", shell=True).decode('utf-8').strip()
@@ -293,36 +286,36 @@ def build(args, new_path):
 
     cmake_command.append(args.kicad_mac_builder_cmake_dir)
 
-    print_and_flush("Running {}".format(" ".join(cmake_command)))
+    print("Running {}".format(" ".join(cmake_command)), flush=True)
     try:
         subprocess.check_call(cmake_command, env=dict(os.environ, PATH=new_path))
     except subprocess.CalledProcessError:
-        print_and_flush("Error while running cmake. Please report this issue if you cannot fix it after reading the README.")
+        print("Error while running cmake. Please report this issue if you cannot fix it after reading the README.", flush=True)
         raise
 
     make_command = get_make_command(args)
-    print_and_flush("Running {}".format(" ".join(make_command)))
+    print("Running {}".format(" ".join(make_command)), flush=True)
     try:
         subprocess.check_call(make_command, env=dict(os.environ, PATH=new_path))
     except subprocess.CalledProcessError:
         if args.retry_failed_build and args.jobs > 1:
-            print_and_flush("Error while running make.")
+            print("Error while running make.", flush=True)
             print_summary(args)
-            print_and_flush("Rebuilding with a single job. If this consistently occurs, " \
-                            "please report this issue. ")
+            print("Rebuilding with a single job. If this consistently occurs, " \
+                  "please report this issue. ", flush=True)
             args.jobs = 1
             make_command = get_make_command(args)
-            print_and_flush("Running {}".format(" ".join(make_command)))
+            print("Running {}".format(" ".join(make_command)), flush=True)
             try:
                 subprocess.check_call(make_command, env=dict(os.environ, PATH=new_path))
             except subprocess.CalledProcessError:
-                print_and_flush("Error while running make after rebuilding with a single job. Please report this issue if you " \
-                      "cannot fix it after reading the README.")
+                print("Error while running make after rebuilding with a single job. Please report this issue if you " \
+                      "cannot fix it after reading the README.", flush=True)
                 print_summary(args)
                 raise
         else:
-            print_and_flush("Error while running make. It may be helpful to rerun with a single make job. Please report this " \
-                  "issue if you cannot fix it after reading the README.")
+            print("Error while running make. It may be helpful to rerun with a single make job. Please report this " \
+                  "issue if you cannot fix it after reading the README.", flush=True)
             print_summary(args)
             raise
 
@@ -331,33 +324,38 @@ def build(args, new_path):
         dmg_location = args.dmg_dir
         if dmg_location is None:
             dmg_location = os.path.join(args.build_dir, "dmg")
-        print_and_flush("Output DMGs should be located in {}".format(dmg_location))
+        print("Output DMGs should be located in {}".format(dmg_location), flush=True)
 
-    print_and_flush("Build complete.")
+    print("Build complete.", flush=True)
 
 def print_summary(args):
-    print_and_flush("build.py argument summary:")
+    print("build.py argument summary:", flush=True)
     for attr in sorted(args.__dict__):
-        print_and_flush("{}: {}".format(attr, getattr(args, attr)))
+        print("{}: {}".format(attr, getattr(args, attr)), flush=True)
 
 def main():
     parsed_args = parse_args(sys.argv[1:])
     print_summary(parsed_args)
 
+
+
     which_brew = subprocess.check_output("which brew", shell=True).decode('utf-8').strip()
     brew_prefix = subprocess.check_output("brew --prefix", shell=True).decode('utf-8').strip()
+
+    print(f"The detected host architecture is {get_host_architecture()}")
+    print(f"The output of 'arch' is '{get_env_architecture()}'")
 
     print(f"The first brew on the path is: {which_brew}")
     print(f"Its prefix is: {brew_prefix}")
     gettext_path = "{}/bin".format(subprocess.check_output("brew --prefix gettext", shell=True).decode('utf-8').strip())
     bison_path = "{}/bin".format(subprocess.check_output("brew --prefix bison", shell=True).decode('utf-8').strip())
     new_path = ":".join((gettext_path, bison_path, os.environ["PATH"]))
-    print(new_path)
+    print(f"Updated PATH is: {new_path}")
 
-    print_and_flush("\nYou can change these settings.  Run ./build.py --help for details.")
-    print_and_flush("\nDepending upon build configuration, what has already been downloaded, what has already been built, " \
-          "the computer and the network connection, this may take multiple hours and approximately 40G of disk space.")
-    print_and_flush("\nYou can stop the build at any time by pressing Control-C.\n")
+    print("\nYou can change these settings.  Run ./build.py --help for details.", flush=True)
+    print("\nDepending upon build configuration, what has already been downloaded, what has already been built, " \
+          "the computer and the network connection, this may take multiple hours and approximately 30G of disk space.", flush=True)
+    print("\nYou can stop the build at any time by pressing Control-C.\n", flush=True)
     build(parsed_args, new_path)
 
 
