@@ -34,6 +34,10 @@ if( NOT DEFINED MACOS_MIN_VERSION )
   message( FATAL_ERROR "MACOS_MIN_VERSION must be set.  Please see the README or try build.py." )
 endif ()
 
+if( NOT DEFINED SIGNING_CERTIFICATE_ID )
+  set( SIGNING_CERTIFICATE_ID - )
+endif ()
+
 if( NOT DEFINED DMG_DIR )
   set( DMG_DIR ${CMAKE_BINARY_DIR}/dmg )
 endif ()
