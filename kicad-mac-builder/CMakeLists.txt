@@ -1,5 +1,8 @@
 cmake_minimum_required( VERSION 3.6.2 )
 project( KiCadMacBuilder )
+
+cmake_policy(SET CMP0135 NEW)
+
 include( ExternalProject )
 
 if( NOT DEFINED KICAD_CMAKE_BUILD_TYPE )
