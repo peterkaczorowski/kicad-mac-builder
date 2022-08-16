@@ -43,8 +43,8 @@ set( PACKAGES3D_URL https://gitlab.com/kicad/libraries/kicad-packages3D.git )
 set( TEMPLATES_URL https://gitlab.com/kicad/libraries/kicad-templates.git )
 set( FOOTPRINTS_URL https://gitlab.com/kicad/libraries/kicad-footprints.git )
 
-set( PYTHON_VERSION 3.8.2 )
-set( PYTHON_X_Y_VERSION 3.8)
+set( PYTHON_VERSION 3.9.13 )
+set( PYTHON_X_Y_VERSION 3.9 )
 set( PYTHON_INSTALL_DIR ${CMAKE_BINARY_DIR}/python-dest/Library/Frameworks ) # Ending in /Library/Frameworks is important here
 
 set( wxwidgets_INSTALL_DIR ${CMAKE_BINARY_DIR}/wxwidgets-dest )
