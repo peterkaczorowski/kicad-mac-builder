@@ -20,8 +20,12 @@ export PATH="/opt/homebrew/bin:$PATH"
 set -e
 
 echo "Running build.py..."
-CFLAGS="-I/$(brew --prefix)/include" CXXFLAGS="-I/$(brew --prefix)/include" ./build.py --arch=arm64 --target setup-kicad-dependencies
+./build.py --arch=arm64 --target setup-kicad-dependencies
 
 
 # git clone https://gitlab.com/kicad/code/kicad.git ../kicad
+# ./build.py --arch=arm64 --kicad-source-dir=../kicad --target=kicad
+
+
+# Mixed reports about setting CFLAGS et al helping with mixed Brews
 # CFLAGS="-I/$(brew --prefix)/include" CXXFLAGS="-I/$(brew --prefix)/include" ./build.py --arch=arm64 --kicad-source-dir=../kicad --target=kicad
