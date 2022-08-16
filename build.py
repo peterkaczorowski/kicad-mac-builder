@@ -23,6 +23,15 @@ def get_number_of_cores():
 def get_local_macos_version():
     return subprocess.check_output("sw_vers -productVersion | cut -d. -f1-2", shell=True).decode('utf-8').strip()
 
+def get_host_architecture():
+    return subprocess.check_output(["sysctl", "-n", "machdep.cpu.brand_string"]).decode('utf-8').strip()
+
+def host_is_apple_silicon():
+    # We have to be careful here.  Most ways of checking, like uname or arch or things will be overriden if we're in a Rosetta terminal, for instance
+    return 'Apple' in get_host_architecture()
+
+def get_env_architecture():
+    return subprocess.check_output("arch").decode('utf-8').strip()
 
 def parse_args(args):
     docs_tarball_url_default = "https://docs.kicad.org/kicad-doc-HEAD.tar.gz"
@@ -88,6 +97,10 @@ def parse_args(args):
                              " Defaults to the macOS version of this computer.",
                         default=get_local_macos_version(),
                         )
+    parser.add_argument("--arch",
+                        choices=['x86_64', 'arm64'],
+                        help="Target architecture. Required on Apple Silicon. Universal (combined) builds are not yet supported. Not all combinations of options are valid (targeting arm64 and macOS 10.15, for instance).",
+                        required=host_is_apple_silicon())
     parser.add_argument("--no-retry-failed-build",
                         help="By default, if make fails and the number of jobs is greater than one, build.py will "
                              "rebuild using a single job to create a clearer error message. This flag disables that "
@@ -109,20 +122,20 @@ def parse_args(args):
                         help="Use something like '-DFOO=\"bar\"' to add FOO=bar to KiCad's CMake args.",
                         required=False)
 
-    signing_group = parser.add_argument_group('signing and notarization')
-
+    signing_group = parser.add_argument_group('signing and notarization', description="By default, kicad-mac-builder uses ad-hoc signing and doesn't submit targets for notarization.")
     signing_group.add_argument("--signing-identity",
                         dest="signing_identity",
                         help="Signing identity passed to codesign for signing .apps and .dmgs.")
     signing_group.add_argument("--signing-certificate-id",
                                dest="signing_certificate_id",
-                               help="40 character hex ID for the signing certificate from `security find-identity -v`")
+                               default="-",
+                               help="40 character hex ID for the signing certificate from `security find-identity -v`.  Defaults to '-', which is only valid for adhoc signing.")
     signing_group.add_argument("--apple-developer-username",
                         dest="apple_developer_username",
                         help="Apple Developer username for notarizing .apps and .dmgs.")
     signing_group.add_argument("--apple-developer-password-keychain-name",
                         dest="apple_developer_password_keychain_name",
-                        help="Apple Developer password keychain name for notarizing .apps and .dmgs."
+                        help="Apple Developer password keychain name for notarizing .apps and .dmgs. "
                         "See `man altool` for more details.")
     signing_group.add_argument("--app-notarization-id",
                         dest="app_notarization_id",
@@ -152,6 +165,14 @@ def parse_args(args):
         parsed_args.kicad_source_dir = os.path.realpath(parsed_args.kicad_source_dir)
     elif not parsed_args.kicad_git_url:
         parsed_args.kicad_git_url = DEFAULT_KICAD_GIT_URL
+
+    macos_major_version = int(parsed_args.macos_min_version.split(".")[0])
+    if parsed_args.arch == "arm64" and macos_major_version < 11:
+        parser.error("arm64 builds must target macOS 11 or greater.")
+    # TODO prevent more footgun situations with min version and arch and things, maybe?
+
+    if parsed_args.arch == "arm64" and not host_is_apple_silicon():
+        parser.error("Cannot target arm64 on x86_64 host.")
 
     if parsed_args.release:
         if parsed_args.build_type is None:
@@ -219,6 +240,9 @@ def build(args, new_path):
                      "-DTEMPLATES_TAG={}".format(args.templates_ref),
                      "-DKICAD_CMAKE_BUILD_TYPE={}".format(args.build_type),
                      ]
+
+    if args.arch:
+        cmake_command.append(f"-DCMAKE_APPLE_SILICON_PROCESSOR={args.arch}")
 
     if args.kicad_source_dir:
         cmake_command.append("-DKICAD_SOURCE_DIR={}".format(args.kicad_source_dir))

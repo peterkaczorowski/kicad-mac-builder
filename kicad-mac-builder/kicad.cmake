@@ -129,10 +129,21 @@ ExternalProject_Add_Step(
 )
 
 ExternalProject_Add_Step(
+        kicad
+        sign-app
+        COMMENT "Signing KiCad.app and its contents"
+        DEPENDEES fix-loading
+        # DEPENDEES install-docs-into-app install collect-licenses install-footprints-into-app install-symbols-into-app install-templates-into-app install-packages3d-into-app
+        # we can't modify KiCad.app after this*
+        # TODO: pull in hardened runtime
+        COMMAND "${BIN_DIR}/apple.py" sign --certificate-id "${SIGNING_CERTIFICATE_ID}" --entitlements "${BIN_DIR}/../signing/entitlements.plist" "${KICAD_INSTALL_DIR}/KiCad.app"
+)
+
+ExternalProject_Add_Step(
     kicad
     verify-cli-python
     COMMENT "Checking bin/python3"
-    DEPENDEES fix-loading
+    DEPENDEES sign-app
     COMMAND ${BIN_DIR}/verify-cli-python.sh ${KICAD_INSTALL_DIR}/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3
     COMMAND ${BIN_DIR}/verify-cli-python.sh ${KICAD_INSTALL_DIR}/KiCad.app/Contents/Frameworks/Python.framework/Versions/${PYTHON_X_Y_VERSION}/bin/python${PYTHON_X_Y_VERSION}
 )
@@ -140,29 +151,19 @@ ExternalProject_Add_Step(
 ExternalProject_Add_Step(
         kicad
         verify-wx-import
-        COMMENT "Verifying python can import wx"
-        DEPENDEES verify-cli-python
+        COMMENT "Verifying Python can import wx"
+        DEPENDEES sign-app
         COMMAND ${BIN_DIR}/verify-wx-import.sh  ${KICAD_INSTALL_DIR}/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3
 )
 
 ExternalProject_Add_Step(
 	kicad
 	verify-pcbnew-so-import
-	COMMENT "Verifying python can import pcbnew"
-	DEPENDEES verify-cli-python
+	COMMENT "Verifying Python can import pcbnew"
+        DEPENDEES sign-app
 	COMMAND ${BIN_DIR}/verify-pcbnew-so-import.sh  ${KICAD_INSTALL_DIR}/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3
 )
 
-if(DEFINED SIGNING_CERTIFICATE_ID)
-    ExternalProject_Add_Step(
-            kicad
-            sign-app
-            COMMENT "Signing KiCad.app and its contents"
-            DEPENDEES fix-loading # we can't modify KiCad.app after this
-            COMMAND "${BIN_DIR}/apple.py" sign --certificate-id "${SIGNING_CERTIFICATE_ID}" --entitlements "${BIN_DIR}/../signing/entitlements.plist" "${KICAD_INSTALL_DIR}/KiCad.app"
-    )
-    ExternalProject_Add_StepTargets(kicad sign-app)
-endif()
 
 if(DEFINED APPLE_DEVELOPER_USERNAME AND DEFINED APPLE_DEVELOPER_PASSWORD_KEYCHAIN_NAME AND DEFINED APP_NOTARIZATION_ID AND DEFINED ASC_PROVIDER)
     ExternalProject_Add_Step(
