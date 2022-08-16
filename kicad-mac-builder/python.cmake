@@ -24,6 +24,15 @@ include(ExternalProject)
 
 # TODO: Can we add ${CMAKE_SOURCE_DIR}/python-requirements.txt as a dependency so it rebuilds here if it changes?
 
+# relocatable-python uses "os-version" as an argument to build a URL to download Python from python.org
+# Currently, the builds that are Universal (have arm64/x86_64 in them) use 11 in the url, which makes sense
+if( MACOS_MIN_VERSION VERSION_LESS 11 )
+  set( RELOCATABLE_PYTHON_OS_VERSION_FLAG "" )
+else()
+  set( RELOCATABLE_PYTHON_OS_VERSION_FLAG --os-version 11)
+endif()
+
+
 ExternalProject_Add(
 	python
 	PREFIX  python
@@ -34,8 +43,9 @@ ExternalProject_Add(
 	PATCH_COMMAND       ""
 	BUILD_COMMAND cmake -E remove_directory Python.framework
 	COMMAND <SOURCE_DIR>/make_relocatable_python_framework.py
-		--python-version ${PYTHON_VERSION}
 		--pip-requirements ${CMAKE_SOURCE_DIR}/python-requirements.txt
+                --python-version ${PYTHON_VERSION}
+                ${RELOCATABLE_PYTHON_OS_VERSION_FLAG}
 
 	INSTALL_COMMAND cmake -E remove_directory  ${PYTHON_INSTALL_DIR}
 	COMMAND mkdir -p ${PYTHON_INSTALL_DIR}
