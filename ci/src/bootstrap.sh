@@ -20,4 +20,4 @@ export HOMEBREW_NO_ANALYTICS=1
 echo "Updating SSH"
 brew install openssh
 echo "Installing some dependencies"
-brew install glew cairo doxygen gettext wget bison libtool autoconf automake cmake swig opencascade boost glm openssl
+brew install glew cairo doxygen gettext wget bison libtool autoconf automake cmake swig opencascade boost glm openssl unixodbc ninja
