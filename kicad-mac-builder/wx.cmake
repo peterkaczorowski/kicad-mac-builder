@@ -13,7 +13,7 @@ ExternalProject_Add(
 	wxwidgets
  	PREFIX  wxwidgets
 	GIT_REPOSITORY https://gitlab.com/kicad/code/wxWidgets.git
-	GIT_TAG kicad/macos-wx-3.1
+	GIT_TAG kicad/macos-wx-3.2
 	CONFIGURE_COMMAND   CPPFLAGS=-D__ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES=1 MAC_OS_X_VERSION_MIN_REQUIRED=${MACOS_MIN_VERSION} CC=clang CXX=clang++ ./configure
 							 --prefix=${wxwidgets_INSTALL_DIR}
 							 --with-macosx-version-min=${MACOS_MIN_VERSION}
@@ -81,5 +81,6 @@ ExternalProject_Add_Step(
     DEPENDEES download_dox
     DEPENDERS build
     WORKING_DIRECTORY ${wxwidgets_SOURCE_DIR}/docs/doxygen
-    COMMAND DOXYGEN=<SOURCE_DIR>/bin/doxygen ./regen.sh xml
+    # https://github.com/wxWidgets/Phoenix/issues/2241
+    COMMAND DOXYGEN=<SOURCE_DIR>/bin/doxygen WX_SKIP_DOXYGEN_VERSION_CHECK=1 ./regen.sh xml
 )
