@@ -1,3 +1,5 @@
 # This file is used to specify which packages should get installed into the bundled Python environment
 six
 requests
+attrdict # needed for wxPython install
+sip==6.6.2 # needed for wxPython install
