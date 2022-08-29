@@ -36,6 +36,7 @@ ExternalProject_Add(
 	COMMAND <SOURCE_DIR>/make_relocatable_python_framework.py
 		--python-version ${PYTHON_VERSION}
 		--pip-requirements ${CMAKE_SOURCE_DIR}/python-requirements.txt
+		--upgrade-pip
 
 	INSTALL_COMMAND cmake -E remove_directory  ${PYTHON_INSTALL_DIR}
 	COMMAND mkdir -p ${PYTHON_INSTALL_DIR}
