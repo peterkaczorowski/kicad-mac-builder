@@ -34,6 +34,8 @@ def get_kicad_paths_for_signing(dotapp_path):
     to_sign.append(os.path.join(dotapp_path, "Contents/Applications/pcb_calculator.app"))
     to_sign.append(os.path.join(dotapp_path, "Contents/Applications/pl_editor.app/Contents/MacOS/pl_editor"))
     to_sign.append(os.path.join(dotapp_path, "Contents/Applications/pl_editor.app"))
+    to_sign.append(os.path.join(dotapp_path, "Contents/Applications/kicad-cli.app/Contents/MacOS/kicad-cli"))
+    to_sign.append(os.path.join(dotapp_path, "Contents/Applications/kicad-cli.app"))
     
     to_sign.append(os.path.join(dotapp_path, "Contents/Frameworks/Python.framework/Versions/Current/Resources/Python.app/Contents/MacOS/Python"))
     to_sign.append(os.path.join(dotapp_path, "Contents/Frameworks/Python.framework/Versions/Current/Resources/Python.app"))
@@ -71,7 +73,6 @@ def get_kicad_paths_for_signing(dotapp_path):
     to_sign.append(os.path.join(dotapp_path, "Contents/MacOS/idfcyl"))
     to_sign.append(os.path.join(dotapp_path, "Contents/MacOS/idfrect"))
     to_sign.append(os.path.join(dotapp_path, "Contents/MacOS/kicad"))
-    to_sign.append(os.path.join(dotapp_path, "Contents/MacOS/kicad-cli"))
     to_sign.append(dotapp_path)
 
     return to_sign
