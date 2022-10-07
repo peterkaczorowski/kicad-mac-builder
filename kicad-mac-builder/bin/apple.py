@@ -71,6 +71,7 @@ def get_kicad_paths_for_signing(dotapp_path):
     to_sign.append(os.path.join(dotapp_path, "Contents/MacOS/idfcyl"))
     to_sign.append(os.path.join(dotapp_path, "Contents/MacOS/idfrect"))
     to_sign.append(os.path.join(dotapp_path, "Contents/MacOS/kicad"))
+    to_sign.append(os.path.join(dotapp_path, "Contents/MacOS/kicad-cli"))
     to_sign.append(dotapp_path)
 
     return to_sign
