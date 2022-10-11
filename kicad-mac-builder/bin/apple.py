@@ -47,7 +47,7 @@ def get_kicad_paths_for_signing(dotapp_path):
     to_sign.append(os.path.join(dotapp_path, "Contents/Frameworks/Python.framework"))
 
     for root, dirnames, filenames in os.walk(os.path.join(dotapp_path, "Contents/Frameworks")):
-        if "Python. framework" in root:
+        if "Python.framework" in root:
             continue
         for filename in filenames:
             if filename.endswith(".dylib"):
