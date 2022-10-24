@@ -64,9 +64,12 @@ fixup_and_cleanup()
     hdiutil detach "${MOUNTPOINT}"
     rm -r "${MOUNTPOINT}"
 
-    #set it so the DMG autoopens on download/mount
+    #set it so the DMG autoopens on download/mount for supported platforms (x86)
     hdiutil attach "${TEMPLATE}" -noautoopen -nobrowse -mountpoint /Volumes/"${MOUNT_NAME}"
-    bless /Volumes/"${MOUNT_NAME}" --openfolder /Volumes/"${MOUNT_NAME}"
+    if ! sysctl -n machdep.cpu.brand_string | grep Apple > /dev/null; then
+      # we have to be careful how we detect the arch--we may be in rosetta!
+      bless /Volumes/"${MOUNT_NAME}" --openfolder /Volumes/"${MOUNT_NAME}"
+    fi
 
     UNMOUNTED=1
     for i in 1 2 3 4 5 6 7 8 9 10 11 12; do
