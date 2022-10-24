@@ -52,7 +52,41 @@ def get_kicad_paths_for_signing(dotapp_path):
             if filename.endswith(".so") or filename.endswith(".dylib") or filename.endswith(".a"):
                 to_sign.append(os.path.join(root, filename))
 
-    to_sign.append(os.path.join(dotapp_path, "Contents/Frameworks/Python.framework/Versions/Current/bin/python3"))
+    for x in ['2to3',
+              '2to3-3.9',
+              'helpviewer',
+              'idle3',
+              'idle3.9',
+              'img2png',
+              'img2py',
+              'img2xpm',
+              'normalizer',
+              'pip3',
+              'pip3.9',
+              'pycrust',
+              'pydoc3',
+              'pydoc3.9',
+              'pyshell',
+              'pyslices',
+              'pyslicesshell',
+              'python3',
+              'python3-config',
+              'python3-intel64',
+              'python3.9',
+              'python3.9-config',
+              'python3.9-intel64',
+              'pywxrc',
+              'wheel',
+              'wxdemo',
+              'wxdocs',
+              'wxget',
+              ]:
+        to_sign.append(
+            os.path.join(dotapp_path, f"Contents/Frameworks/Python.framework/Versions/Current/bin/{x}"))
+
+    to_sign.append(
+        os.path.join(dotapp_path, f"Contents/Frameworks/Python.framework/Versions/Current/lib/python3.9/config-3.9-darwin/python.o"))
+
     to_sign.append(
         os.path.join(dotapp_path, "Contents/Frameworks/Python.framework/Versions/Current/Resources/Python.app"))
     to_sign.append(os.path.join(dotapp_path, "Contents/Frameworks/Python.framework"))
@@ -86,40 +120,7 @@ def get_kicad_paths_for_signing(dotapp_path):
 
     to_sign.append(dotapp_path)
 
-    for x in ['2to3',
-              '2to3-3.9',
-              'helpviewer',
-              'idle3',
-              'idle3.9',
-              'img2png',
-              'img2py',
-              'img2xpm',
-              'normalizer',
-              'pip3',
-              'pip3.9',
-              'pycrust',
-              'pydoc3',
-              'pydoc3.9',
-              'pyshell',
-              'pyslices',
-              'pyslicesshell',
-              'python3',
-              'python3-config',
-              'python3-intel64',
-              'python3.9',
-              'python3.9-config',
-              'python3.9-intel64',
-              'pywxrc',
-              'wheel',
-              'wxdemo',
-              'wxdocs',
-              'wxget',
-              ]:
-        to_sign.append(
-            os.path.join(dotapp_path, f"Contents/Frameworks/Python.framework/Versions/3.9/bin/{x}"))
 
-    to_sign.append(
-        os.path.join(dotapp_path, f"Contents/Frameworks/Python.framework/Versions/Current/Resources/Python.app"))
 
     return to_sign
 
