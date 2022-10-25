@@ -3,8 +3,8 @@
 set -e
 
 if [ "$#" -ne 2 ]; then
-  echo "Usage: $0 COMMAND PATH" >&2
-  exit 1
+    echo "Usage: $0 COMMAND PATH" >&2
+    exit 1
 fi
 
 # Set path to the second parameter given

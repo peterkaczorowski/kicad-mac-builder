@@ -6,11 +6,11 @@ SCRIPT_DIR=$(dirname "$(stat -f "$0")")
 
 cleanup() {
     echo "Making sure any mounts are unmounted."
-    if [ ! -z "${MOUNTPOINT}" ]; then
+    if [ -n "${MOUNTPOINT}" ]; then
         hdiutil detach "${MOUNTPOINT}" || true
     fi
 
-    if [ ! -z "${MOUNT_NAME}" ]; then
+    if [ -n "${MOUNT_NAME}" ]; then
         hdiutil detach /Volumes/"${MOUNT_NAME}" || true
         diskutil unmount /Volumes/"${MOUNT_NAME}" || true
     fi
@@ -74,13 +74,13 @@ fixup_and_cleanup()
     UNMOUNTED=1
     for i in 1 2 3 4 5 6 7 8 9 10 11 12; do
         if hdiutil detach "/Volumes/${MOUNT_NAME}"; then
-	    UNMOUNTED=0
-	    break
+          UNMOUNTED=0
+          break
         else
-	    echo "Retrying..."
-	    lsof "/Volumes/${MOUNT_NAME}" || true
-	    sync || true
-	    sleep 10
+          echo "Retrying..."
+          lsof "/Volumes/${MOUNT_NAME}" || true
+          sync || true
+          sleep 10
         fi
     done
     if [ $UNMOUNTED -ne 0 ]; then
@@ -116,8 +116,8 @@ fixup_and_cleanup()
     if [ ! $? ]; then
         if ! echo "$line" | grep ' are identical$'; then
             echo "Error: ${output}"
-	    exit 1
-	fi
+      exit 1
+  fi
     fi
 }
 
@@ -134,7 +134,7 @@ echo "DMG_DIR: ${DMG_DIR}"
 echo "PACKAGE_TYPE: ${PACKAGE_TYPE}"
 echo "CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}"
 echo "BACKUP_KICAD: ${BACKUP_KICAD}"
-if [ ! -z ${RELEASE_NAME} ]; then # if RELEASE_NAME is unset, or is set to empty string
+if [ -n "${RELEASE_NAME}" ]; then # if RELEASE_NAME is unset, or is set to empty string
     echo "RELEASE_NAME: ${RELEASE_NAME}"
 else
     echo "RELEASE_NAME: unspecified"

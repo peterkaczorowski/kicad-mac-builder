@@ -6,40 +6,40 @@ cmake_policy(SET CMP0135 NEW)
 include( ExternalProject )
 
 if( NOT DEFINED KICAD_CMAKE_BUILD_TYPE )
-  message( FATAL_ERROR "KICAD_CMAKE_BUILD_TYPE must be set.  Please see the README or try build.py." )
+    message( FATAL_ERROR "KICAD_CMAKE_BUILD_TYPE must be set.  Please see the README or try build.py." )
 endif ()
 if( NOT DEFINED KICAD_TAG AND NOT DEFINED KICAD_SOURCE_DIR)
-  message( FATAL_ERROR "KICAD_TAG or KICAD_SOURCE_DIR must be set.  Please see the README or try build.py." )
+    message( FATAL_ERROR "KICAD_TAG or KICAD_SOURCE_DIR must be set.  Please see the README or try build.py." )
 endif ()
 if( NOT DEFINED PACKAGES3D_TAG )
-  message( FATAL_ERROR "PACKAGES3D_TAG must be set.  Please see the README or try build.py." )
+    message( FATAL_ERROR "PACKAGES3D_TAG must be set.  Please see the README or try build.py." )
 endif ()
 if( NOT DEFINED FOOTPRINTS_TAG )
-  message( FATAL_ERROR "FOOTPRINTS_TAG must be set.  Please see the README or try build.py." )
+    message( FATAL_ERROR "FOOTPRINTS_TAG must be set.  Please see the README or try build.py." )
 endif ()
 if( NOT DEFINED SYMBOLS_TAG )
-  message( FATAL_ERROR "SYMBOLS_TAG must be set.  Please see the README or try build.py." )
+    message( FATAL_ERROR "SYMBOLS_TAG must be set.  Please see the README or try build.py." )
 endif ()
 if( NOT DEFINED DOCS_TARBALL_URL)
-  message( FATAL_ERROR "DOCS_TARBALL_URL must be set.  Please see the README or try build.py." )
+    message( FATAL_ERROR "DOCS_TARBALL_URL must be set.  Please see the README or try build.py." )
 endif ()
 if( NOT DEFINED TEMPLATES_TAG)
-  message( FATAL_ERROR "TEMPLATES_TAG must be set.  Please see the README or try build.py." )
+    message( FATAL_ERROR "TEMPLATES_TAG must be set.  Please see the README or try build.py." )
 endif ()
 if( NOT DEFINED SKIP_DOCS_UPDATE )
     set( SKIP_DOCS_UPDATE OFF )
 endif ()
 
 if( NOT DEFINED MACOS_MIN_VERSION )
-  message( FATAL_ERROR "MACOS_MIN_VERSION must be set.  Please see the README or try build.py." )
+    message( FATAL_ERROR "MACOS_MIN_VERSION must be set.  Please see the README or try build.py." )
 endif ()
 
 if( NOT DEFINED SIGNING_CERTIFICATE_ID )
-  set( SIGNING_CERTIFICATE_ID - )
+    set( SIGNING_CERTIFICATE_ID - )
 endif ()
 
 if( NOT DEFINED DMG_DIR )
-  set( DMG_DIR ${CMAKE_BINARY_DIR}/dmg )
+    set( DMG_DIR ${CMAKE_BINARY_DIR}/dmg )
 endif ()
 
 set( CMAKE_VERBOSE_MAKEFILE ON )
@@ -62,17 +62,18 @@ set( KICAD_INSTALL_DIR ${CMAKE_BINARY_DIR}/kicad-dest )
 
 set( KICAD_CMAKE_ARGS -DDEFAULT_INSTALL_PATH=/Library/Application\ Support/kicad )
 
-
 # Add the FFTW directory to the extra bundle dirs, for ngspice
 execute_process(COMMAND brew --prefix fftw OUTPUT_VARIABLE BREW_FFTW_BASEDIR RESULT_VARIABLE FOUND_BREW_FFTW_BASEDIR_EXIT_CODE OUTPUT_STRIP_TRAILING_WHITESPACE)
 if ( ${FOUND_BREW_FFTW_BASEDIR_EXIT_CODE} EQUAL 0 )
     get_filename_component(BREW_FFTW_LIBRARY_DIR ${BREW_FFTW_BASEDIR}/lib/ REALPATH DIRECTORY)
     set( MACOS_EXTRA_BUNDLE_FIX_DIRS ${MACOS_EXTRA_BUNDLE_FIX_DIRS} ${BREW_FFTW_LIBRARY_DIR} )
 endif()
+
 # FindOpenCASCADE.cmake finds /usr/local/lib, but not the Homebrew one.  fixup_bundle doesn't work with /usr/local/lib as a dirs argument, so
 # if OCC is installed by brew, we're going to pass in the library and include dir manually. If not, we aren't passing in anything
 # which means that FindOpenCASCADE.cmake will do its regular job.
 # This should be fixed by figuring out why fixup_bundle isn't working with /usr/local/lib in the dirs argument.
+
 execute_process(COMMAND brew --prefix opencascade OUTPUT_VARIABLE BREW_OCC_BASEDIR RESULT_VARIABLE FOUND_BREW_OCC_BASEDIR_EXIT_CODE OUTPUT_STRIP_TRAILING_WHITESPACE)
 if ( ${FOUND_BREW_OCC_BASEDIR_EXIT_CODE} EQUAL 0 )
     get_filename_component(BREW_LIBTKERNEL_REALPATH ${BREW_OCC_BASEDIR}/lib/libTKernel.dylib REALPATH)
@@ -84,8 +85,6 @@ if ( ${FOUND_BREW_OCC_BASEDIR_EXIT_CODE} EQUAL 0 )
     message("BREW_OCC_INCLUDE_DIR: ${BREW_OCC_INCLUDE_DIR}" )
     set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DOCC_INCLUDE_DIR=${BREW_OCC_INCLUDE_DIR} -DOCC_LIBRARY_DIR=${BREW_OCC_LIBRARY_DIR} )
 endif()
-
-
 
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=${KICAD_INSTALL_DIR} )
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DCMAKE_C_COMPILER=/usr/bin/clang )
@@ -114,11 +113,11 @@ set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DMACOS_EXTRA_BUNDLE_FIX_DIRS=${MACOS_
 set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DCMAKE_BUILD_TYPE=${KICAD_CMAKE_BUILD_TYPE} )
 
 if(${KICAD_VERSION_EXTRA})
-  set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DKICAD_VERSION_EXTRA=${KICAD_VERSION_EXTRA} )
+    set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} -DKICAD_VERSION_EXTRA=${KICAD_VERSION_EXTRA} )
 endif()
 
 if(DEFINED KICAD_CMAKE_ARGS_EXTRA)
-  set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} ${KICAD_CMAKE_ARGS_EXTRA} )
+    set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} ${KICAD_CMAKE_ARGS_EXTRA} )
 endif()
 
 string (REGEX REPLACE "(^|[^\\\\]);" "\\1 \\\\\n" KICAD_CMAKE_ARGS_FORMATTED "${KICAD_CMAKE_ARGS}")

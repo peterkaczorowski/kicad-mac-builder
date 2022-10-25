@@ -17,7 +17,9 @@ from urllib.request import urlopen
 
 NotarizationStatus = namedtuple('NotarizationStatus', ['in_progress', 'success', 'logfile_url'])
 
-# From Apple: "Important: While the --deep option can be applied to a signing operation, this is not recommended. We recommend that you sign code inside out in individual stages (as Xcode does automatically). Signing with --deep is for emergency repairs and temporary adjustments only."
+# From Apple: "Important: While the --deep option can be applied to a signing operation, this is not recommended. We
+# recommend that you sign code inside out in individual stages (as Xcode does automatically). Signing with --deep is
+# for emergency repairs and temporary adjustments only."
 
 # When we used the name of the certificate, instead of the hex ID, we saw frequent segfaults while signing.
 

@@ -348,8 +348,6 @@ def main():
     parsed_args = parse_args(sys.argv[1:])
     print_summary(parsed_args)
 
-
-
     which_brew = subprocess.check_output("which brew", shell=True).decode('utf-8').strip()
     brew_prefix = subprocess.check_output("brew --prefix", shell=True).decode('utf-8').strip()
 

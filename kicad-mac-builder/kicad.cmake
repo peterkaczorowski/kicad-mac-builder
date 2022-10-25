@@ -4,54 +4,54 @@ include(ExternalProject)
 # This should help folks setup build environments easier.
 
 add_custom_target(kicad-build-deps
-        DEPENDS python wxpython wxwidgets ngspice
+    DEPENDS python wxpython wxwidgets ngspice
 )
 
 add_custom_target(setup-kicad-dependencies
-	DEPENDS kicad-build-deps
-	COMMENT "kicad-mac-builder would use the following CMake arguments for KiCad in this configuration:\n\n${KICAD_CMAKE_ARGS_FORMATTED}\n\nSee the README for more details."
+    DEPENDS kicad-build-deps
+    COMMENT "kicad-mac-builder would use the following CMake arguments for KiCad in this configuration:\n\n${KICAD_CMAKE_ARGS_FORMATTED}\n\nSee the README for more details."
 )
 
 
 if(DEFINED RELEASE_NAME)
-  if(NOT DEFINED KICAD_TAG OR "${KICAD_TAG}" STREQUAL "")
-    message( FATAL_ERROR "KICAD_TAG must be set for release builds.  Please see the README or try build.py." )
-  endif ()
+    if(NOT DEFINED KICAD_TAG OR "${KICAD_TAG}" STREQUAL "")
+      message( FATAL_ERROR "KICAD_TAG must be set for release builds.  Please see the README or try build.py." )
+    endif ()
 
-  ExternalProject_Add(
-    kicad
-    PREFIX  kicad
-    DEPENDS kicad-build-deps docs
-    GIT_REPOSITORY ${KICAD_URL}
-    GIT_TAG ${KICAD_TAG}
-    UPDATE_COMMAND git fetch
-    COMMAND git tag -a ${RELEASE_NAME} -m "${RELEASE_NAME}"
-    CMAKE_ARGS  ${KICAD_CMAKE_ARGS}
-  )
+    ExternalProject_Add(
+        kicad
+        PREFIX  kicad
+        DEPENDS kicad-build-deps docs
+        GIT_REPOSITORY ${KICAD_URL}
+        GIT_TAG ${KICAD_TAG}
+        UPDATE_COMMAND git fetch
+        COMMAND git tag -a ${RELEASE_NAME} -m "${RELEASE_NAME}"
+        CMAKE_ARGS ${KICAD_CMAKE_ARGS}
+    )
 elseif(NOT DEFINED RELEASE_NAME AND DEFINED KICAD_SOURCE_DIR AND NOT "${KICAD_SOURCE_DIR}" STREQUAL "")
-  ExternalProject_Add(
-    kicad
-    PREFIX  kicad
-    DEPENDS kicad-build-deps docs
-    SOURCE_DIR ${KICAD_SOURCE_DIR}
-    CMAKE_ARGS  ${KICAD_CMAKE_ARGS}
+    ExternalProject_Add(
+        kicad
+        PREFIX  kicad
+        DEPENDS kicad-build-deps docs
+        SOURCE_DIR ${KICAD_SOURCE_DIR}
+        CMAKE_ARGS ${KICAD_CMAKE_ARGS}
   )
 elseif(NOT DEFINED RELEASE_NAME AND DEFINED KICAD_TAG AND NOT "${KICAD_TAG}" STREQUAL "")
-  if(NOT DEFINED KICAD_URL OR "${KICAD_URL}" STREQUAL "")
-    message( FATAL_ERROR "KICAD_URL must be set if KICAD_TAG is set, but it has a default.  This should never happen." )
-  endif ()
+    if(NOT DEFINED KICAD_URL OR "${KICAD_URL}" STREQUAL "")
+        message( FATAL_ERROR "KICAD_URL must be set if KICAD_TAG is set, but it has a default.  This should never happen." )
+    endif ()
 
-  ExternalProject_Add(
-    kicad
-    PREFIX  kicad
-    DEPENDS kicad-build-deps docs
-    GIT_REPOSITORY ${KICAD_URL}
-    GIT_TAG ${KICAD_TAG}
-    UPDATE_COMMAND git fetch
-    CMAKE_ARGS  ${KICAD_CMAKE_ARGS}
-  )
+    ExternalProject_Add(
+        kicad
+        PREFIX  kicad
+        DEPENDS kicad-build-deps docs
+        GIT_REPOSITORY ${KICAD_URL}
+        GIT_TAG ${KICAD_TAG}
+        UPDATE_COMMAND git fetch
+        CMAKE_ARGS ${KICAD_CMAKE_ARGS}
+    )
 else()
-  message( FATAL_ERROR "Either KICAD_TAG or KICAD_SOURCE_DIR must be set.  Please see the README or try build.py." )
+    message( FATAL_ERROR "Either KICAD_TAG or KICAD_SOURCE_DIR must be set.  Please see the README or try build.py." )
 endif()
 
 ExternalProject_Add_Step(
@@ -149,29 +149,28 @@ ExternalProject_Add_Step(
 )
 
 ExternalProject_Add_Step(
-        kicad
-        verify-wx-import
-        COMMENT "Verifying Python can import wx"
-        DEPENDEES sign-app
-        COMMAND ${BIN_DIR}/verify-wx-import.sh  ${KICAD_INSTALL_DIR}/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3
+    kicad
+    verify-wx-import
+    COMMENT "Verifying Python can import wx"
+    DEPENDEES sign-app
+    COMMAND ${BIN_DIR}/verify-wx-import.sh  ${KICAD_INSTALL_DIR}/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3
 )
 
 ExternalProject_Add_Step(
-	kicad
-	verify-pcbnew-so-import
-	COMMENT "Verifying Python can import pcbnew"
-        DEPENDEES sign-app
-	COMMAND ${BIN_DIR}/verify-pcbnew-so-import.sh  ${KICAD_INSTALL_DIR}/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3
+    kicad
+    verify-pcbnew-so-import
+    COMMENT "Verifying Python can import pcbnew"
+    DEPENDEES sign-app
+    COMMAND ${BIN_DIR}/verify-pcbnew-so-import.sh  ${KICAD_INSTALL_DIR}/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3
 )
-
 
 if(DEFINED APPLE_DEVELOPER_USERNAME AND DEFINED APPLE_DEVELOPER_PASSWORD_KEYCHAIN_NAME AND DEFINED APP_NOTARIZATION_ID AND DEFINED ASC_PROVIDER)
     ExternalProject_Add_Step(
-            kicad
-            notarize-app
-            COMMENT "Notarize KiCad.app"
-            DEPENDEES sign-app
-            COMMAND "${BIN_DIR}/apple.py" notarize --apple-developer-username "${APPLE_DEVELOPER_USERNAME}" --apple-developer-password-handle "${APPLE_DEVELOPER_PASSWORD_KEYCHAIN_NAME}" --notarization-id "${APP_NOTARIZATION_ID}" --asc-provider "${ASC_PROVIDER}" "${KICAD_INSTALL_DIR}/KiCad.app"
+        kicad
+        notarize-app
+        COMMENT "Notarize KiCad.app"
+        DEPENDEES sign-app
+        COMMAND "${BIN_DIR}/apple.py" notarize --apple-developer-username "${APPLE_DEVELOPER_USERNAME}" --apple-developer-password-handle "${APPLE_DEVELOPER_PASSWORD_KEYCHAIN_NAME}" --notarization-id "${APP_NOTARIZATION_ID}" --asc-provider "${ASC_PROVIDER}" "${KICAD_INSTALL_DIR}/KiCad.app"
     )
     ExternalProject_Add_StepTargets(kicad notarize-app)
 endif()

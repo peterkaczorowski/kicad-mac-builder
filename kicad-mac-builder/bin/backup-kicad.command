@@ -3,7 +3,7 @@
 #It looks complicated, but it copies files from the default locations for the KiCad applications, support files, and preferences into your home directory, in a directory that starts with kicad-backup and then the date and time.
 
 BACKUP_DIR=~/kicad-backup-$(date +%Y%m%d-%H%M%S)
-mkdir -p $BACKUP_DIR
+mkdir -p "$BACKUP_DIR"
 if [ -e /Applications/KiCad ]; then
   echo "Backing up /Applications/KiCad"
   mkdir -p $BACKUP_DIR/Applications
@@ -12,7 +12,7 @@ fi
 
 if [ -e /Applications/Kicad ]; then
   echo "Backing up /Applications/Kicad"
-  mkdir -p $BACKUP_DIR/Applications
+  mkdir -p "$BACKUP_DIR"/Applications
   cp -r /Applications/Kicad $BACKUP_DIR/Applications/
 fi
 

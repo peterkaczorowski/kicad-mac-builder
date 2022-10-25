@@ -6,13 +6,13 @@ else()
 endif()
 
 ExternalProject_Add(
-        docs
-        PREFIX  docs
-        URL ${DOCS_TARBALL_URL}
-        ${docs_DOWNLOAD_COMMAND_OVERRIDE}
-        CONFIGURE_COMMAND ""
-        BUILD_COMMAND ""
-        INSTALL_COMMAND ""
+    docs
+    PREFIX  docs
+    URL ${DOCS_TARBALL_URL}
+    ${docs_DOWNLOAD_COMMAND_OVERRIDE}
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND ""
 )
 
 ExternalProject_Get_Property(docs SOURCE_DIR)
