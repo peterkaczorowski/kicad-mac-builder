@@ -4,6 +4,10 @@
 
 set -e
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+source "${SCRIPT_DIR}/../src/brew_deps.sh"
+
 ARCH=`arch`
 MACHINE=`machine`
 
@@ -18,6 +22,6 @@ if [ ! -e /opt/homebrew/bin/brew ]; then
 fi
 
 echo "Installing some dependencies"
-/opt/homebrew/bin/brew install glew bison opencascade glm boost harfbuzz cairo doxygen gettext wget libtool autoconf automake cmake swig openssl unixodbc ninja
+/opt/homebrew/bin/brew install  "${BREW_DEPS[@]}"
 
 echo "Done!"

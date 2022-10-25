@@ -1,4 +1,5 @@
 #!/bin/bash
+
 set -x
 set -e
 
@@ -8,7 +9,7 @@ set -e
 # Notes
 
 # If you are on an Mx Mac, /usr/local/bin/brew is for x86_64 things, and the default and M1-y Homebrew is in /opt/homebrew
-# Most folks would only need the M1-y homebrew, but if you building x86_64 KiCad on an M1 Mac you are not most folks.
+# Many folks would only need the M1-y homebrew, but if you building x86_64 KiCad on an M1 Mac you are not most folks.
 
 # One way of handling this multiverse of madness is to have the M1-y Homebrew in your path first.  When you type `brew`, it means the M1 homebrew.
 # If you need to use the x86_64 Homebrew, you would run `arch -x86_64 /usr/local/bin/brew`.
@@ -20,6 +21,10 @@ set -e
 # Add it to your PATH, so `wrangle-bundle` works at the CLI.
 # Then you can use build.py like:
 # `arch -x86_64 ./build.py --target kicad`
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+source "${SCRIPT_DIR}/../src/brew_deps.sh"
 
 echo "Checking for Rosetta 2..."
 if pgrep -q oahd; then
@@ -40,8 +45,6 @@ export HOMEBREW_NO_ANALYTICS=1
 
 echo "Installing some dependencies"
 
-arch -x86_64 /usr/local/bin/brew install glew bison opencascade glm boost harfbuzz # I know these dependencies needed to be installed via the x86-64 brew
-
-arch -x86_64 /usr/local/bin/brew install cairo doxygen gettext wget libtool autoconf automake cmake swig openssl # At least some of these do *not* need to be installed via the x86-64 brew, and it may be "simpler" (ha!) to install these via the M1 brew...
+arch -x86_64 /usr/local/bin/brew install "${BREW_DEPS[@]}"
 
 echo "Done!"
