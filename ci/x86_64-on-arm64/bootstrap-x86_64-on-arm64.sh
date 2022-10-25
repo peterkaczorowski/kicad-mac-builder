@@ -46,5 +46,4 @@ export HOMEBREW_NO_ANALYTICS=1
 echo "Installing some dependencies"
 
 arch -x86_64 /usr/local/bin/brew install "${BREW_DEPS[@]}"
-
 echo "Done!"

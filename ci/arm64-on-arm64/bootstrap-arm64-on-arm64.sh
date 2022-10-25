@@ -8,8 +8,8 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 source "${SCRIPT_DIR}/../src/brew_deps.sh"
 
-ARCH=`arch`
-MACHINE=`machine`
+ARCH=$(arch)
+MACHINE=$(machine)
 
 if [ "$MACHINE" != "arm64e" ] && [ "$ARCH" != "arm64" ]; then
   echo "unexpected machine or arch"

@@ -27,3 +27,4 @@ brew install openssh
 
 echo "Installing some dependencies"
 brew install "${BREW_DEPS[@]}"
+echo "Done."
