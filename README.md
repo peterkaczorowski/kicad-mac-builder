@@ -11,13 +11,13 @@ Setup
 =====
 kicad-mac-builder requires a Mac and at least 30G of disk space free.  The instructions assume you are capable of using the command line but they are not intended to require arcane deep knowledge.
 
-kicad-mac-builder is known to work on macOS 10.15, 11, and 12.  Apple Silicon support is experimental.
+kicad-mac-builder is known to work on macOS 10.15, 11, 12, and 13.  Apple Silicon support is experimental.
 
 The documentation assumes you are using Homebrew on your Mac.  The automated builds use `./ci/src/bootstrap.sh` to install Homebrew and the kicad-mac-builder dependencies.
 
-Please use a terminal to run the following command to install the dependencies:
+Depending upon which architecture you're running on and which you're building for, setting up the dependencies looks different.
 
-`./ci/src/bootstrap.sh`
+Review the appropriate `bootstrap.sh` script in `ci/.  Do not use the bootstrap scripts without reviewing them--you may not want to set your machine up that way.
 
 If you have problems, take a look at the output of `ci/src/watermark.sh`.  It should print some information about your setup 
 that may be helpful for diagnosis.
@@ -48,7 +48,7 @@ KiCad Mac Builder does not install KiCad onto your Mac or modify your currently 
 
 Apple Silicon
 =============
-Intel builds of KiCad work great on Apple Silicon.  Native Apple Silicon builds are experimental.... this whole branch is experimental! :)
+Intel builds of KiCad work great on Apple Silicon.  Native Apple Silicon KiCad builds are experimental.
 
 On an Apple Silicon system, you'll need to specify `--arch arm64` to `build.py`.  You'll also need arm64 versions of the dependencies.
 
@@ -58,15 +58,13 @@ If you have Homebrew installed in /usr/local, it's probably a Rosetta version of
 
 If you have both installed, make sure that /opt/homebrew/bin is before the /usr/local Homebrew location in your PATH.
 
-See the scripts inside ci/arm64_on_arm64/.
-
-Currently, you do not need dyldstyle or wrangle-bundle for Apple Silicon builds.
+See the scripts inside ci/.
 
 The Apple Silicon build support is experimental, and we'd love to hear how it's gone for you.  Your feedback will help us stop flagging this whole section as experimental! :)
 
 Signing and Notarization
 ========================
-By default, kicad-mac-builder will sign KiCad with an ad-hoc signature, which does not require any setup or configuration.
+By default, kicad-mac-builder will sign KiCad with an ad-hoc signature, which does not require any setup or configuration.  Your ad-hoc signed KiCad should run fine on your system, but cannot be notarized by Apple.  When Mac applications are ad-hoc signed, they do not support Hardened Runtime, which provides extra security protection.
 
 kicad-mac-builder supports "real" signing and notarization of build outputs.  kicad-mac-builder expects you are using a Developer ID certificate.  Details on creating one are available at https://developer.apple.com/developer-id/. kicad-mac-builder also expects you have stored your Apple developer account password in your keychain.  See `man altool` for details.
 
@@ -98,7 +96,7 @@ make install
 If you're using CLion, open CLion, and open the KiCad source directory.  Go into Preferences > Build, Execution, Deployment > CMake, and put the copied CMake arguments (the series of -DVARIABLENAME=value -DOTHERVARIABLENAME=othervalue..) into CMake Options.
 
 CLion will likely need to reindex the project.  When that is complete, you should have a series of outputs in the top right corner, by the green arrow play button ("Run"). Choose `kicad | Debug` and press "Run". This should start a build, and TODO: finish
-
+``
 Now, you can open Finder to the location specified in `CMAKE_INSTALL_PREFIX` in the CMake arguments, and you should see KiCad.app and the rest of the suite.
 
 Built like this, KiCad should work but may not be relocatable or distributable.  There are additional steps required to be able to move the bundle or use it on a different machine.
@@ -184,6 +182,11 @@ Simulator
 
 Tips
 ----
-When debugging dylib stuff, the environment vaiables DYLD_PRINT_LIBRARIES and DYLD_PRINT_LIBRARIES_POST_LAUNCH are helpful.  For instance:
+None of these tips are intended to be necessary to use kicad-mac-builder, but if you're messing around or fixing issues,
+they may be helpful.
+
+When debugging dylib stuff, the environment variables DYLD_PRINT_LIBRARIES and DYLD_PRINT_LIBRARIES_POST_LAUNCH are helpful.  For instance:
 
 `DYLD_PRINT_LIBRARIES=YES DYLD_PRINT_LIBRARIES_POST_LAUNCH=YES  /Users/wolf/KiCad/KiCad.app/Contents/Applications/pcbnew.app/Contents/MacOS/pcbnew`
+
+If you get a `syntax error, unexpected string, expecting =`, look at which bison is being used.
