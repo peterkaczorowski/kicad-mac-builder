@@ -167,6 +167,17 @@ def parse_args(args):
     if parsed_args.arch == "arm64" and not host_is_apple_silicon():
         parser.error("Cannot target arm64 on x86_64 host.")
 
+    if parsed_args.arch == "x86_64" and host_is_apple_silicon():
+        # check on Rosetta
+        # I'm not sure if we *should* need Rosetta, but right now
+        # it seems to need it
+        try:
+            subprocess.check_call(["pgrep", "-q", "oahd"])
+        except subprocess.CalledProcessError:
+            parser.error("Building KiCad x86_64 on arm64 requires Rosetta. "
+                         "It doesn't appear to be installed. "
+                         "One way to install it is with `/usr/sbin/softwareupdate --install-rosetta`.")
+
     if parsed_args.release:
         if parsed_args.build_type is None:
             parsed_args.build_type = "Release"
