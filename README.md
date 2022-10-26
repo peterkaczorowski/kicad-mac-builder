@@ -19,6 +19,9 @@ Please use a terminal to run the following command to install the dependencies:
 
 `./ci/src/bootstrap.sh`
 
+If you have problems, take a look at the output of `ci/src/watermark.sh`.  It should print some information about your setup 
+that may be helpful for diagnosis.
+
 Usage
 =====
 To get up and running the absolute fastest, use `build.py`.  It expects to be run from the directory it is in, like;
