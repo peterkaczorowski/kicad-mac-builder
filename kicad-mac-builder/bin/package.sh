@@ -2,6 +2,17 @@
 
 set -e
 
+# This script, unfortunately, uses a lot of environment variables for configuration
+# I'd love to see this redone!
+
+# PACKAGE_TYPE must be set to unified (legacy, should handle...)
+# KICAD_INSTALL_DIR used to grab files for the dmg
+# KICAD_SOURCE_DIR used for git sha in filename (see RELEASE_NAME)
+# RELEASE_NAME can be used for dmg naming
+# PACKAGING_DIR directory that TEMPLATE is in, also contains background
+# DMG_DIR output directory that will contain the dmg
+# TEMPLATE filename of template dmg, minus the end .tar.bz2
+
 SCRIPT_DIR=$(dirname "$(stat -f "$0")")
 
 cleanup() {
@@ -41,7 +52,7 @@ setup_dmg()
     # resize the template, and mount it
 
     if ! hdiutil resize -sectors "${DMG_SIZE}" "${TEMPLATE}"; then
-        hdiutil resize -limits kicadtemplate.dmg
+        hdiutil resize -limits kicadtemplate.dmg # TODO what is this? Does this work?
         hdiutil resize -sectors 10167525 "${TEMPLATE}"
         hdiutil resize -limits kicadtemplate.dmg
         if ! hdiutil resize -sectors "${DMG_SIZE}" "${TEMPLATE}"; then
@@ -132,8 +143,6 @@ echo "VERBOSE: ${VERBOSE}"
 echo "TEMPLATE: ${TEMPLATE}"
 echo "DMG_DIR: ${DMG_DIR}"
 echo "PACKAGE_TYPE: ${PACKAGE_TYPE}"
-echo "CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}"
-echo "BACKUP_KICAD: ${BACKUP_KICAD}"
 if [ -n "${RELEASE_NAME}" ]; then # if RELEASE_NAME is unset, or is set to empty string
     echo "RELEASE_NAME: ${RELEASE_NAME}"
 else
@@ -148,16 +157,6 @@ echo "pwd: $(pwd)"
 
 if [ ! -e "${PACKAGING_DIR}" ]; then
     echo "PACKAGING_DIR must be set and exist."
-    exit 1
-fi
-
-if [ ! -e "${CMAKE_BINARY_DIR}" ]; then
-    echo "CMAKE_BINARY_DIR must be set and exist."
-    exit 1
-fi
-
-if [ ! -e "${BACKUP_KICAD}" ]; then
-    echo "BACKUP_KICAD must be set and exist."
     exit 1
 fi
 

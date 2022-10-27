@@ -19,8 +19,6 @@ ExternalProject_Add(
                     KICAD_INSTALL_DIR=${KICAD_INSTALL_DIR}
                     TEMPLATE=kicadtemplate.dmg
                     PACKAGE_TYPE=unified
-                    CMAKE_BINARY_DIR=${CMAKE_BINARY_DIR}
-                    BACKUP_KICAD=${CMAKE_SOURCE_DIR}/bin/backup-kicad.command
                     DMG_DIR=${DMG_DIR}
                     RELEASE_NAME=${RELEASE_NAME}
                     SIGNING_IDENTITY=${SIGNING_IDENTITY}
