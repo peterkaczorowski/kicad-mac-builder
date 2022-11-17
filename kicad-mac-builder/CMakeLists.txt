@@ -120,7 +120,16 @@ if(DEFINED KICAD_CMAKE_ARGS_EXTRA)
     set( KICAD_CMAKE_ARGS ${KICAD_CMAKE_ARGS} ${KICAD_CMAKE_ARGS_EXTRA} )
 endif()
 
-string (REGEX REPLACE "(^|[^\\\\]);" "\\1 \\\\\n" KICAD_CMAKE_ARGS_FORMATTED "${KICAD_CMAKE_ARGS}")
+
+# This is not a perfect way to escape the CMake arguments
+# it is not clear to me how to escape them perfectly
+# The key here was that I needed to escape the space in Application Support
+
+set(PRINTABLE_KICAD_CMAKE_ARGS "")
+foreach(line IN LISTS KICAD_CMAKE_ARGS)
+    string(REPLACE " " "\\ " line "${line}")
+    string(APPEND PRINTABLE_KICAD_CMAKE_ARGS "${line}\n")
+endforeach()
 
 message( "CMake Setting Summary for kicad-mac-builder" )
 message( "KICAD_TAG: ${KICAD_TAG}" )
@@ -130,11 +139,12 @@ message( "SYMBOLS_TAG: ${SYMBOLS_TAG}" )
 message( "FOOTPRINTS_TAG: ${FOOTPRINTS_TAG}" )
 message( "TEMPLATES_TAG: ${TEMPLATES_TAG}" )
 message( "DOCS_TARBALL_URL: ${DOCS_TARBALL_URL}" )
-message( "KICAD_CMAKE_ARGS: ${KICAD_CMAKE_ARGS}" )
 message( "SYMBOLS_URL: ${SYMBOLS_URL}" )
 message( "FOOTPRINTS_URL: ${FOOTPRINTS_URL}" )
 message( "PACKAGES3D_URL: ${PACKAGES3D_URL}" )
 message( "TEMPLATES_URL: ${TEMPLATES_URL}" )
+message( "KICAD_CMAKE_ARGS: ${PRINTABLE_KICAD_CMAKE_ARGS}" )
+
 
 include( python.cmake )
 include( wx.cmake )

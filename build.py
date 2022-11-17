@@ -115,6 +115,10 @@ def parse_args(args):
                         help="Use something like '-DFOO=\"bar\"' to add FOO=bar to KiCad's CMake args.",
                         required=False)
 
+    parser.add_argument("--redistributable",
+                        action="store_true",
+                        help="Fix KiCad bundle to work on other machines. This requires wrangle-bundle from dyldstyle, and is implied for releases, packaged builds, and notarized builds.")
+
     signing_group = parser.add_argument_group('signing and notarization', description="By default, kicad-mac-builder uses ad-hoc signing and doesn't submit targets for notarization.")
     signing_group.add_argument("--signing-identity",
                         dest="signing_identity",
@@ -194,6 +198,8 @@ def parse_args(args):
             parser.error(
                 "Release builds require --kicad-ref, --symbols-ref, --footprints-ref, --packages3d-ref, "
                 "--templates-ref, --docs-tarball-url, and --release-name.")
+
+        parsed_args.redistributable = True
     else:
         # not stable
 
@@ -215,6 +221,10 @@ def parse_args(args):
 
     parsed_args.kicad_mac_builder_cmake_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "kicad-mac-builder")
 
+    if parsed_args.target and any([target.startswith("package") for target in parsed_args.target]):
+        parsed_args.redistributable = True
+    if parsed_args.app_notarization_id or parsed_args.dmg_notarization_id:
+        parsed_args.redistributable = True
     return parsed_args
 
 

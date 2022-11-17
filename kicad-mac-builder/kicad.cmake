@@ -9,9 +9,8 @@ add_custom_target(kicad-build-deps
 
 add_custom_target(setup-kicad-dependencies
     DEPENDS kicad-build-deps
-    COMMENT "kicad-mac-builder would use the following CMake arguments for KiCad in this configuration:\n\n${KICAD_CMAKE_ARGS_FORMATTED}\n\nSee the README for more details."
+    COMMENT "kicad-mac-builder would use the following CMake arguments for KiCad in this configuration:\n\n${PRINTABLE_KICAD_CMAKE_ARGS}\n\nIf you're pasting these into a terminal, you probably want a \\ at the end of each line.\nSee the README for more details."
 )
-
 
 if(DEFINED RELEASE_NAME)
     if(NOT DEFINED KICAD_TAG OR "${KICAD_TAG}" STREQUAL "")
@@ -117,27 +116,39 @@ ExternalProject_Add_Step(
     COMMAND cp -r ${packages3d_INSTALL_DIR}/. ${KICAD_INSTALL_DIR}/KiCad.app/Contents/SharedSupport/
 )
 
-ExternalProject_Add_Step(
-    kicad
-    fix-loading
-    COMMENT "Checking and fixing bundle to make sure it's relocatable"
-    DEPENDEES install-docs-into-app install collect-licenses install-footprints-into-app install-symbols-into-app install-templates-into-app install-packages3d-into-app # demos?
-    # Since we're currently ignoring the exit status, let's make sure wrangle-bundle is installed
-    COMMAND echo "Looking for wrangle-bundle..."
-    COMMAND which wrangle-bundle
-    COMMAND wrangle-bundle --fix --python-version ${PYTHON_X_Y_VERSION} ${KICAD_INSTALL_DIR}/kicad.app || true
-)
-
-ExternalProject_Add_Step(
+# if cmake REDISTRIBUTABLE is set, then do this step
+if(DEFINED REDISTRIBUTABLE)
+    ExternalProject_Add_Step(
         kicad
-        sign-app
-        COMMENT "Signing KiCad.app and its contents"
-        DEPENDEES fix-loading
-        # DEPENDEES install-docs-into-app install collect-licenses install-footprints-into-app install-symbols-into-app install-templates-into-app install-packages3d-into-app
-        # we can't modify KiCad.app after this*
-        # TODO: pull in hardened runtime
-        COMMAND "${BIN_DIR}/apple.py" sign --certificate-id "${SIGNING_CERTIFICATE_ID}" --entitlements "${BIN_DIR}/../signing/entitlements.plist" "${KICAD_INSTALL_DIR}/KiCad.app"
-)
+        fix-loading
+        COMMENT "Checking and fixing bundle to make sure it's relocatable"
+        DEPENDEES install-docs-into-app install collect-licenses install-footprints-into-app install-symbols-into-app install-templates-into-app install-packages3d-into-app # demos?
+        # Since we're currently ignoring the exit status, let's make sure wrangle-bundle is installed
+        COMMAND echo "Looking for wrangle-bundle..."
+        COMMAND which wrangle-bundle
+        COMMAND wrangle-bundle --fix --python-version ${PYTHON_X_Y_VERSION} ${KICAD_INSTALL_DIR}/kicad.app || true
+    )
+
+    ExternalProject_Add_Step(
+            kicad
+            sign-app
+            COMMENT "Signing KiCad.app and its contents"
+            DEPENDEES fix-loading
+            # we can't modify KiCad.app after this without resigning
+            # TODO: pull in hardened runtime
+            COMMAND "${BIN_DIR}/apple.py" sign --certificate-id "${SIGNING_CERTIFICATE_ID}" --entitlements "${BIN_DIR}/../signing/entitlements.plist" "${KICAD_INSTALL_DIR}/KiCad.app"
+    )
+else()
+    ExternalProject_Add_Step(
+            kicad
+            sign-app
+            COMMENT "Signing KiCad.app and its contents"
+            DEPENDEES install-docs-into-app install collect-licenses install-footprints-into-app install-symbols-into-app install-templates-into-app install-packages3d-into-app # demos?
+            # we can't modify KiCad.app after this without resigning
+            # TODO: pull in hardened runtime
+            COMMAND "${BIN_DIR}/apple.py" sign --certificate-id "${SIGNING_CERTIFICATE_ID}" --entitlements "${BIN_DIR}/../signing/entitlements.plist" "${KICAD_INSTALL_DIR}/KiCad.app"
+    )
+endif()
 
 ExternalProject_Add_Step(
     kicad

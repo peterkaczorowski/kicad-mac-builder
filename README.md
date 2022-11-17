@@ -26,7 +26,7 @@ Usage
 =====
 To get up and running the absolute fastest, use `build.py`.  It expects to be run from the directory it is in, like;
 
-`./build.py`
+`./build.py --arch=arm64`
 
 It builds everything and uses "reasonable" settings.  If you want something special, check `./build.py --help`, and if that doesn't help, read the rest of this documentation.  Failing that, run `cmake` and `make` by hand.  Better documentation is definitely welcomed!
 
@@ -34,11 +34,11 @@ By default, dependencies are built once, and unless their build directories are 
 
 If you'd like to build KiCad from sources instead of from git, you can use the --kicad-source-dir option.  This can be useful for testing KiCad changes.
 
-* `build.py --target kicad` builds KiCad and its source code dependencies, but packages nothing.  This is the same for any other CMake targets.
-* `build.py --target package-kicad-nightly` creates a DMG of everything except the 3D models and docs.
-* `build.py --target package-extras` creates a DMG of the 3D models.
-* `build.py --target package-kicad-unified` creates a DMG of everything.
-* `build.py` downloads and builds everything, but does not package any DMGs.
+* `build.py --arch=arm64 --target kicad` builds KiCad and its source code dependencies, but packages nothing.  This is the same for any other CMake targets.
+* `build.py --arch=arm64 --target package-kicad-nightly` creates a DMG of everything except the 3D models and docs.
+* `build.py --arch=arm64 --target package-extras` creates a DMG of the 3D models.
+* `build.py --arch=arm64 --target package-kicad-unified` creates a DMG of everything.
+* `build.py --arch=arm64` downloads and builds everything, but does not package any DMGs.
 
 During the build, some DMGs may be mounted and Finder may open windows while the script runs.  Unmounting or ejecting the DMGs while the script runs is likely to damage the output DMG.
 
@@ -79,7 +79,7 @@ Setting up a KiCad Build Environment
 
 You can use kicad-mac-builder to setup a KiCad build environment on macOS.  The `setup-kicad-dependencies` target will build all of the KiCad dependencies, and then print the CMake arguments it would use against KiCad's CMake configuration.
 
-Run `./build.py --target setup-kicad-dependencies`.  At the end, you'll see some output that starts with `CMake arguments for KiCad:`.  Save that.
+Run `./build.py --arch=arm64 --target setup-kicad-dependencies`.  At the end, you'll see some output that starts with `CMake arguments for KiCad:`.  Save that.
 
 Check out the KiCad source somewhere on your system.
 
@@ -93,13 +93,16 @@ make
 make install
 ```
 
+## CLion
 If you're using CLion, open CLion, and open the KiCad source directory.  Go into Preferences > Build, Execution, Deployment > CMake, and put the copied CMake arguments (the series of -DVARIABLENAME=value -DOTHERVARIABLENAME=othervalue..) into CMake Options.
 
-CLion will likely need to reindex the project.  When that is complete, you should have a series of outputs in the top right corner, by the green arrow play button ("Run"). Choose `kicad | Debug` and press "Run". This should start a build, and TODO: finish
-``
+CLion will likely need to reindex the project.  Build kicad with Build > Build 'kicad' and then install it with Build > Install.
+
 Now, you can open Finder to the location specified in `CMAKE_INSTALL_PREFIX` in the CMake arguments, and you should see KiCad.app and the rest of the suite.
 
 Built like this, KiCad should work but may not be relocatable or distributable.  There are additional steps required to be able to move the bundle or use it on a different machine.
+
+To debug, use Run > Attach to Process.
 
 (Developers, we'd love to hear how this went for you!)
 

@@ -122,8 +122,6 @@ def get_kicad_paths_for_signing(dotapp_path):
 
     to_sign.append(dotapp_path)
 
-
-
     return to_sign
 
 
