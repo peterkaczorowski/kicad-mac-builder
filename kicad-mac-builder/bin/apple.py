@@ -125,23 +125,23 @@ def get_kicad_paths_for_signing(dotapp_path):
     return to_sign
 
 
-def sign(dotapp_path, key_label, hardened_runtime, entitlements_path=None, timestamp_url=None):
+def sign(dotapp_path, key_label, hardened_runtime, secure_timestamp, entitlements_path=None):
     logging.info("Signing {}".format(dotapp_path))
     start_time = time.monotonic()
     for path in get_kicad_paths_for_signing(dotapp_path):
-        sign_file(path, key_label, hardened_runtime, entitlements_path, timestamp_url)
+        sign_file(path, key_label, hardened_runtime, secure_timestamp, entitlements_path)
     elapsed_time = time.monotonic() - start_time
     logging.debug("Signing took {} seconds".format(elapsed_time))
 
 
-def sign_file(path, key_label, hardened_runtime, entitlements_path=None, timestamp_url=None):
+def sign_file(path, key_label, hardened_runtime, secure_timestamp, entitlements_path=None):
     cmd = ["codesign", "--sign", key_label, "--force"]
     if hardened_runtime:
         cmd.extend(["--options", "runtime"])
     if entitlements_path:
         cmd.extend(["--entitlements", entitlements_path])
-    if timestamp_url:
-        cmd.append("--timestamp={}".format(timestamp_url))
+    if secure_timestamp:
+        cmd.append("--timestamp")
 
     cmd.append(path)
     logging.debug("Running {}".format(" ".join(cmd)))
@@ -342,9 +342,9 @@ def parse_args(arg_list=sys.argv[1:]):
                              help="Signing certificate ID.  It is best if this is the 40 character hex ID from "
                                   "`security find-identity -v`.  Use - for ad-hoc signing.")
     sign_parser.add_argument("--entitlements", help="Optional path to entitlements plist.")
-    sign_parser.add_argument("--timestamp-url",
-                             default="http://timestamp.apple.com/ts01",
-                             help="Override URL to timestamp server")
+    sign_parser.add_argument("--timestamp",
+                             action="store_true",
+                             help="Enable Secure Timestamps.")
     sign_parser.add_argument("path", help="Path to the .app")
 
     notarize_parser = subparsers.add_parser('notarize')
@@ -367,8 +367,8 @@ def parse_args(arg_list=sys.argv[1:]):
     return args
 
 
-def handle_signing(dotapp_path, certificate_hex_id, hardened_runtime, entitlements_path, timestamp_url):
-    sign(dotapp_path, certificate_hex_id, hardened_runtime, entitlements_path, timestamp_url)
+def handle_signing(dotapp_path, certificate_hex_id, hardened_runtime, secure_timestamp, entitlements_path):
+    sign(dotapp_path, certificate_hex_id, hardened_runtime, secure_timestamp, entitlements_path)
     # Ad-hoc signatures don't seem to be able to keep secure timestamps...
     verify_signing(dotapp_path,
                    verify_timestamps=certificate_hex_id != "-")
@@ -416,8 +416,8 @@ def main():
         handle_signing(args.path,
                        args.certificate_id,
                        args.hardened_runtime,
-                       args.entitlements,
-                       args.timestamp_url)
+                       args.timestamp,
+                       args.entitlements)
     elif "notarize" == args.subparser_name:
         handle_notarization(args.path,
                             args.notarization_id,
