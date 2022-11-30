@@ -38,6 +38,10 @@ if( NOT DEFINED SIGNING_CERTIFICATE_ID )
     set( SIGNING_CERTIFICATE_ID - )
 endif ()
 
+if( HARDENED_RUNTIME )
+    set( HARDENED_RUNTIME_ARG "--hardened-runtime")
+endif()
+
 if( NOT DEFINED DMG_DIR )
     set( DMG_DIR ${CMAKE_BINARY_DIR}/dmg )
 endif ()

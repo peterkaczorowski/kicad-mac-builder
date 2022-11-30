@@ -135,8 +135,7 @@ if(DEFINED REDISTRIBUTABLE)
             COMMENT "Signing KiCad.app and its contents"
             DEPENDEES fix-loading
             # we can't modify KiCad.app after this without resigning
-            # TODO: pull in hardened runtime
-            COMMAND "${BIN_DIR}/apple.py" sign --certificate-id "${SIGNING_CERTIFICATE_ID}" --entitlements "${BIN_DIR}/../signing/entitlements.plist" "${KICAD_INSTALL_DIR}/KiCad.app"
+            COMMAND "${BIN_DIR}/apple.py" sign --certificate-id "${SIGNING_CERTIFICATE_ID}" ${HARDENED_RUNTIME_ARG} --entitlements "${BIN_DIR}/../signing/entitlements.plist" "${KICAD_INSTALL_DIR}/KiCad.app"
     )
 else()
     ExternalProject_Add_Step(
@@ -145,8 +144,7 @@ else()
             COMMENT "Signing KiCad.app and its contents"
             DEPENDEES install-docs-into-app install collect-licenses install-footprints-into-app install-symbols-into-app install-templates-into-app install-packages3d-into-app # demos?
             # we can't modify KiCad.app after this without resigning
-            # TODO: pull in hardened runtime
-            COMMAND "${BIN_DIR}/apple.py" sign --certificate-id "${SIGNING_CERTIFICATE_ID}" --entitlements "${BIN_DIR}/../signing/entitlements.plist" "${KICAD_INSTALL_DIR}/KiCad.app"
+            COMMAND "${BIN_DIR}/apple.py" sign --certificate-id "${SIGNING_CERTIFICATE_ID}" ${HARDENED_RUNTIME_ARG} --entitlements "${BIN_DIR}/../signing/entitlements.plist" "${KICAD_INSTALL_DIR}/KiCad.app"
     )
 endif()
 

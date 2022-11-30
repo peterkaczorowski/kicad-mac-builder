@@ -143,6 +143,8 @@ def parse_args(args):
     signing_group.add_argument("--asc-provider",
                         dest="asc_provider",
                         help="provider passed to `xcrun altool` for notarization")
+    signing_group.add_argument('--hardened-runtime', action='store_true',
+                               help="Enable Hardened Runtime. Does not work with adhoc signing, but this is required for release builds.")
 
     parsed_args = parser.parse_args(args)
 
@@ -154,6 +156,12 @@ def parse_args(args):
 
     if parsed_args.release and parsed_args.skip_docs_update:
         parser.error("Release builds cannot skip docs updates.")
+
+    if parsed_args.release and not parsed_args.hardened_runtime:
+        parser.error("Release builds must use Hardened Runtime.")
+
+    if parsed_args.hardened_runtime and parsed_args.signing_identity in (None, "-"):
+        parser.error("Hardened Runtime requires a non-adhoc signing identity.")
 
     if (parsed_args.kicad_ref or parsed_args.kicad_git_url) and parsed_args.kicad_source_dir:
         parser.error("KiCad source directory builds cannot also specify KiCad git details.")
@@ -301,6 +309,11 @@ def build(args, new_path):
 
     if args.asc_provider:
         cmake_command.append("-DASC_PROVIDER={}".format(args.asc_provider))
+
+    if args.hardened_runtime:
+        cmake_command.append("-DHARDENED_RUNTIME=ON")
+    else:
+        cmake_command.append("-DHARDENED_RUNTIME=OFF")
 
     if args.release_name:
         cmake_command.append("-DRELEASE_NAME={}".format(args.release_name))
