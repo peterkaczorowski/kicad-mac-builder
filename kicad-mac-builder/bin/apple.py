@@ -409,7 +409,7 @@ def main():
     else:
         logging.getLogger().setLevel(logging.INFO)
 
-    if args.path.endswith(".app/"):
+    if "path" in args and args.path.endswith(".app/"):
         args.path = args.path[:-1]
 
     if args.subparser_name == "sign":
