@@ -3,13 +3,13 @@ KiCad Mac Builder
 
 If you are looking to run KiCad on your Mac, please use the instructions at http://kicad.org/download/osx/.
 
-If you are looking to compile KiCad or improve KiCad packaging on MacOS, kicad-mac-builder may be able to help you.
+If you are looking to compile KiCad or improve KiCad packaging on macOS, kicad-mac-builder may be able to help you.
 
 To build KiCad 5.1, use the 5.1 branch of this repository.
 
 Setup
 =====
-kicad-mac-builder requires a Mac and at least 30G of disk space free.  The instructions assume you are capable of using the command line but they are not intended to require arcane deep knowledge.
+kicad-mac-builder requires a Mac and at least 30G of disk space free.  The instructions assume you are capable of using the command line, but they are not intended to require arcane deep knowledge.
 
 kicad-mac-builder is known to work on macOS 10.15, 11, 12, and 13.  Apple Silicon support is experimental.
 
@@ -60,6 +60,10 @@ If you have both installed, make sure that /opt/homebrew/bin is before the /usr/
 
 See the scripts inside ci/.
 
+If you are trying to build for x86_64 on arm64, you'll need to install a Rosetta 2 Homebrew (which typically ends up in /usr/local/).  Make sure that /usr/local/bin is before /opt/homebrew/bin in your PATH, and prefix the build.py command with `arch -x86_64`.  For instance:
+
+`PATH=/usr/local/bin:$PATH arch -x86_64 ./build.py --arch=x86_64`
+
 The Apple Silicon build support is experimental, and we'd love to hear how it's gone for you.  Your feedback will help us stop flagging this whole section as experimental! :)
 
 Signing and Notarization
@@ -77,7 +81,7 @@ A new template DMG can be generated with the script in `dmgbuild/`.
 Setting up a KiCad Build Environment
 ====================================
 
-You can use kicad-mac-builder to setup a KiCad build environment on macOS.  The `setup-kicad-dependencies` target will build all of the KiCad dependencies, and then print the CMake arguments it would use against KiCad's CMake configuration.
+You can use kicad-mac-builder to set up a KiCad build environment on macOS.  The `setup-kicad-dependencies` target will build all the KiCad dependencies, and then print the CMake arguments it would use against KiCad's CMake configuration.
 
 Run `./build.py --arch=arm64 --target setup-kicad-dependencies`.  At the end, you'll see some output that starts with `CMake arguments for KiCad:`.  Save that.
 
@@ -170,8 +174,8 @@ Localization
 
 OCC
 ---
-* Open up KiCad.app, and open up demos/pic_programmer/pic_programmer.pro.  Open up Pcbnew.  Click File->Export->STEP.  Click OK on the Export Step dialog.  The output should print "Info: STEP file has been created successfully.".  Currently, I see a lot warnings but these appear to be related to models not being set up.
-* Open up Pcbnew.app, and open up demos/pic_programmer/pic_programmer.kicad_pcb.  Click File->Export->STEP.  Click OK on the Export Step dialog.  The output should print "Info: STEP file has been created successfully.".  Currently, I see a lot warnings but these appear to be related to models not being set up.
+* Open up KiCad.app, and open up demos/pic_programmer/pic_programmer.pro.  Open up Pcbnew.  Click File->Export->STEP.  Click OK on the Export Step dialog.  The output should print "Info: STEP file has been created successfully.".  Currently, I see a lot of warnings but these appear to be related to models not being set up.
+* Open up Pcbnew.app, and open up demos/pic_programmer/pic_programmer.kicad_pcb.  Click File->Export->STEP.  Click OK on the Export Step dialog.  The output should print "Info: STEP file has been created successfully.".  Currently, I see a lot of warnings but these appear to be related to models not being set up.
 
 Help
 ----

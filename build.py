@@ -26,6 +26,38 @@ def host_is_apple_silicon():
 def get_env_architecture():
     return subprocess.check_output("arch").decode('utf-8').strip()
 
+
+def get_brew_config():
+    return subprocess.check_output("brew config", shell=True).decode('utf-8').strip()
+
+
+def get_brew_rosetta():
+    brew_config = get_brew_config()
+    brew_rosetta = None
+    for line in brew_config.splitlines():
+        if line.startswith("Rosetta 2:"):
+            brew_rosetta = line.split(":", maxsplit=1)[1].strip().lower()
+            if brew_rosetta == "true":
+                brew_rosetta = True
+            elif brew_rosetta == "false":
+                brew_rosetta = False
+            else:
+                raise ValueError(f"Unexpected value for Rosetta 2: {brew_rosetta}")
+    return brew_rosetta
+
+
+def get_brew_macos_arch():
+    brew_config = get_brew_config()
+    brew_macos_arch = None
+    for line in brew_config.splitlines():
+        if line.startswith("macOS:"):
+            brew_macos = line.split(":", maxsplit=1)[1].strip()
+            brew_macos_arch = brew_macos.split("-")[1]
+            if brew_macos_arch not in ('x86_64', 'arm64'):
+                raise ValueError(f"Unexpected value for macOS architecture: {brew_macos_arch}")
+    return brew_macos_arch
+
+
 def parse_args(args):
     docs_tarball_url_default = "https://docs.kicad.org/kicad-doc-HEAD.tar.gz"
 
@@ -189,6 +221,39 @@ def parse_args(args):
             parser.error("Building KiCad x86_64 on arm64 requires Rosetta. "
                          "It doesn't appear to be installed. "
                          "One way to install it is with `/usr/sbin/softwareupdate --install-rosetta`.")
+
+    # OK, now let's check Homebrew.
+
+    brew_macos_arch = get_brew_macos_arch()
+    brew_rosetta = get_brew_rosetta()
+    if parsed_args.arch == "x86_64":
+        # on x86_64, we expect brew rosetta to be none (if on x86) or true (if on arm64)
+        # and brew macos to contain x86_64
+        errors = []
+        if brew_rosetta and get_host_architecture() == "x86_64":
+            errors.append("`brew config` reports using Rosetta 2, but we're trying to build for x86_64.")
+
+        if "x86_64" not in brew_macos_arch:
+            errors.append(
+                "`brew config` doesn't report x86_64 in the macOS line, but we're trying to build for x86_64.")
+
+        if errors:
+            errors.append(
+                "Check your PATH, and if you're on arm64, you may need to prefix the build.py command with `arch -x86_64 `. See the README.")
+            parser.error("\n".join(errors))
+
+    elif parsed_args.arch == "arm64":
+        # on arm64, we expect brew_rosetta to be false, and brew macos to contain arm64
+        errors = []
+        if brew_rosetta:
+            errors.append("`brew config` reports using Rosetta 2, but we're trying to build for arm64.")
+
+        if "arm64" not in brew_macos_arch:
+            errors.append("`brew config` doesn't report arm64 in the macOS line, but we're trying to build for arm64.")
+
+        if errors:
+            errors.append("Check your PATH. See the README.")
+            parser.error("\n".join(errors))
 
     if parsed_args.release:
         if parsed_args.build_type is None:
