@@ -222,39 +222,6 @@ def parse_args(args):
                          "It doesn't appear to be installed. "
                          "One way to install it is with `/usr/sbin/softwareupdate --install-rosetta`.")
 
-    # OK, now let's check Homebrew.
-
-    brew_macos_arch = get_brew_macos_arch()
-    brew_rosetta = get_brew_rosetta()
-    if parsed_args.arch == "x86_64":
-        # on x86_64, we expect brew rosetta to be none (if on x86) or true (if on arm64)
-        # and brew macos to contain x86_64
-        errors = []
-        if brew_rosetta and get_host_architecture() == "x86_64":
-            errors.append("`brew config` reports using Rosetta 2, but we're trying to build for x86_64.")
-
-        if "x86_64" not in brew_macos_arch:
-            errors.append(
-                "`brew config` doesn't report x86_64 in the macOS line, but we're trying to build for x86_64.")
-
-        if errors:
-            errors.append(
-                "Check your PATH, and if you're on arm64, you may need to prefix the build.py command with `arch -x86_64 `. See the README.")
-            parser.error("\n".join(errors))
-
-    elif parsed_args.arch == "arm64":
-        # on arm64, we expect brew_rosetta to be false, and brew macos to contain arm64
-        errors = []
-        if brew_rosetta:
-            errors.append("`brew config` reports using Rosetta 2, but we're trying to build for arm64.")
-
-        if "arm64" not in brew_macos_arch:
-            errors.append("`brew config` doesn't report arm64 in the macOS line, but we're trying to build for arm64.")
-
-        if errors:
-            errors.append("Check your PATH. See the README.")
-            parser.error("\n".join(errors))
-
     if parsed_args.release:
         if parsed_args.build_type is None:
             parsed_args.build_type = "Release"
@@ -444,6 +411,41 @@ def main():
 
     print(f"The first brew on the path is: {which_brew}")
     print(f"Its prefix is: {brew_prefix}")
+
+    brew_macos_arch = get_brew_macos_arch()
+    brew_rosetta = get_brew_rosetta()
+    if parsed_args.arch == "x86_64":
+        # on x86_64, we expect brew rosetta to be none (if on x86) or true (if on arm64)
+        # and brew macos to contain x86_64
+        errors = []
+        if brew_rosetta and get_host_architecture() == "x86_64":
+            errors.append("`brew config` reports using Rosetta 2, but we're trying to build for x86_64.")
+
+        if "x86_64" not in brew_macos_arch:
+            errors.append(
+                "`brew config` doesn't report x86_64 in the macOS line, but we're trying to build for x86_64.")
+
+        if errors:
+            errors.append(
+                "Check your PATH, and if you're on arm64, you may need to prefix the build.py command with `arch -x86_64 `. See the README.")
+            print("\n".join(errors))
+            sys.exit(1)
+
+    elif parsed_args.arch == "arm64":
+        # on arm64, we expect brew_rosetta to be false, and brew macos to contain arm64
+        errors = []
+        if brew_rosetta:
+            errors.append("`brew config` reports using Rosetta 2, but we're trying to build for arm64.")
+
+        if "arm64" not in brew_macos_arch:
+            errors.append("`brew config` doesn't report arm64 in the macOS line, but we're trying to build for arm64.")
+
+        if errors:
+            errors.append("Check your PATH. See the README.")
+            print("\n".join(errors))
+            sys.exit(1)
+
+
     gettext_path = "{}/bin".format(subprocess.check_output("brew --prefix gettext", shell=True).decode('utf-8').strip())
     bison_path = "{}/bin".format(subprocess.check_output("brew --prefix bison", shell=True).decode('utf-8').strip())
     new_path = ":".join((gettext_path, bison_path, os.environ["PATH"]))
