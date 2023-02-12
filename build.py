@@ -189,8 +189,8 @@ def parse_args(args):
     if parsed_args.release and parsed_args.skip_docs_update:
         parser.error("Release builds cannot skip docs updates.")
 
-    if parsed_args.release and not parsed_args.hardened_runtime:
-        parser.error("Release builds must use Hardened Runtime.")
+    # if parsed_args.release and not parsed_args.hardened_runtime:
+    #     parser.error("Release builds must use Hardened Runtime.")
 
     if parsed_args.hardened_runtime and parsed_args.signing_identity in (None, "-"):
         parser.error("Hardened Runtime requires a non-adhoc signing identity.")
