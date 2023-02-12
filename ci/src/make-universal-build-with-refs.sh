@@ -25,6 +25,7 @@ echo "TEMPLATES_REF=${TEMPLATES_REF}"
 echo "RELEASE_NAME=${RELEASE_NAME}"
 echo "EXTRA_VERSION=${EXTRA_VERSION}"
 echo "DOCS_TARBALL_URL=${DOCS_TARBALL_URL}"
+echo "RELEASE_ARG=${RELEASE_ARG}"
 
 ORIG_PATH="$PATH"
 
@@ -39,7 +40,7 @@ CFLAGS="-I/$(/opt/homebrew/bin/brew --prefix)/include" \
     ./build.py --arch=arm64 --target package-kicad-unified \
     --kicad-ref $KICAD_REF --symbols-ref $SYMBOLS_REF --footprints-ref $FOOTPRINTS_REF \
     --packages3d-ref $PACKAGES3D_REF --release-name $RELEASE_NAME \
-    --docs-tarball-url $DOCS_TARBALL_URL --templates-ref $TEMPLATES_REF
+    --docs-tarball-url $DOCS_TARBALL_URL --templates-ref $TEMPLATES_REF $RELEASE_ARG
 elapsed=$(( SECONDS - start_time ))
 echo "arm64 took $elapsed seconds."
 mv build build-arm64
@@ -54,7 +55,7 @@ CFLAGS="-I/$(/usr/local/bin/brew --prefix)/include" \
     ./build.py --arch=x86_64 --target package-kicad-unified \
     --kicad-ref $KICAD_REF --symbols-ref $SYMBOLS_REF --footprints-ref $FOOTPRINTS_REF \
     --packages3d-ref $PACKAGES3D_REF --release-name $RELEASE_NAME \
-    --docs-tarball-url $DOCS_TARBALL_URL --templates-ref $TEMPLATES_REF
+    --docs-tarball-url $DOCS_TARBALL_URL --templates-ref $TEMPLATES_REF $RELEASE_ARG
 elapsed=$(( SECONDS - start_time ))
 echo "x86_64 took $elapsed seconds."
 mv build build-x86_64
