@@ -54,7 +54,7 @@ CFLAGS="-I/$(/usr/local/bin/brew --prefix)/include" \
     CXXFLAGS="-I/$(/usr/local/bin/brew --prefix)/include" \
     WX_SKIP_DOXYGEN_VERSION_CHECK=true arch -x86_64 \
     ./build.py --arch=x86_64 --target package-kicad-unified \
-    --macos-min-version 10.14 \
+    --macos-min-version 11.0 \
     --kicad-ref $KICAD_REF --symbols-ref $SYMBOLS_REF --footprints-ref $FOOTPRINTS_REF \
     --packages3d-ref $PACKAGES3D_REF --release-name $RELEASE_NAME \
     --docs-tarball-url $DOCS_TARBALL_URL --templates-ref $TEMPLATES_REF $RELEASE_ARG
