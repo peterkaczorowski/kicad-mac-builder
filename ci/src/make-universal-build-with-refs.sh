@@ -16,7 +16,7 @@ if [ "$(arch)" != "arm64" ]; then
   exit 1
 fi
 
-if [ -n "$MACOS_MIN_VERISON" ]; then
+if [ -z "${MACOS_MIN_VERISON:-}" ]; then
   MACOS_MIN_VERSION_ARG=""
 else
   MACOS_MIN_VERISON_ARG="--macos-min-version \"${MACOS_MIN_VERSION}\""
