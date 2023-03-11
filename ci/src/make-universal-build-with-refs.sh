@@ -19,7 +19,7 @@ fi
 if [ -z "${MACOS_MIN_VERISON:-}" ]; then
   MACOS_MIN_VERSION_ARG=""
 else
-  MACOS_MIN_VERISON_ARG="--macos-min-version \"${MACOS_MIN_VERSION}\""
+  MACOS_MIN_VERSION_ARG="--macos-min-version \"${MACOS_MIN_VERSION}\""
 fi
 
 echo "Building KiCad with:"
@@ -31,7 +31,7 @@ echo "TEMPLATES_REF=${TEMPLATES_REF}"
 echo "RELEASE_NAME=${RELEASE_NAME}"
 echo "EXTRA_VERSION=${EXTRA_VERSION}"
 echo "DOCS_TARBALL_URL=${DOCS_TARBALL_URL}"
-echo "MACOS_MIN_VERISON_ARG=${MACOS_MIN_VERISON_ARG}"
+echo "MACOS_MIN_VERSION_ARG=${MACOS_MIN_VERSION_ARG}"
 echo "RELEASE_ARG=${RELEASE_ARG}"
 
 ORIG_PATH="$PATH"
@@ -49,7 +49,7 @@ CFLAGS="-I/$(/opt/homebrew/bin/brew --prefix)/include" \
     --kicad-ref $KICAD_REF --symbols-ref $SYMBOLS_REF --footprints-ref $FOOTPRINTS_REF \
     --packages3d-ref $PACKAGES3D_REF --release-name $RELEASE_NAME \
     --docs-tarball-url $DOCS_TARBALL_URL --templates-ref $TEMPLATES_REF \
-    $MACOS_MIN_VERISON_ARG $RELEASE_ARG
+    $MACOS_MIN_VERSION_ARG $RELEASE_ARG
 elapsed=$(( SECONDS - start_time ))
 echo "arm64 took $elapsed seconds."
 mv build build-arm64
@@ -66,7 +66,7 @@ CFLAGS="-I/$(/usr/local/bin/brew --prefix)/include" \
     --kicad-ref $KICAD_REF --symbols-ref $SYMBOLS_REF --footprints-ref $FOOTPRINTS_REF \
     --packages3d-ref $PACKAGES3D_REF --release-name $RELEASE_NAME \
     --docs-tarball-url $DOCS_TARBALL_URL --templates-ref $TEMPLATES_REF \
-    $MACOS_MIN_VERISON_ARG $RELEASE_ARG
+    $MACOS_MIN_VERSION_ARG $RELEASE_ARG
 elapsed=$(( SECONDS - start_time ))
 echo "x86_64 took $elapsed seconds."
 mv build build-x86_64
