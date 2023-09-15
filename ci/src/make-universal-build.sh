@@ -16,6 +16,12 @@ if [ "$(arch)" != "arm64" ]; then
   exit 1
 fi
 
+if [ -z "${MACOS_MIN_VERISON:-}" ]; then
+  MACOS_MIN_VERSION_ARG=""
+else
+  MACOS_MIN_VERSION_ARG="--macos-min-version \"${MACOS_MIN_VERSION}\""
+fi
+
 ORIG_PATH="$PATH"
 
 rm -rf build/ build-arm64/ build-x86_64/ build-universal/
@@ -23,7 +29,7 @@ rm -rf build/ build-arm64/ build-x86_64/ build-universal/
 echo "Running build.py for arm64..."
 export PATH="/opt/homebrew/bin:$ORIG_PATH"
 start_time=$SECONDS
-CFLAGS="-I/$(/opt/homebrew/bin/brew --prefix)/include" CXXFLAGS="-I/$(/opt/homebrew/bin/brew --prefix)/include" WX_SKIP_DOXYGEN_VERSION_CHECK=true ./build.py --arch=arm64 --kicad-source-dir=../kicad --target package-kicad-unified
+CFLAGS="-I/$(/opt/homebrew/bin/brew --prefix)/include" CXXFLAGS="-I/$(/opt/homebrew/bin/brew --prefix)/include" WX_SKIP_DOXYGEN_VERSION_CHECK=true ./build.py --arch=arm64 --kicad-source-dir=../kicad --target package-kicad-unified $MACOS_MIN_VERSION_ARG
 elapsed=$(( SECONDS - start_time ))
 echo "arm64 took $elapsed seconds."
 mv build build-arm64
@@ -32,7 +38,7 @@ mv build build-arm64
 echo "Running build.py for x86_64..."
 export PATH="/usr/local/bin:$ORIG_PATH"
 start_time=$SECONDS
-CFLAGS="-I/$(/usr/local/bin/brew --prefix)/include" CXXFLAGS="-I/$(/usr/local/bin/brew --prefix)/include" WX_SKIP_DOXYGEN_VERSION_CHECK=true arch -x86_64 ./build.py --arch=x86_64 --kicad-source-dir=../kicad --target package-kicad-unified
+CFLAGS="-I/$(/usr/local/bin/brew --prefix)/include" CXXFLAGS="-I/$(/usr/local/bin/brew --prefix)/include" WX_SKIP_DOXYGEN_VERSION_CHECK=true arch -x86_64 ./build.py --arch=x86_64 --kicad-source-dir=../kicad --target package-kicad-unified $MACOS_MIN_VERSION_ARG
 elapsed=$(( SECONDS - start_time ))
 echo "x86_64 took $elapsed seconds."
 mv build build-x86_64
