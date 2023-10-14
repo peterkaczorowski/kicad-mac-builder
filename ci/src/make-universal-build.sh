@@ -48,7 +48,9 @@ mv build build-x86_64
 echo "Combining arm64 and x86_64 KiCad bundles into a Universal KiCad bundle..."
 ditto --arch arm64 build-arm64/kicad-dest build-universal/thinned-arm64
 ditto --arch x86_64 build-x86_64/kicad-dest build-universal/thinned-x86_64
+rm -rf build-x86_64/kicad-dest/KiCad.app/Contents/SharedSupport/3dmodels
 ditto build-arm64/kicad-dest build-universal/dest
+rm -rf build-arm64/kicad-dest/KiCad.app/Contents/SharedSupport/3dmodels
 
 cd build-universal/dest
 
