@@ -32,7 +32,12 @@ start_time=$SECONDS
 CFLAGS="-I/$(/opt/homebrew/bin/brew --prefix)/include" CXXFLAGS="-I/$(/opt/homebrew/bin/brew --prefix)/include" WX_SKIP_DOXYGEN_VERSION_CHECK=true ./build.py --arch=arm64 --kicad-source-dir=../kicad --target package-kicad-unified $MACOS_MIN_VERSION_ARG
 elapsed=$(( SECONDS - start_time ))
 echo "arm64 took $elapsed seconds."
+# save some disk space
 rm -rf build/packages3d
+rm -rf build/wxpython-prefix
+rm -rf build/kicad
+rm -rf build/wxwidgets
+rm -rf build/footprints
 mv build build-arm64
 
 
@@ -42,7 +47,12 @@ start_time=$SECONDS
 CFLAGS="-I/$(/usr/local/bin/brew --prefix)/include" CXXFLAGS="-I/$(/usr/local/bin/brew --prefix)/include" WX_SKIP_DOXYGEN_VERSION_CHECK=true arch -x86_64 ./build.py --arch=x86_64 --kicad-source-dir=../kicad --target package-kicad-unified $MACOS_MIN_VERSION_ARG
 elapsed=$(( SECONDS - start_time ))
 echo "x86_64 took $elapsed seconds."
+# save some disk space
 rm -rf build/packages3d
+rm -rf build/wxpython-prefix
+rm -rf build/kicad
+rm -rf build/wxwidgets
+rm -rf build/footprints
 mv build build-x86_64
 
 echo "Combining arm64 and x86_64 KiCad bundles into a Universal KiCad bundle..."
