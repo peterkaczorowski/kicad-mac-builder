@@ -70,7 +70,24 @@ Signing and Notarization
 ========================
 By default, kicad-mac-builder will sign KiCad with an ad-hoc signature, which does not require any setup or configuration.  Your ad-hoc signed KiCad should run fine on your system, but cannot be notarized by Apple.  When Mac applications are ad-hoc signed, they do not support Hardened Runtime, which provides extra security protection.
 
-kicad-mac-builder supports "real" signing and notarization of build outputs.  kicad-mac-builder expects you are using a Developer ID certificate.  Details on creating one are available at https://developer.apple.com/developer-id/. kicad-mac-builder also expects you have stored your Apple developer account password in your keychain.  See `man altool` for details.
+kicad-mac-builder supports "real" signing of build outputs.  kicad-mac-builder expects you are using a Developer ID certificate.  Details on creating one are available at https://developer.apple.com/developer-id/.
+
+kicad-mac-builder used to help with notarization by wrapping `xcrun altool`.  As of November 2023, this has been removed due to the improved ergonomics of `xcrun notarytool`.  If you were using the apple.py notarize helper before, try something akin to the following:
+
+```
+echo "Submitting to Apple for notarization at $(date)"
+xcrun notarytool submit --apple-id "${APPLE_DEVELOPER_ID}" \
+                        --team-id "${APPLE_TEAM_ID}" \
+                        --password "${APPLE_APP_SPECIFIC_PASSWORD}" \
+                        --wait \
+                        "$DMG"
+echo "Notarization finished at $(date)"
+echo "Stapling notarization ticket to disk image"
+xcrun stapler staple "$DMG"
+echo "Validating notarization ticket"
+xcrun stapler validate "$DMG"
+echo "Validation complete at $(date)"
+```
 
 Template DMG
 ============

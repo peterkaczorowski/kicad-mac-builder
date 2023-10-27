@@ -1,21 +1,15 @@
 #!/usr/bin/env python3
 
 import argparse
-import json
 import logging
 import os
 import subprocess
-import tempfile
-from collections import namedtuple
 import time
 import sys
-from urllib.request import urlopen
 
 # if we want to run on Apple Silicon, we need to be signed--but adhoc is fine
 # if we want to notarize, we need hardened runtime on
 # if we want to run Python on Apple Silicon, and we are using hardened Runtime, we need a non-adhoc signature
-
-NotarizationStatus = namedtuple('NotarizationStatus', ['in_progress', 'success', 'logfile_url'])
 
 # From Apple: "Important: While the --deep option can be applied to a signing operation, this is not recommended. We
 # recommend that you sign code inside out in individual stages (as Xcode does automatically). Signing with --deep is
@@ -161,20 +155,6 @@ def has_secure_timestamp(path):
         return False
     return True
 
-
-def make_zip(dotapp_path, output_path=None):
-    if not output_path:
-        tempdir = tempfile.mkdtemp()
-        output_path = os.path.join(tempdir, "{}.zip".format(os.path.basename(dotapp_path)))
-
-    logging.info("Making zip for submitting {} to Apple for notarization ({}).".format(dotapp_path, output_path))
-    cmd = ["/usr/bin/ditto", "-c", "-k", "--keepParent", dotapp_path, output_path]
-
-    logging.debug("Running {}".format(" ".join(cmd)))
-    subprocess.run(cmd, check=True)
-    return output_path
-
-
 def verify_signing(dotapp_path, verify_timestamps=True):
     logging.info("Verifying signing of {}".format(dotapp_path))
     logging.debug("Verifying with --strict")
@@ -192,134 +172,6 @@ def verify_signing(dotapp_path, verify_timestamps=True):
                 raise Exception("{} does not have a secure timestamp".format(path))
             else:
                 logging.debug("{} has a secure timestamp".format(path))
-
-
-def submit_for_notarization(upload_path, notarization_id, apple_developer_username,
-                            apple_developer_password_handle, asc_provider):
-    logging.info("Submitting {} for notarization.".format(upload_path))
-    logging.info("This uploads it to Apple, and may take a few minutes depending upon size and upload speed.")
-
-    cmd = ["xcrun", "altool", "--notarize-app",
-           "--primary-bundle-id", notarization_id,
-           "--username", apple_developer_username,
-           "--password", apple_developer_password_handle,
-           "--asc-provider", asc_provider,
-           "--file", upload_path]
-
-    logging.debug("Running {}".format(" ".join(cmd)))
-    start_time = time.monotonic()
-    completed = subprocess.run(cmd, capture_output=True, check=False)
-    elapsed_time = time.monotonic() - start_time
-    logging.debug("It took {} seconds.".format(elapsed_time))
-    stderr = completed.stderr.decode('utf-8')
-    stdout = completed.stdout.decode('utf-8')
-    if completed.returncode != 0 or not stdout.startswith("No errors uploading "):
-        print(stdout)
-        print(stderr)
-        raise Exception("Error submitting for notarization.")
-
-    for line in stdout.splitlines():
-        if line.startswith("RequestUUID = "):
-            return line.split("=", maxsplit=1)[1].strip()
-    raise Exception("No request UUID found in notarization submission response.")
-
-
-def get_notarization_status(request_uuid, apple_developer_username, apple_developer_password_handle):
-    logging.info("Checking notarization status for {}.".format(request_uuid))
-
-    cmd = ["xcrun", "altool", "--notarization-info", request_uuid,
-           "--username", apple_developer_username,
-           "--password", apple_developer_password_handle]
-
-    # logging.debug("Running {}".format(" ".join(cmd)))
-    completed = subprocess.run(cmd, capture_output=True, check=True)
-    stderr = completed.stderr.decode('utf-8')
-    stdout = completed.stdout.decode('utf-8')
-
-    if "Status: in progress" in stdout:
-        return NotarizationStatus(in_progress=True, success=None, logfile_url=None)
-
-    succeeded = None
-    if "Status: success" in stdout:
-        succeeded = True
-    else:
-        succeeded = False
-
-    logfile_url = None
-    for line in stdout.splitlines():
-        if "LogFileURL:" in line:
-            logfile_url = line.split(":", maxsplit=1)[1].strip()
-            break
-
-    return NotarizationStatus(in_progress=False, success=succeeded, logfile_url=logfile_url)
-
-
-def get_log(logfile_url):
-    logging.debug("Getting log from {}".format(logfile_url))
-    logfile_bytes = urlopen(logfile_url).read()
-    logfile_text = logfile_bytes.decode('utf-8')
-    apple_log = json.loads(logfile_text)
-    return apple_log
-
-
-def wait_for_notarization(request_uuid, apple_developer_username, apple_developer_password_handle):
-    delay = 30
-    logging.info("Checking on notarization every {} seconds.".format(delay))
-    start_time = time.monotonic()
-    try:
-        status = get_notarization_status(request_uuid, apple_developer_username, apple_developer_password_handle)
-    except subprocess.CalledProcessError:
-        logging.warning("Error while checking notarization status.  This can happen if we check too soon after "
-                        "submitting.")
-        status = NotarizationStatus(in_progress=True, success=False, logfile_url=None)
-
-    while status.in_progress:
-        logging.debug("Notarization still in progress, waiting {} seconds...".format(delay))
-        time.sleep(delay)
-        status = get_notarization_status(request_uuid, apple_developer_username, apple_developer_password_handle)
-    elapsed_time = time.monotonic() - start_time
-    logging.debug(
-        "After {} seconds of checking, the notarization status is no longer 'in progress'. ".format(elapsed_time))
-
-    if status.success:
-        logging.info("Notarization successful after ~{} s.".format(round(elapsed_time)))
-        apple_log_level = logging.DEBUG
-    else:
-        logging.info("Notarization FAILED.")
-        apple_log_level = logging.ERROR
-
-    apple_log = get_log(status.logfile_url)
-
-    pretty_log = json.dumps(apple_log, indent=2)
-    logging.log(apple_log_level, "Full notarization log: {}".format(pretty_log))
-
-    if apple_log['issues']:
-        logging.warning("Issues found: {}".format(json.dumps(apple_log["issues"], indent=2)))
-
-    if not status.success:
-        raise Exception("Notarization failed.")
-
-
-def staple(dotapp_path):
-    "xcrun stapler staple Example.app"
-    logging.info("Stapling notarization to {}".format(dotapp_path))
-    cmd = ["xcrun", "stapler", "staple", dotapp_path]
-    logging.debug("Running {}".format(" ".join(cmd)))
-    start_time = time.monotonic()
-    completed = subprocess.run(cmd, capture_output=True, check=True)
-    elapsed_time = time.monotonic() - start_time
-    logging.debug("It took {} seconds.".format(elapsed_time))
-
-
-def verify_notarization(dotapp_path):
-    logging.info("Verifying notarization of {}".format(dotapp_path))
-    cmd = ["xcrun", "stapler", "validate", dotapp_path]
-    logging.debug("Running {}".format(" ".join(cmd)))
-    start_time = time.monotonic()
-    completed = subprocess.run(cmd, capture_output=True, check=True)
-    elapsed_time = time.monotonic() - start_time
-    logging.debug("It took {} seconds.".format(elapsed_time))
-    logging.info("{} is notarized".format(dotapp_path))
 
 
 def parse_args(arg_list=sys.argv[1:]):
@@ -347,18 +199,6 @@ def parse_args(arg_list=sys.argv[1:]):
                              help="Enable Secure Timestamps.")
     sign_parser.add_argument("path", help="Path to the .app")
 
-    notarize_parser = subparsers.add_parser('notarize')
-    notarize_parser.add_argument("--apple-developer-username", required=True,
-                                 help="Username for the Apple developer account")
-    notarize_parser.add_argument("--apple-developer-password-handle",
-                                 help="See the documentation for `xcrun altool`. It is recommended you pass something starting with `@keychain:` rather than a password directly.")
-    notarize_parser.add_argument("--notarization-id", required=True,
-                                 help="This is used to identify the notarization request and "
-                                      "doesn't actually need to match the contents of the notarization request.")
-    notarize_parser.add_argument("--asc-provider", required=True,
-                                 help="Passed to `xcrun altool` to specify which provider to use for notarization.")
-    notarize_parser.add_argument("path", help="Path to what should be notarized")
-
     args = parser.parse_args(arg_list)
 
     if args.verbose and args.quiet:
@@ -373,32 +213,6 @@ def handle_signing(dotapp_path, certificate_hex_id, hardened_runtime, secure_tim
     verify_signing(dotapp_path,
                    verify_timestamps=certificate_hex_id != "-")
     print("Done. Signed and verified {}".format(dotapp_path))
-
-
-def handle_notarization(notarization_path,
-                        notarization_id,
-                        apple_developer_username,
-                        apple_developer_password_handle,
-                        asc_provider):
-    if notarization_path.endswith(".app"):
-        submission_path = make_zip(notarization_path)
-    else:
-        submission_path = notarization_path
-
-    request_uuid = submit_for_notarization(submission_path,
-                                           notarization_id,
-                                           apple_developer_username,
-                                           apple_developer_password_handle,
-                                           asc_provider)
-    wait_for_notarization(request_uuid,
-                          apple_developer_username,
-                          apple_developer_password_handle)
-
-    staple(notarization_path)
-    verify_notarization(notarization_path)
-    print("Done. Submitted {} for notarization, waited for it to be notarized, stapled the notarization to the "
-          "original file, and verified notarization.".format(notarization_path))
-
 
 def main():
     args = parse_args()
@@ -418,13 +232,6 @@ def main():
                        args.hardened_runtime,
                        args.timestamp,
                        args.entitlements)
-    elif "notarize" == args.subparser_name:
-        handle_notarization(args.path,
-                            args.notarization_id,
-                            args.apple_developer_username,
-                            args.apple_developer_password_handle,
-                            args.asc_provider)
-
 
 if __name__ == "__main__":
     main()
