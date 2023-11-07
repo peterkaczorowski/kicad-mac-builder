@@ -127,6 +127,14 @@ To debug, use Run > Attach to Process.
 
 (Developers, we'd love to hear how this went for you!)
 
+wxPython
+========
+The wxPython build process is relatively involved.
+
+If you have the DOXYGEN environment variable pointing to a doxygen binary, we tell wxpython's build to use it rather than download "an appropriate version".
+
+We do the something similar for the WAF environment variable.  We have copied the waf file downloaded by the wxpython build process as of late October 2023 into external/.
+
 Issues
 ======
 

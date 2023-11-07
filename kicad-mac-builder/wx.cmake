@@ -51,6 +51,10 @@ ExternalProject_Add(
 ExternalProject_Get_Property(wxwidgets SOURCE_DIR)
 set( wxwidgets_SOURCE_DIR ${SOURCE_DIR})
 
+# In November 2023, the wxpython website went down for an extended period of time, and we
+# needed to use our own copies of doxygen and waf
+
+# If we have WAF set in the environment, it'll be passed through automatically
 ExternalProject_Add(
     wxpython
     DEPENDS python wxwidgets
@@ -65,22 +69,26 @@ ExternalProject_Add(
     COMMAND rm -f ${PYTHON_INSTALL_DIR}/Python.framework/Versions/Current/lib/site-packages/wx/libwx*.dylib # TODO: see if this is still needed
 )
 
-ExternalProject_Add_Step(
-    wxpython
-    download_dox
-    COMMENT "Getting wxpython's desired Doxygen version"
-    DEPENDEES configure
-    WORKING_DIRECTORY <SOURCE_DIR>
-    COMMAND MAC_OS_X_VERSION_MIN_REQUIRED=${MACOS_MIN_VERSION} ${PYTHON_INSTALL_DIR}/Python.framework/Versions/Current/bin/python3 -c "import build$<SEMICOLON> build.getDoxCmd()"
-    COMMAND bash -c "if [ ! -e bin/doxygen ]$<SEMICOLON> then cd bin$<SEMICOLON> ln -s <SOURCE_DIR>/bin/doxygen-*-darwin doxygen$<SEMICOLON> fi" # This isn't great, would love to improve this
-)
-
-ExternalProject_Add_Step(
-    wxpython
-    prep_dox
-    COMMENT "Generating wxwidgets XML with doyxgen"
-    DEPENDEES download_dox
-    DEPENDERS build
-    WORKING_DIRECTORY ${wxwidgets_SOURCE_DIR}/docs/doxygen
-    COMMAND DOXYGEN=<SOURCE_DIR>/bin/doxygen ./regen.sh xml
-)
+# If we have our own doxygen, we don't need to download one through wxpython's build process
+# the regen.sh script expects a DOXYGEN environment variable to be set
+if(DEFINED ENV{DOXYGEN})
+    ExternalProject_Add_Step(
+        wxpython
+        prep_dox
+        COMMENT "Generating wxwidgets XML with doyxgen"
+        DEPENDERS build
+        WORKING_DIRECTORY ${wxwidgets_SOURCE_DIR}/docs/doxygen
+        COMMAND WX_SKIP_DOXYGEN_VERSION_CHECK=1 ./regen.sh xml
+    )
+else()
+    ExternalProject_Add_Step(
+        wxpython
+        download_and_prep_dox
+        COMMENT "Downloading doxygen and generating wxwidgets XML"
+        DEPENDERS build
+        WORKING_DIRECTORY <SOURCE_DIR>
+        COMMAND MAC_OS_X_VERSION_MIN_REQUIRED=${MACOS_MIN_VERSION} ${PYTHON_INSTALL_DIR}/Python.framework/Versions/Current/bin/python3 -c "import build$<SEMICOLON> build.getDoxCmd()"
+        COMMAND bash -c "if [ ! -e bin/doxygen ]$<SEMICOLON> then cd bin$<SEMICOLON> ln -s <SOURCE_DIR>/bin/doxygen-*-darwin doxygen$<SEMICOLON> fi" # This isn't great, would love to improve this
+        COMMAND ${CMAKE_COMMAND} -E chdir ${wxwidgets_SOURCE_DIR}/docs/doxygen WX_SKIP_DOXYGEN_VERSION_CHECK=1 DOXYGEN=<SOURCE_DIR>/bin/doxygen ./regen.sh xml
+    )
+endif()
