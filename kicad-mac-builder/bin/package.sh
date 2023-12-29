@@ -191,7 +191,7 @@ case "${PACKAGE_TYPE}" in
     nightly)
         KICAD_GIT_REV=$(cd "${KICAD_SOURCE_DIR}" && git rev-parse --short HEAD)
         MOUNT_NAME='KiCad'
-        DMG_SIZE=15167525
+        DMG_SIZE=15567525
         if [ -z "$RELEASE_NAME" ]; then
             DMG_NAME=kicad-nightly-"${NOW}"-"${KICAD_GIT_REV}".dmg
         else
@@ -210,7 +210,7 @@ case "${PACKAGE_TYPE}" in
     unified)
         KICAD_GIT_REV=$(cd "${KICAD_SOURCE_DIR}" && git rev-parse --short HEAD)
         MOUNT_NAME='KiCad'
-        DMG_SIZE=15167525
+        DMG_SIZE=15567525
         if [ -z "$RELEASE_NAME" ]; then
             DMG_NAME=kicad-unified-"${NOW}"-"${KICAD_GIT_REV}".dmg
         else
