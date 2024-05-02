@@ -9,8 +9,13 @@ add_custom_target(kicad-build-deps
 
 add_custom_target(setup-kicad-dependencies
     DEPENDS kicad-build-deps
-    COMMENT "kicad-mac-builder would use the following CMake arguments for KiCad in this configuration:\n\n${PRINTABLE_KICAD_CMAKE_ARGS}\n\nIf you're pasting these into a terminal, you probably want a \\ at the end of each line.\nSee the README for more details."
-)
+    COMMENT "kicad-mac-builder would use the following CMake arguments for KiCad in this configuration:\n\n\
+${PRINTABLE_KICAD_CMAKE_ARGS}\n\n \
+If you're pasting these into a terminal, you probably want a \\ at the end of each line.\nSee the README for more details.\n\n\
+You can pass: \n\
+-DCMAKE_TOOLCHAIN_FILE=${KMB_TOOLCHAIN_FILEPATH}\n\
+instead of pasting the args above. This file is kept in sync.\
+")
 
 if(DEFINED RELEASE_NAME)
     if(NOT DEFINED KICAD_TAG OR "${KICAD_TAG}" STREQUAL "")
