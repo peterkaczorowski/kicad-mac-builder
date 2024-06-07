@@ -56,7 +56,7 @@ ExternalProject_Add(
     DEPENDS python wxwidgets
     BUILD_IN_SOURCE     1
     GIT_REPOSITORY https://github.com/wxWidgets/Phoenix.git
-    GIT_TAG 371101db7a010d679d214fde617dae9de02008d9
+    GIT_TAG 78938da1218483024b3a7acf55b5fb5513882916
     UPDATE_COMMAND      ""
     PATCH_COMMAND       ""
     CONFIGURE_COMMAND   ""
