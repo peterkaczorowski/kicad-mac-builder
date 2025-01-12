@@ -3,6 +3,7 @@ ExternalProject_Add(
     PREFIX  footprints
     GIT_REPOSITORY ${FOOTPRINTS_URL}
     GIT_TAG ${FOOTPRINTS_TAG}
+    GIT_SHALLOW 1
     CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=<BINARY_DIR>/output"
 )
 

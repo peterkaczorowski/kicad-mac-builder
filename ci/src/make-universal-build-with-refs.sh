@@ -51,6 +51,11 @@ CFLAGS="-I/$(/opt/homebrew/bin/brew --prefix)/include" \
     $MACOS_MIN_VERSION_ARG $RELEASE_ARG
 elapsed=$(( SECONDS - start_time ))
 echo "arm64 took $elapsed seconds."
+rm -rf build/packages3d
+rm -rf build/wxpython-prefix
+rm -rf build/kicad
+rm -rf build/wxwidgets
+rm -rf build/footprints
 mv build build-arm64
 
 
@@ -67,6 +72,11 @@ CFLAGS="-I/$(/usr/local/bin/brew --prefix)/include" \
     $MACOS_MIN_VERSION_ARG $RELEASE_ARG
 elapsed=$(( SECONDS - start_time ))
 echo "x86_64 took $elapsed seconds."
+rm -rf build/packages3d
+rm -rf build/wxpython-prefix
+rm -rf build/kicad
+rm -rf build/wxwidgets
+rm -rf build/footprints
 mv build build-x86_64
 
 echo "Combining arm64 and x86_64 KiCad bundles into a Universal KiCad bundle..."
