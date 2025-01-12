@@ -53,7 +53,6 @@ elapsed=$(( SECONDS - start_time ))
 echo "arm64 took $elapsed seconds."
 rm -rf build/packages3d
 rm -rf build/wxpython-prefix
-rm -rf build/kicad
 rm -rf build/wxwidgets
 rm -rf build/footprints
 mv build build-arm64
@@ -74,7 +73,6 @@ elapsed=$(( SECONDS - start_time ))
 echo "x86_64 took $elapsed seconds."
 rm -rf build/packages3d
 rm -rf build/wxpython-prefix
-rm -rf build/kicad
 rm -rf build/wxwidgets
 rm -rf build/footprints
 mv build build-x86_64
