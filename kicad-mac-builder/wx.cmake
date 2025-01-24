@@ -13,7 +13,7 @@ ExternalProject_Add(
     wxwidgets
     PREFIX  wxwidgets
     GIT_REPOSITORY https://github.com/peterkaczorowski/wxWidgets_kicad_macos-wx-3.2
-    GIT_TAG kicad/macos-wx-3.2-apng
+    GIT_TAG kicad/macos-wx-3.2-apng-nishikawa
     CONFIGURE_COMMAND   CPPFLAGS=-D__ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES=1 MAC_OS_X_VERSION_MIN_REQUIRED=${MACOS_MIN_VERSION} CC=clang CXX=clang++ ./configure
                         --prefix=${wxwidgets_INSTALL_DIR}
                         --with-macosx-version-min=${MACOS_MIN_VERSION}
